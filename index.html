@@ -11,9 +11,6 @@
         .fixed-layout { direction: ltr !important; }
         .content-rtl { direction: rtl; text-align: right; }
         .content-ltr { direction: ltr; text-align: left; }
-        @media (min-width: 768px) {
-            .table-container { max-width: 450px; margin: 0 auto; }
-        }
     </style>
 </head>
 <body class="text-slate-900 pb-10">
@@ -32,17 +29,17 @@
         </div>
     </header>
 
-    <main class="container mx-auto mt-6 px-4">
+    <main class="container mx-auto mt-6 px-4 max-w-5xl">
         
-        <div id="annonce-container" class="mb-6 bg-blue-900 text-white p-5 rounded-lg shadow-md hidden max-w-4xl mx-auto">
+        <div id="annonce-container" class="mb-8 bg-blue-900 text-white p-5 rounded-lg shadow-md hidden w-full">
             <h3 id="sheet-annonce_titre" class="text-lg font-bold border-b border-blue-700 pb-2 mb-2"></h3>
             <p id="sheet-annonce_texte" class="text-lg"></p>
         </div>
 
-        <div id="main-grid" class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div id="main-grid" class="grid md:grid-cols-2 gap-8 w-full">
             
-            <div class="table-container w-full">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="w-full">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden h-full">
                     <div class="bg-slate-800 p-3 text-white text-center">
                         <h2 class="text-lg font-bold" data-i18n="title_week">Semaine</h2>
                     </div>
@@ -63,7 +60,7 @@
                 </div>
             </div>
 
-            <div class="table-container w-full">
+            <div class="w-full">
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="bg-blue-900 p-3 text-white text-center">
                         <h2 class="text-lg font-bold uppercase" data-i18n="title_shabbat">Chabbat</h2>
@@ -81,17 +78,21 @@
                             <td class="p-3 text-slate-600">Kiddoush</td>
                             <td id="sheet-kiddoush_shabbat" class="p-3 text-right font-bold">--:--</td>
                         </tr>
-                        <tr class="border-b text-slate-500 italic text-[13px]">
-                            <td class="p-2 pl-6">Shiour de DAN / Rav Saadia</td>
-                            <td class="p-2 text-right">
-                                <span id="sheet-shiour_dan">--:--</span> / <span id="sheet-shiour_saadia">--:--</span>
-                            </td>
+                        <tr class="border-b text-slate-500 italic">
+                            <td class="p-2 pl-6">Shiour de DAN</td>
+                            <td id="sheet-shiour_dan" class="p-2 text-right font-bold">--:--</td>
                         </tr>
-                        <tr class="border-b text-slate-500 italic text-[13px]">
-                            <td class="p-2 pl-6">Rav Haviv / Guémara</td>
-                            <td class="p-2 text-right">
-                                <span id="sheet-shiour_haviv">--:--</span> / <span id="sheet-shiour_guemara">--:--</span>
-                            </td>
+                        <tr class="border-b text-slate-500 italic">
+                            <td class="p-2 pl-6">Rav Saadia (Mixte)</td>
+                            <td id="sheet-shiour_saadia" class="p-2 text-right font-bold">--:--</td>
+                        </tr>
+                        <tr class="border-b text-slate-500 italic">
+                            <td class="p-2 pl-6">Rav Haviv</td>
+                            <td id="sheet-shiour_haviv" class="p-2 text-right font-bold">--:--</td>
+                        </tr>
+                        <tr class="border-b text-slate-500 italic">
+                            <td class="p-2 pl-6">Guémara</td>
+                            <td id="sheet-shiour_guemara" class="p-2 text-right font-bold">--:--</td>
                         </tr>
                         <tr class="border-b">
                             <td class="p-3 font-bold text-orange-600" data-i18n="minha">Minha Chabbat</td>
@@ -106,6 +107,10 @@
             </div>
 
         </div>
+
+        <footer class="mt-12 text-center text-slate-400 text-xs">
+            <p>&copy; Greg u.</p>
+        </footer>
     </main>
 
     <script>
@@ -129,7 +134,7 @@
             
             document.querySelectorAll('td').forEach(td => {
                 if (td.classList.contains('p-4') || td.classList.contains('p-3') || td.classList.contains('p-2')) {
-                    if (td.id || td.querySelector('span') || td.innerText.includes(':')) { 
+                    if (td.id || td.innerText.includes(':')) { 
                         td.style.textAlign = isHe ? 'left' : 'right';
                     } else { 
                         td.style.textAlign = isHe ? 'right' : 'left';
