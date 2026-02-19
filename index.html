@@ -11,14 +11,13 @@
         .fixed-layout { direction: ltr !important; }
         .content-rtl { direction: rtl; }
         .content-ltr { direction: ltr; }
-        /* Alignement uniforme pour toutes les cellules de texte */
         td.label-cell { padding-left: 1rem; padding-right: 1rem; }
     </style>
 </head>
 <body class="text-slate-900 pb-10">
 
     <header class="bg-white border-b-2 border-blue-900 shadow-sm sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="container mx-auto px-4 py-3 max-w-5xl flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" alt="Logo" class="h-10 w-auto">
                 <h1 class="text-xl font-bold text-blue-900 hidden sm:block">Ohavei Tsion</h1>
@@ -63,7 +62,7 @@
 
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <div class="bg-blue-900 p-3 text-white text-center font-bold uppercase tracking-wider text-sm">
-                    <span data-i18n="title_shabbat">Chabbat</span>
+                    <span data-i18n="title_shabbat">Shabbat</span>
                 </div>
                 <table class="w-full border-collapse">
                     <tr class="border-b bg-blue-50/50">
@@ -71,7 +70,7 @@
                         <td id="sheet-minha_vendredi" class="p-3 text-right font-bold text-blue-900 text-lg">--:--</td>
                     </tr>
                     <tr class="border-b">
-                        <td id="label-chaharit_shabbat" class="p-3 font-semibold label-cell">Chaharit</td>
+                        <td id="label-chaharit_shabbat" class="p-3 font-semibold label-cell">Shaharit</td>
                         <td id="sheet-chaharit_shabbat" class="p-3 text-right font-bold">--:--</td>
                     </tr>
                     <tr class="border-b">
@@ -95,7 +94,7 @@
                         <td id="sheet-shiour_guemara" class="p-3 text-right font-bold">--:--</td>
                     </tr>
                     <tr class="border-b">
-                        <td id="label-minha_shabbat" class="p-3 font-bold text-orange-600 label-cell">Minha Chabbat</td>
+                        <td id="label-minha_shabbat" class="p-3 font-bold text-orange-600 label-cell">Minha Shabbat</td>
                         <td id="sheet-minha_shabbat" class="p-3 text-right font-bold text-orange-600">--:--</td>
                     </tr>
                     <tr class="bg-blue-900 text-white">
@@ -116,7 +115,7 @@
         const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9yq5Z2NPxlAp9hmI1hZdnfpGme_8SQXj6QcyyagTIaNb5JX1RX8FHhBFuqhrroCH154U1_bEMUX9t/pub?gid=0&single=true&output=csv";
 
         const i18n = {
-            fr: { title_week: "Semaine", title_shabbat: "Chabbat", shema_label: "Heure du Shéma" },
+            fr: { title_week: "Semaine", title_shabbat: "Shabbat", shema_label: "Heure du Shéma" },
             he: { title_week: "יום חול", title_shabbat: "שבת קודש", shema_label: "זמן קריאת שמע" },
             en: { title_week: "Weekdays", title_shabbat: "Shabbat", shema_label: "Shema Time" }
         };
@@ -169,12 +168,16 @@
                         const valueEl = document.getElementById(`sheet-${key}`);
                         if (valueEl && value !== "") valueEl.textContent = value;
 
-                        if (key === 'annonce_titre' && value !== "") {
+                        if (key === 'annonce_titre') {
                             document.getElementById('sheet-annonce_titre').textContent = value;
                         }
-                        if (key === 'annonce_texte' && value !== "") {
+                        if (key === 'annonce_texte') {
                             document.getElementById('sheet-annonce_texte').textContent = value;
-                            document.getElementById('annonce-container').classList.remove('hidden');
+                            if (value.trim() !== "") {
+                                document.getElementById('annonce-container').classList.remove('hidden');
+                            } else {
+                                document.getElementById('annonce-container').classList.add('hidden');
+                            }
                         }
                     }
                 });
