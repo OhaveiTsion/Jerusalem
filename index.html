@@ -9,101 +9,100 @@
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&display=swap');
         body { font-family: 'Assistant', sans-serif; background-color: #f8fafc; }
         .fixed-layout { direction: ltr !important; }
-        .content-rtl { direction: rtl; text-align: right; }
-        .content-ltr { direction: ltr; text-align: left; }
+        .content-rtl { direction: rtl; }
+        .content-ltr { direction: ltr; }
+        /* Alignement uniforme pour toutes les cellules de texte */
+        td.label-cell { padding-left: 1rem; padding-right: 1rem; }
     </style>
 </head>
 <body class="text-slate-900 pb-10">
 
     <header class="bg-white border-b-2 border-blue-900 shadow-sm sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center text-center sm:text-left">
-            <div class="flex items-center gap-4 mx-auto sm:mx-0">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
                 <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" alt="Logo" class="h-10 w-auto">
-                <h1 class="text-xl font-bold text-blue-900">Ohavei Tsion</h1>
+                <h1 class="text-xl font-bold text-blue-900 hidden sm:block">Ohavei Tsion</h1>
             </div>
-            <div class="flex gap-2 mt-3 sm:mt-0 mx-auto sm:mx-0 fixed-layout">
-                <button onclick="setLanguage('fr')" class="px-3 py-1 text-sm border border-slate-300 rounded font-bold hover:bg-blue-900 hover:text-white transition text-slate-700">FR</button>
-                <button onclick="setLanguage('he')" class="px-3 py-1 text-sm border border-slate-300 rounded font-bold hover:bg-blue-900 hover:text-white transition text-slate-700">עב</button>
-                <button onclick="setLanguage('en')" class="px-3 py-1 text-sm border border-slate-300 rounded font-bold hover:bg-blue-900 hover:text-white transition text-slate-700">EN</button>
+            <div class="flex gap-2 fixed-layout">
+                <button onclick="setLanguage('fr')" class="px-3 py-1 text-sm border border-slate-300 rounded font-bold hover:bg-blue-900 hover:text-white transition">FR</button>
+                <button onclick="setLanguage('he')" class="px-3 py-1 text-sm border border-slate-300 rounded font-bold hover:bg-blue-900 hover:text-white transition">עב</button>
+                <button onclick="setLanguage('en')" class="px-3 py-1 text-sm border border-slate-300 rounded font-bold hover:bg-blue-900 hover:text-white transition">EN</button>
             </div>
         </div>
     </header>
 
     <main class="container mx-auto mt-6 px-4 max-w-5xl">
         
-        <div id="annonce-container" class="mb-8 bg-blue-900 text-white p-5 rounded-lg shadow-md hidden w-full">
-            <h3 id="sheet-annonce_titre" class="text-lg font-bold border-b border-blue-700 pb-2 mb-2"></h3>
-            <p id="sheet-annonce_texte" class="text-lg"></p>
+        <div id="annonce-container" class="mb-8 bg-blue-900 text-white p-6 rounded-xl shadow-lg hidden">
+            <h3 id="sheet-annonce_titre" class="text-xl font-bold mb-2"></h3>
+            <div class="h-px bg-blue-700 w-full mb-3"></div>
+            <p id="sheet-annonce_texte" class="text-lg opacity-90"></p>
         </div>
 
-        <div id="main-grid" class="grid md:grid-cols-2 gap-8 w-full">
+        <div id="main-grid" class="grid md:grid-cols-2 gap-8">
             
-            <div class="w-full">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden h-full">
-                    <div class="bg-slate-800 p-3 text-white text-center font-bold">
-                        <span data-i18n="title_week">Semaine</span>
-                    </div>
-                    <table class="w-full border-collapse">
-                        <tr class="border-b">
-                            <td id="label-chaharit_semaine" class="p-4 font-semibold text-slate-600 uppercase text-xs tracking-wider">Chaharit</td>
-                            <td id="sheet-chaharit_semaine" class="p-4 text-right font-bold text-xl text-blue-900">--:--</td>
-                        </tr>
-                        <tr class="bg-orange-50/30">
-                            <td id="label-minha_semaine" class="p-4 font-bold text-orange-800">Minha / Arvit</td>
-                            <td id="sheet-minha_semaine" class="p-4 text-right font-black text-2xl text-orange-600">--:--</td>
-                        </tr>
-                    </table>
-                    <div class="bg-slate-50 p-3 border-t border-slate-100 flex justify-between items-center px-4">
-                        <span class="text-sm font-bold text-slate-500 italic" data-i18n="shema_label">Heure du Shéma</span>
-                        <span id="auto-shema" class="text-sm font-bold text-slate-500">--:--</span>
-                    </div>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-slate-800 p-3 text-white text-center font-bold uppercase tracking-wider text-sm">
+                    <span data-i18n="title_week">Semaine</span>
+                </div>
+                <table class="w-full border-collapse">
+                    <tr class="border-b">
+                        <td id="label-chaharit_semaine" class="p-4 font-semibold text-slate-500 uppercase text-xs label-cell">Chaharit</td>
+                        <td id="sheet-chaharit_semaine" class="p-4 text-right font-bold text-xl text-blue-900">--:--</td>
+                    </tr>
+                    <tr class="bg-orange-50/30">
+                        <td id="label-minha_semaine" class="p-4 font-bold text-orange-800 label-cell">Minha / Arvit</td>
+                        <td id="sheet-minha_semaine" class="p-4 text-right font-black text-2xl text-orange-600">--:--</td>
+                    </tr>
+                </table>
+                <div class="bg-slate-50 p-3 flex justify-between items-center px-4">
+                    <span class="text-sm font-bold text-slate-400 italic" data-i18n="shema_label">Heure du Shéma</span>
+                    <span id="auto-shema" class="text-sm font-bold text-slate-400">--:--</span>
                 </div>
             </div>
 
-            <div class="w-full">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="bg-blue-900 p-3 text-white text-center font-bold">
-                        <span data-i18n="title_shabbat">Chabbat</span>
-                    </div>
-                    <table class="w-full border-collapse text-sm">
-                        <tr class="border-b bg-blue-50/50">
-                            <td id="label-minha_vendredi" class="p-3 font-bold text-blue-900">Minha Vendredi</td>
-                            <td id="sheet-minha_vendredi" class="p-3 text-right font-bold text-blue-900 text-lg">--:--</td>
-                        </tr>
-                        <tr class="border-b">
-                            <td id="label-chaharit_shabbat" class="p-3 font-semibold">Chaharit</td>
-                            <td id="sheet-chaharit_shabbat" class="p-3 text-right font-bold">--:--</td>
-                        </tr>
-                        <tr class="border-b">
-                            <td id="label-kiddoush_shabbat" class="p-3 text-slate-600">Kiddoush</td>
-                            <td id="sheet-kiddoush_shabbat" class="p-3 text-right font-bold">--:--</td>
-                        </tr>
-                        <tr class="border-b text-slate-500 italic">
-                            <td id="label-shiour_dan" class="p-2 pl-6">Shiour de DAN</td>
-                            <td id="sheet-shiour_dan" class="p-2 text-right font-bold">--:--</td>
-                        </tr>
-                        <tr class="border-b text-slate-500 italic">
-                            <td id="label-shiour_saadia" class="p-2 pl-6">Rav Saadia</td>
-                            <td id="sheet-shiour_saadia" class="p-2 text-right font-bold">--:--</td>
-                        </tr>
-                        <tr class="border-b text-slate-500 italic">
-                            <td id="label-shiour_haviv" class="p-2 pl-6">Rav Haviv</td>
-                            <td id="sheet-shiour_haviv" class="p-2 text-right font-bold">--:--</td>
-                        </tr>
-                        <tr class="border-b text-slate-500 italic">
-                            <td id="label-shiour_guemara" class="p-2 pl-6">Guémara</td>
-                            <td id="sheet-shiour_guemara" class="p-2 text-right font-bold">--:--</td>
-                        </tr>
-                        <tr class="border-b">
-                            <td id="label-minha_shabbat" class="p-3 font-bold text-orange-600">Minha Chabbat</td>
-                            <td id="sheet-minha_shabbat" class="p-3 text-right font-bold text-orange-600">--:--</td>
-                        </tr>
-                        <tr class="bg-blue-900 text-white font-bold">
-                            <td id="label-arvit_motsach" class="p-4">Arvit Motzaé</td>
-                            <td id="sheet-arvit_motsach" class="p-4 text-right text-2xl">--:--</td>
-                        </tr>
-                    </table>
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-blue-900 p-3 text-white text-center font-bold uppercase tracking-wider text-sm">
+                    <span data-i18n="title_shabbat">Chabbat</span>
                 </div>
+                <table class="w-full border-collapse">
+                    <tr class="border-b bg-blue-50/50">
+                        <td id="label-minha_vendredi" class="p-3 font-bold text-blue-900 label-cell">Minha Vendredi</td>
+                        <td id="sheet-minha_vendredi" class="p-3 text-right font-bold text-blue-900 text-lg">--:--</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td id="label-chaharit_shabbat" class="p-3 font-semibold label-cell">Chaharit</td>
+                        <td id="sheet-chaharit_shabbat" class="p-3 text-right font-bold">--:--</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td id="label-kiddoush_shabbat" class="p-3 text-slate-600 label-cell">Kiddoush</td>
+                        <td id="sheet-kiddoush_shabbat" class="p-3 text-right font-bold">--:--</td>
+                    </tr>
+                    <tr class="border-b text-slate-500 italic text-sm">
+                        <td id="label-shiour_dan" class="p-3 label-cell">Shiour de DAN</td>
+                        <td id="sheet-shiour_dan" class="p-3 text-right font-bold">--:--</td>
+                    </tr>
+                    <tr class="border-b text-slate-500 italic text-sm">
+                        <td id="label-shiour_saadia" class="p-3 label-cell">Rav Saadia</td>
+                        <td id="sheet-shiour_saadia" class="p-3 text-right font-bold">--:--</td>
+                    </tr>
+                    <tr class="border-b text-slate-500 italic text-sm">
+                        <td id="label-shiour_haviv" class="p-3 label-cell">Rav Haviv</td>
+                        <td id="sheet-shiour_haviv" class="p-3 text-right font-bold">--:--</td>
+                    </tr>
+                    <tr class="border-b text-slate-500 italic text-sm">
+                        <td id="label-shiour_guemara" class="p-3 label-cell">Guémara</td>
+                        <td id="sheet-shiour_guemara" class="p-3 text-right font-bold">--:--</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td id="label-minha_shabbat" class="p-3 font-bold text-orange-600 label-cell">Minha Chabbat</td>
+                        <td id="sheet-minha_shabbat" class="p-3 text-right font-bold text-orange-600">--:--</td>
+                    </tr>
+                    <tr class="bg-blue-900 text-white">
+                        <td id="label-arvit_motsach" class="p-4 font-bold label-cell">Arvit Motzaé</td>
+                        <td id="sheet-arvit_motsach" class="p-4 text-right font-black text-2xl">--:--</td>
+                    </tr>
+                </table>
             </div>
 
         </div>
@@ -126,14 +125,13 @@
             localStorage.setItem('selectedLang', lang);
             document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = i18n[lang][el.getAttribute('data-i18n')]; });
             const mainGrid = document.getElementById('main-grid');
-            const annonce = document.getElementById('annonce-container');
             const isHe = lang === 'he';
             
-            if(isHe) { mainGrid.classList.add('content-rtl'); annonce.classList.add('content-rtl'); } 
-            else { mainGrid.classList.remove('content-rtl'); annonce.classList.remove('content-rtl'); }
+            if(isHe) { mainGrid.classList.add('content-rtl'); mainGrid.classList.remove('content-ltr'); } 
+            else { mainGrid.classList.remove('content-rtl'); mainGrid.classList.add('content-ltr'); }
             
             document.querySelectorAll('td').forEach(td => {
-                if (td.id || td.innerText.includes(':')) { 
+                if (td.id && td.id.startsWith('sheet') || td.innerText.includes(':')) { 
                     td.style.textAlign = isHe ? 'left' : 'right';
                 } else { 
                     td.style.textAlign = isHe ? 'right' : 'left';
@@ -158,24 +156,22 @@
                 const lines = csvText.split(/\r?\n/);
                 
                 lines.forEach((line, index) => {
-                    if (index === 0) return; // Sauter l'en-tête
-
+                    if (index === 0) return;
                     const parts = line.split(/[,;]/);
                     if (parts.length >= 3) {
                         let key = parts[0].replace(/["']/g, "").trim().toLowerCase();
                         let intitule = parts[1].replace(/["']/g, "").trim();
                         let value = parts[2].replace(/["']/g, "").trim();
 
-                        // Mise à jour de l'intitulé (Col B)
                         const labelEl = document.getElementById(`label-${key}`);
                         if (labelEl && intitule !== "") labelEl.textContent = intitule;
 
-                        // Mise à jour de la valeur/horaire (Col C)
                         const valueEl = document.getElementById(`sheet-${key}`);
                         if (valueEl && value !== "") valueEl.textContent = value;
 
-                        // Gestion des annonces (Col C)
-                        if (key === 'annonce_titre' && value !== "") document.getElementById('sheet-annonce_titre').textContent = value;
+                        if (key === 'annonce_titre' && value !== "") {
+                            document.getElementById('sheet-annonce_titre').textContent = value;
+                        }
                         if (key === 'annonce_texte' && value !== "") {
                             document.getElementById('sheet-annonce_texte').textContent = value;
                             document.getElementById('annonce-container').classList.remove('hidden');
