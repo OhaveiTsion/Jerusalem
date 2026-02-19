@@ -6,103 +6,129 @@
     <title>Ohavei Tsion - Jérusalem</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&display=swap');
-        body { font-family: 'Assistant', sans-serif; background-color: #f8fafc; }
+        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;800&display=swap');
+        body { font-family: 'Assistant', sans-serif; background-color: #f1f5f9; }
         .fixed-layout { direction: ltr !important; }
         .content-rtl { direction: rtl; text-align: right; }
         .content-ltr { direction: ltr; text-align: left; }
+        /* Pour faciliter la lecture sur smartphone */
+        @media (max-width: 640px) {
+            .text-huge { font-size: 2.5rem !important; }
+            .card-padding { padding: 1.5rem !important; }
+        }
     </style>
 </head>
 <body class="text-slate-900 pb-10">
 
-    <header class="bg-white border-b border-slate-200 p-3 sticky top-0 z-50 fixed-layout shadow-sm">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" alt="Logo" class="h-14 w-auto object-contain">
-                <div>
-                    <h1 class="text-xl font-bold text-blue-900 leading-none">Ohavei Tsion</h1>
-                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Jérusalem</p>
+    <header class="bg-white border-b-4 border-blue-900 sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" alt="Logo" class="h-14 w-auto">
+                    <div>
+                        <h1 class="text-2xl font-extrabold text-blue-900 leading-none">Ohavei Tsion</h1>
+                        <p id="live-clock" class="text-sm font-bold text-orange-600 mt-1">--:--:--</p>
+                    </div>
                 </div>
-            </div>
-            <div class="flex gap-1 text-blue-900 font-bold">
-                <button onclick="setLanguage('fr')" class="hover:bg-blue-50 px-3 py-1 rounded transition">FR</button>
-                <button onclick="setLanguage('he')" class="hover:bg-blue-50 px-3 py-1 rounded transition">עב</button>
-                <button onclick="setLanguage('en')" class="hover:bg-blue-50 px-3 py-1 rounded transition">EN</button>
+                <div class="flex gap-2 fixed-layout">
+                    <button onclick="setLanguage('fr')" class="bg-slate-100 border-2 border-slate-200 px-4 py-2 rounded-xl font-bold hover:bg-blue-900 hover:text-white transition-all text-lg">FR</button>
+                    <button onclick="setLanguage('he')" class="bg-slate-100 border-2 border-slate-200 px-4 py-2 rounded-xl font-bold hover:bg-blue-900 hover:text-white transition-all text-lg">עב</button>
+                    <button onclick="setLanguage('en')" class="bg-slate-100 border-2 border-slate-200 px-4 py-2 rounded-xl font-bold hover:bg-blue-900 hover:text-white transition-all text-lg">EN</button>
+                </div>
             </div>
         </div>
     </header>
 
-    <main class="container mx-auto mt-6 p-4 max-w-5xl">
-        <div id="annonce-container" class="mb-6 bg-blue-900 text-white p-5 rounded-2xl shadow-lg hidden">
-            <h3 id="sheet-annonce_titre" class="text-lg font-bold mb-1"></h3>
-            <p id="sheet-annonce_texte" class="text-blue-100"></p>
+    <main class="container mx-auto mt-6 px-4 max-w-5xl">
+        
+        <div id="annonce-container" class="mb-8 bg-blue-900 text-white p-6 rounded-3xl shadow-xl hidden animate-pulse-slow">
+            <div class="flex items-start gap-4">
+                <span class="text-4xl">📢</span>
+                <div>
+                    <h3 id="sheet-annonce_titre" class="text-2xl font-extrabold mb-1"></h3>
+                    <p id="sheet-annonce_texte" class="text-xl text-blue-100 font-medium"></p>
+                </div>
+            </div>
         </div>
 
-        <div id="main-grid" class="grid md:grid-cols-2 gap-6">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="bg-slate-800 p-4 text-white">
-                    <h2 class="text-lg font-bold" data-i18n="title_week">Semaine (Dim-Ven)</h2>
+        <div id="main-grid" class="grid lg:grid-cols-2 gap-8">
+            
+            <div class="bg-white rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden">
+                <div class="bg-slate-800 p-5 text-white text-center">
+                    <h2 class="text-2xl font-bold uppercase tracking-wide" data-i18n="title_week">Semaine</h2>
                 </div>
-                <div class="p-6 space-y-6">
-                    <div class="flex justify-between items-center border-b border-slate-50 pb-4">
-                        <span class="text-lg font-medium">Chaharit</span>
-                        <span class="text-2xl font-bold text-blue-900">07:00</span>
+                <div class="p-8 space-y-8 card-padding">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-6">
+                        <span class="text-2xl font-semibold text-slate-600">Chaharit</span>
+                        <span class="text-4xl font-black text-blue-900 tracking-tighter">07:00</span>
                     </div>
-                    <div class="flex justify-between items-center border-b border-slate-50 pb-4">
-                        <span class="text-lg font-medium" data-i18n="minha_arvit">Minha suivi d'Arvit</span>
-                        <span id="sheet-minha_semaine" class="text-3xl font-black text-orange-600">--:--</span>
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-6">
+                        <span class="text-2xl font-semibold text-slate-600" data-i18n="minha_arvit">Minha / Arvit</span>
+                        <span id="sheet-minha_semaine" class="text-5xl font-black text-orange-600 tracking-tighter text-huge">--:--</span>
                     </div>
-                    <div class="flex justify-between items-center pt-2">
-                        <div class="text-sm font-semibold text-slate-500">
+                    <div class="flex justify-between items-center bg-slate-50 p-5 rounded-2xl">
+                        <div class="text-lg font-bold text-slate-500">
                             <span data-i18n="shema_night">Chéma du soir</span>
-                            <span class="text-[10px] block font-normal">(72 min après Shkiah)</span>
                         </div>
-                        <span id="auto-shema" class="text-xl font-bold text-slate-700">--:--</span>
+                        <span id="auto-shema" class="text-2xl font-black text-slate-700 tracking-tighter">--:--</span>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="bg-blue-900 p-4 text-white">
-                    <h2 class="text-lg font-bold" data-i18n="title_shabbat">Chabbat</h2>
+            <div class="bg-white rounded-[2rem] shadow-xl border border-slate-200 overflow-hidden">
+                <div class="bg-blue-900 p-5 text-white text-center">
+                    <h2 class="text-2xl font-bold uppercase tracking-wide" data-i18n="title_shabbat">Chabbat</h2>
                 </div>
-                <div class="p-5 space-y-4">
-                    <div class="flex justify-between border-b border-slate-50 pb-2 text-blue-900 font-bold">
+                <div class="p-6 space-y-5 card-padding">
+                    <div class="flex justify-between border-b pb-3 text-blue-900 font-extrabold text-xl">
                         <span>Chaharit</span>
                         <span>08:15 / 08:45</span>
                     </div>
-                    <div class="flex justify-between border-b border-slate-50 pb-2">
-                        <span>Kiddoush</span>
-                        <span class="font-semibold italic">11:00</span>
+                    
+                    <div class="bg-blue-50/70 p-5 rounded-2xl space-y-4 border border-blue-100 shadow-inner">
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold text-blue-800">Shiour de DAN</span>
+                            <span class="font-black text-xl">11:15</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold text-blue-800">Rav Saadia</span>
+                            <span class="font-black text-xl">14:25</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold text-blue-800">Rav Haviv</span>
+                            <span class="font-black text-xl text-orange-700 underline">15:30</span>
+                        </div>
                     </div>
-                    <div class="bg-blue-50/50 p-4 rounded-xl space-y-2 border border-blue-100 text-sm">
-                        <div class="flex justify-between items-center"><span>Shiour de DAN</span> <b>11:15</b></div>
-                        <div class="flex justify-between items-center"><span>Cours Mixte (Rav Saadia)</span> <b>14:25</b></div>
-                        <div class="flex justify-between items-center"><span>Halakha (Rav Haviv)</span> <b>15:30</b></div>
-                        <div class="flex justify-between items-center italic"><span>Guémara</span> <b>15:30</b></div>
-                    </div>
-                    <div class="flex justify-between border-b border-slate-50 pb-2 pt-2 font-bold text-orange-600">
+
+                    <div class="flex justify-between border-b pb-3 font-black text-2xl pt-2">
                         <span>Minha Chabbat</span>
-                        <span class="text-lg">16:30</span>
+                        <span class="text-orange-600">16:30</span>
                     </div>
-                    <div class="flex justify-between items-center bg-blue-900 p-4 rounded-xl text-white mt-2">
-                        <span class="font-bold" data-i18n="motsach">Arvit Motzaé Shabbat</span>
-                        <span id="sheet-arvit_motsach" class="text-2xl font-black">--:--</span>
+                    
+                    <div class="flex flex-col gap-2 bg-blue-900 p-5 rounded-3xl text-white shadow-lg shadow-blue-200">
+                        <span class="text-lg font-bold opacity-90 text-center" data-i18n="motsach">Arvit Motzaé Shabbat</span>
+                        <span id="sheet-arvit_motsach" class="text-5xl font-black text-center text-huge">--:--</span>
                     </div>
                 </div>
             </div>
+
         </div>
     </main>
 
     <script>
-        // Utilisation d'un proxy pour éviter les erreurs CORS en local
         const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9yq5Z2NPxlAp9hmI1hZdnfpGme_8SQXj6QcyyagTIaNb5JX1RX8FHhBFuqhrroCH154U1_bEMUX9t/pub?gid=0&single=true&output=csv";
 
         const i18n = {
-            fr: { title_week: "Semaine (Dim-Ven)", title_shabbat: "Chabbat", minha_arvit: "Minha suivi d'Arvit", motsach: "Arvit Motzaé Shabbat", shema_night: "Chéma du soir" },
-            he: { title_week: "יום חול", title_shabbat: "שבת קודש", minha_arvit: "מנחה וערבית", motsach: "ערבית מוצאי שבת", shema_night: "קריאת שמע ערבית" },
-            en: { title_week: "Weekdays", title_shabbat: "Shabbat", minha_arvit: "Mincha & Arvit", motsach: "Arvit Motzae Shabbat", shema_night: "Nightly Shema" }
+            fr: { title_week: "Semaine", title_shabbat: "Chabbat", minha_arvit: "Minha / Arvit", motsach: "Motzaé Shabbat", shema_night: "Chéma du soir" },
+            he: { title_week: "יום חול", title_shabbat: "שבת קודש", minha_arvit: "מנחה וערבית", motsach: "ערבית מוצאי שבת", shema_night: "קריאת שמע" },
+            en: { title_week: "Weekdays", title_shabbat: "Shabbat", minha_arvit: "Mincha / Arvit", motsach: "Shabbat Ends", shema_night: "Shema Night" }
         };
+
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('live-clock').textContent = timeString + " (Jérusalem)";
+        }
 
         function setLanguage(lang) {
             localStorage.setItem('selectedLang', lang);
@@ -125,10 +151,9 @@
 
         async function loadSheet() {
             try {
-                const response = await fetch(SHEET_URL);
+                const response = await fetch(SHEET_URL + "&cache=" + Date.now());
                 const csvText = await response.text();
                 const lines = csvText.split(/\r?\n/);
-                
                 lines.forEach(line => {
                     const parts = line.split(/[,;]/);
                     if (parts.length >= 2) {
@@ -146,10 +171,13 @@
             } catch (e) { console.error("Sheet error"); }
         }
 
+        // Init
+        setInterval(updateClock, 1000);
+        updateClock();
         setLanguage(localStorage.getItem('selectedLang') || 'fr');
         loadZmanim();
         loadSheet();
-        setInterval(loadSheet, 60000);
+        setInterval(loadSheet, 30000);
     </script>
 </body>
 </html>
