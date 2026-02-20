@@ -21,7 +21,6 @@
             padding: 10px;
             display: flex;
             justify-content: center;
-            overflow-x: hidden;
         }
 
         .main-container {
@@ -32,33 +31,6 @@
             width: 100%;
             max-width: 500px;
             background: linear-gradient(to bottom, #0f34a1, #0a2472);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        /* Header Layout pour centrage parfait */
-        .header-container {
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-        }
-
-        .header-logo {
-            height: 40px;
-            width: auto;
-            background: white;
-            padding: 4px;
-            border-radius: 6px;
-            flex-shrink: 0;
-        }
-
-        .header-title-wrapper {
-            flex-grow: 1;
-            text-align: center;
-            /* On décale vers la gauche de la moitié de la largeur du logo (environ 110px/2) 
-               pour que le centre du texte s'aligne sur le centre de la carte */
-            margin-right: 110px; 
         }
 
         .zman-box {
@@ -79,22 +51,23 @@
         }
 
         .section-title {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.2em;
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
+            color: rgba(255, 255, 255, 0.9);
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
         .title-underline {
-            width: 50px;
+            width: 40px;
             height: 3px;
             background-color: var(--gold-border);
-            margin-top: 5px;
+            margin-top: 4px;
             border-radius: 2px;
         }
 
@@ -102,7 +75,7 @@
             background: #1d4ed8;
             border-radius: 10px;
             border-left: 5px solid #f97316;
-            padding: 12px;
+            padding: 10px;
         }
 
         .shiour-item {
@@ -117,18 +90,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 8px;
+            padding: 4px 8px;
         }
     </style>
 </head>
 <body>
 
     <div class="main-container">
-        <div class="header-container">
-            <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" alt="Logo" class="header-logo">
-            <div class="header-title-wrapper">
-                <h1 class="text-xl font-black italic tracking-tighter text-white uppercase">Ohavei Tsion</h1>
-            </div>
+        <div class="flex items-center mb-6 border-b border-white/10 pb-3">
+            <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" alt="Logo" class="h-10 w-auto rounded bg-white p-1">
+            <h1 class="text-xl font-black italic tracking-tighter text-white uppercase ml-8">Ohavei Tsion</h1>
         </div>
 
         <div class="grid grid-cols-2 gap-3 mb-6">
