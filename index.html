@@ -25,9 +25,9 @@
 
         .main-container {
             border: 3px solid var(--gold-border);
-            border-radius: 25px;
+            border-radius: 20px;
             min-height: calc(100vh - 20px);
-            padding: 25px;
+            padding: 15px;
             width: 100%;
             max-width: 500px;
             background: linear-gradient(to bottom, #0f34a1, #0a2472);
@@ -35,97 +35,98 @@
 
         .zman-box {
             background: white;
-            border-radius: 15px;
+            border-radius: 12px;
             color: #0f34a1;
-            padding: 15px 10px;
+            padding: 10px 5px;
             text-align: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
         .section-card {
             border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 20px;
-            padding: 20px;
+            border-radius: 15px;
+            padding: 15px;
             background: var(--card-blue);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .highlight-row {
             background: #1d4ed8;
-            border-radius: 12px;
+            border-radius: 10px;
             border-left: 5px solid #f97316;
-            padding: 12px;
+            padding: 10px;
         }
 
         .shiour-item {
             border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding: 6px 0;
+            padding: 4px 0;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
         }
     </style>
 </head>
 <body>
 
     <div class="main-container">
-        <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
-            <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" alt="Logo" class="h-14 w-auto rounded bg-white p-1">
-            <div class="text-right">
-                <h1 class="text-3xl font-black italic tracking-tighter leading-none text-white">OHAVEI<br>TSION</h1>
-            </div>
+        <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-3">
+            <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" alt="Logo" class="h-10 w-auto rounded bg-white p-1">
+            <h1 class="text-xl font-black italic tracking-tighter text-white">OHAVEI TSION</h1>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="grid grid-cols-2 gap-3 mb-6">
             <div class="zman-box">
-                <p class="text-[11px] font-extrabold uppercase opacity-60 mb-1">Paracha</p>
-                <p id="auto-paracha" class="text-xl font-black leading-tight">--</p>
+                <p class="text-[10px] font-extrabold uppercase opacity-60 mb-1">Paracha</p>
+                <p id="auto-paracha" class="text-lg font-black leading-tight">--</p>
             </div>
             <div class="zman-box">
-                <p class="text-[11px] font-extrabold uppercase opacity-60 mb-1 text-red-500">Allumage Bougies</p>
-                <p id="sheet-allumage_bougies" class="text-3xl font-black text-red-600">--:--</p>
+                <p class="text-[10px] font-extrabold uppercase opacity-60 mb-1 text-red-500">Allumage Bougies</p>
+                <p id="sheet-allumage_bougies" class="text-2xl font-black text-red-600">--:--</p>
             </div>
         </div>
 
         <div class="section-card">
-            <h2 class="text-center text-[10px] font-bold tracking-[0.3em] opacity-40 mb-5 uppercase text-white">Semaine</h2>
-            <div class="space-y-5">
-                <div class="flex justify-between items-end px-2">
-                    <span id="label-chaharit_semaine" class="font-bold text-sm opacity-90">SHAHARIT</span>
-                    <span id="sheet-chaharit_semaine" class="text-3xl font-bold">--:--</span>
+            <h2 class="text-center text-[9px] font-bold tracking-[0.3em] opacity-40 mb-4 uppercase">Semaine</h2>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center px-2">
+                    <span id="label-chaharit_semaine" class="font-bold text-xs opacity-90 uppercase">Shaharit</span>
+                    <span id="sheet-chaharit_semaine" class="text-2xl font-bold">--:--</span>
                 </div>
                 <div class="highlight-row flex justify-between items-center">
-                    <span id="label-minha_semaine" class="font-bold text-orange-300 text-sm">Minha / Arvit</span>
-                    <span id="sheet-minha_semaine" class="text-4xl font-black text-white">--:--</span>
+                    <span id="label-minha_semaine" class="font-bold text-orange-300 text-xs">Minha / Arvit</span>
+                    <span id="sheet-minha_semaine" class="text-3xl font-black text-white">--:--</span>
                 </div>
             </div>
         </div>
 
         <div class="section-card">
-            <h2 class="text-center text-[10px] font-bold tracking-[0.3em] opacity-40 mb-5 uppercase text-white">Chabbat</h2>
+            <h2 class="text-center text-[9px] font-bold tracking-[0.3em] opacity-40 mb-4 uppercase">Chabbat</h2>
             <div class="space-y-3">
                 <div class="flex justify-between items-center px-2 opacity-80">
-                    <span id="label-minha_vendredi" class="text-sm">Minha Vendredi</span>
-                    <span id="sheet-minha_vendredi" class="text-xl font-bold">--:--</span>
+                    <span id="label-minha_vendredi" class="text-xs">Minha Vendredi</span>
+                    <span id="sheet-minha_vendredi" class="text-lg font-bold">--:--</span>
                 </div>
                 
-                <div class="flex justify-between items-center border-t border-white/10 pt-3 px-2">
-                    <span id="label-chaharit_shabbat" class="font-bold text-sm">Shaharit</span>
-                    <span id="sheet-chaharit_shabbat" class="text-xl font-bold">--:--</span>
+                <div class="flex justify-between items-center border-t border-white/10 pt-2 px-2">
+                    <span id="label-chaharit_shabbat" class="font-bold text-xs">Shaharit</span>
+                    <span id="sheet-chaharit_shabbat" class="text-lg font-bold">--:--</span>
                 </div>
                 
-                <div class="bg-black/20 rounded-lg p-3 space-y-1 text-sm border border-white/5">
-                    <div class="flex justify-between shiour-item"><span id="label-shiour_dan" class="opacity-70 italic">...</span><span id="sheet-shiour_dan" class="font-bold">--:--</span></div>
-                    <div class="flex justify-between shiour-item"><span id="label-shiour_saadia" class="opacity-70 italic">...</span><span id="sheet-shiour_saadia" class="font-bold">--:--</span></div>
-                    <div class="flex justify-between shiour-item"><span id="label-shiour_haviv" class="opacity-70 italic">...</span><span id="sheet-shiour_haviv" class="font-bold">--:--</span></div>
-                    <div class="flex justify-between shiour-item border-none"><span id="label-shiour_guemara" class="opacity-70 italic">...</span><span id="sheet-shiour_guemara" class="font-bold">--:--</span></div>
+                <div class="bg-black/20 rounded-lg p-3 space-y-1 border border-white/5">
+                    <div class="shiour-item"><span id="label-shiour_dan" class="opacity-70 italic">...</span><span id="sheet-shiour_dan" class="font-bold">--:--</span></div>
+                    <div class="shiour-item"><span id="label-shiour_saadia" class="opacity-70 italic">...</span><span id="sheet-shiour_saadia" class="font-bold">--:--</span></div>
+                    <div class="shiour-item"><span id="label-shiour_haviv" class="opacity-70 italic">...</span><span id="sheet-shiour_haviv" class="font-bold">--:--</span></div>
+                    <div class="shiour-item border-none"><span id="label-shiour_guemara" class="opacity-70 italic">...</span><span id="sheet-shiour_guemara" class="font-bold">--:--</span></div>
                 </div>
 
-                <div class="flex justify-between items-center text-orange-400 font-bold border-t border-white/10 pt-3 px-2">
-                    <span id="label-minha_shabbat" class="text-sm leading-tight">Minha Chabbat</span>
-                    <span id="sheet-minha_shabbat" class="text-2xl font-black">--:--</span>
+                <div class="flex justify-between items-center text-orange-400 font-bold border-t border-white/10 pt-2 px-2">
+                    <span id="label-minha_shabbat" class="text-xs leading-tight">Minha Chabbat</span>
+                    <span id="sheet-minha_shabbat" class="text-xl font-black">--:--</span>
                 </div>
 
-                <div class="bg-blue-600 rounded-xl p-4 flex justify-between items-center shadow-lg border border-white/10">
-                    <span id="label-arvit_motsach" class="font-black text-sm uppercase tracking-wider">Arvit Motsae</span>
-                    <span id="sheet-arvit_motsach" class="text-3xl font-black">--:--</span>
+                <div class="bg-blue-600 rounded-xl p-3 flex justify-between items-center shadow-lg border border-white/10">
+                    <span id="label-arvit_motsach" class="font-black text-xs uppercase tracking-wider">Arvit Motsae</span>
+                    <span id="sheet-arvit_motsach" class="text-2xl font-black">--:--</span>
                 </div>
             </div>
         </div>
@@ -136,12 +137,10 @@
 
         async function loadZmanim() {
             try {
-                // On garde seulement la Paracha en automatique
                 const res = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s');
                 const data = await res.json();
                 const parashaItem = data.items.find(i => i.category === "parashat");
                 if(parashaItem) {
-                    // Retire le mot "Parashat" ou "Parasha" pour ne garder que le nom
                     let name = parashaItem.title.replace("Parashat ", "").replace("Parasha ", "");
                     document.getElementById('auto-paracha').textContent = name;
                 }
