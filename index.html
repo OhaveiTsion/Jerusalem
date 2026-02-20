@@ -50,6 +50,27 @@
             margin-bottom: 15px;
         }
 
+        .section-title {
+            font-size: 1.25rem; /* Plus gros */
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            text-align: center;
+            margin-bottom: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .title-underline {
+            width: 40px;
+            height: 3px;
+            background-color: var(--gold-border);
+            margin-top: 4px;
+            border-radius: 2px;
+        }
+
         .highlight-row {
             background: #1d4ed8;
             border-radius: 10px;
@@ -78,7 +99,7 @@
     <div class="main-container">
         <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-3">
             <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" alt="Logo" class="h-10 w-auto rounded bg-white p-1">
-            <h1 class="text-xl font-black italic tracking-tighter text-white">OHAVEI TSION</h1>
+            <h1 class="text-xl font-black italic tracking-tighter text-white uppercase">Ohavei Tsion</h1>
         </div>
 
         <div class="grid grid-cols-2 gap-3 mb-6">
@@ -93,7 +114,10 @@
         </div>
 
         <div class="section-card">
-            <h2 class="text-center text-[9px] font-bold tracking-[0.3em] opacity-50 mb-4 uppercase">Chabbat</h2>
+            <div class="section-title">
+                CHABBAT
+                <div class="title-underline"></div>
+            </div>
             <div class="space-y-3">
                 <div class="row-standard">
                     <span id="label-minha_vendredi" class="font-bold text-xs uppercase">Minha Vendredi</span>
@@ -106,10 +130,10 @@
                 </div>
                 
                 <div class="bg-black/20 rounded-lg p-3 space-y-1 border border-white/5">
-                    <div class="shiour-item"><span id="label-shiour_dan" class="italic opacity-80">...</span><span id="sheet-shiour_dan" class="font-bold">--:--</span></div>
-                    <div class="shiour-item"><span id="label-shiour_saadia" class="italic opacity-80">...</span><span id="sheet-shiour_saadia" class="font-bold">--:--</span></div>
-                    <div class="shiour-item"><span id="label-shiour_haviv" class="italic opacity-80">...</span><span id="sheet-shiour_haviv" class="font-bold">--:--</span></div>
-                    <div class="shiour-item border-none"><span id="label-shiour_guemara" class="italic opacity-80">...</span><span id="sheet-shiour_guemara" class="font-bold">--:--</span></div>
+                    <div class="shiour-item"><span id="label-shiour_dan" class="italic opacity-80 text-xs">...</span><span id="sheet-shiour_dan" class="font-bold">--:--</span></div>
+                    <div class="shiour-item"><span id="label-shiour_saadia" class="italic opacity-80 text-xs">...</span><span id="sheet-shiour_saadia" class="font-bold">--:--</span></div>
+                    <div class="shiour-item"><span id="label-shiour_haviv" class="italic opacity-80 text-xs">...</span><span id="sheet-shiour_haviv" class="font-bold">--:--</span></div>
+                    <div class="shiour-item border-none"><span id="label-shiour_guemara" class="italic opacity-80 text-xs">...</span><span id="sheet-shiour_guemara" class="font-bold">--:--</span></div>
                 </div>
 
                 <div class="row-standard border-t border-white/10 pt-2">
@@ -125,14 +149,17 @@
         </div>
 
         <div class="section-card">
-            <h2 class="text-center text-[9px] font-bold tracking-[0.3em] opacity-50 mb-4 uppercase">Semaine</h2>
+            <div class="section-title">
+                SEMAINE
+                <div class="title-underline"></div>
+            </div>
             <div class="space-y-4">
                 <div class="row-standard">
                     <span id="label-chaharit_semaine" class="font-bold text-xs uppercase">Shaharit</span>
                     <span id="sheet-chaharit_semaine" class="text-2xl font-bold">--:--</span>
                 </div>
                 <div class="highlight-row flex justify-between items-center">
-                    <span id="label-minha_semaine" class="font-bold text-orange-300 text-xs">Minha / Arvit</span>
+                    <span id="label-minha_semaine" class="font-bold text-orange-300 text-xs uppercase">Minha / Arvit</span>
                     <span id="sheet-minha_semaine" class="text-3xl font-black text-white">--:--</span>
                 </div>
             </div>
@@ -166,10 +193,8 @@
                         let key = parts[0].replace(/["']/g, "").trim().toLowerCase();
                         let intitule = parts[1].replace(/["']/g, "").trim();
                         let value = parts[2].replace(/["']/g, "").trim();
-                        
                         const labelEl = document.getElementById(`label-${key}`);
                         if (labelEl && intitule !== "") labelEl.textContent = intitule;
-                        
                         const valueEl = document.getElementById(`sheet-${key}`);
                         if (valueEl && value !== "") valueEl.textContent = value;
                     }
