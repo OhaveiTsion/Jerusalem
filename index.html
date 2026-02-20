@@ -51,7 +51,7 @@
         }
 
         .section-title {
-            font-size: 1.25rem; /* Plus gros */
+            font-size: 1.25rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.2em;
@@ -108,7 +108,7 @@
                 <p id="auto-paracha" class="text-lg font-black leading-tight">--</p>
             </div>
             <div class="zman-box">
-                <p class="text-[10px] font-extrabold uppercase opacity-60 mb-1 text-red-500">Allumage Bougies</p>
+                <p id="label-allumage_bougies" class="text-[10px] font-extrabold uppercase mb-1 text-red-500">Allumage Bougies</p>
                 <p id="sheet-allumage_bougies" class="text-2xl font-black text-red-600">--:--</p>
             </div>
         </div>
@@ -193,8 +193,12 @@
                         let key = parts[0].replace(/["']/g, "").trim().toLowerCase();
                         let intitule = parts[1].replace(/["']/g, "").trim();
                         let value = parts[2].replace(/["']/g, "").trim();
+                        
+                        // Met à jour l'intitulé (ex: "Allumage Bougies")
                         const labelEl = document.getElementById(`label-${key}`);
                         if (labelEl && intitule !== "") labelEl.textContent = intitule;
+                        
+                        // Met à jour la valeur (ex: "17:05")
                         const valueEl = document.getElementById(`sheet-${key}`);
                         if (valueEl && value !== "") valueEl.textContent = value;
                     }
