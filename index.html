@@ -44,28 +44,33 @@
 
         /* --- BLOC ANNONCE --- */
         .annonce-card {
-            background: var(--card-blue); /* Même fond que Shabbat */
+            background: var(--card-blue);
             border: 1px solid rgba(255,255,255,0.15);
             border-radius: 15px;
             padding: 15px;
             margin-bottom: 15px;
-            display: none; 
+            display: none;
+            position: relative; /* Pour permettre le positionnement du titre à gauche */
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .annonce-titre-style {
-            font-size: 0.85rem; /* Comme shiour_dan */
+            position: absolute;
+            left: 15px;
+            font-size: 0.85rem;
             font-style: italic;
             font-weight: 600;
             opacity: 0.8;
-            text-align: left; /* Aligné à gauche */
-            display: block;
-            margin-bottom: 5px;
+            white-space: nowrap;
         }
         .annonce-texte-style {
-            font-size: 1.25rem; /* Comme titre SHABBAT */
+            font-size: 1.25rem;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            text-align: center; /* Centré */
+            letter-spacing: 0.2em;
+            text-align: center;
             color: white;
         }
 
@@ -101,8 +106,8 @@
         .highlight-row {
             background: #1d4ed8;
             border-radius: 10px;
-            /* Liseret supprimé ici */
             padding: 10px;
+            /* Aucun liseret gauche */
         }
 
         .shiour-item {
@@ -125,8 +130,12 @@
 
     <div class="main-container">
         <div class="flex items-center mb-6 border-b border-white/10 pb-3">
-            <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" alt="Logo" class="h-10 w-auto rounded bg-white p-1">
-            <h1 class="text-xl font-black italic tracking-tighter text-white uppercase ml-12">Ohavei Tsion</h1>
+            <div class="w-1/2 flex justify-center">
+                <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" alt="Logo" class="h-10 w-auto rounded bg-white p-1">
+            </div>
+            <div class="w-1/2 flex justify-center">
+                <h1 class="text-xl font-black italic tracking-tighter text-white uppercase">Ohavei Tsion</h1>
+            </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3 mb-6">
@@ -248,7 +257,7 @@
                 const xEl = document.getElementById('sheet-annonce_texte');
 
                 if (aTitre !== "" || aTexte !== "") {
-                    block.style.display = 'block';
+                    block.style.display = 'flex';
                     tEl.textContent = aTitre;
                     xEl.textContent = aTexte;
                     tEl.style.display = aTitre ? 'block' : 'none';
