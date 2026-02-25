@@ -42,6 +42,28 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
+        /* --- NOUVEAU STYLE BLOC ANNONCE --- */
+        .annonce-card {
+            background-color: #1e40af; /* Bleu légèrement différent pour ressortir */
+            border-radius: 12px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--gold-border);
+            display: none; /* Caché par défaut, géré par le JS */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        .annonce-titre {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: white;
+            margin-bottom: 4px;
+        }
+        .annonce-texte {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.3;
+        }
+
         .section-card {
             border: 1px solid rgba(255,255,255,0.15);
             border-radius: 15px;
@@ -111,6 +133,11 @@
                 <p id="label-allumage_bougies" class="text-[10px] font-extrabold uppercase mb-1 text-red-500">Allumage Bougies</p>
                 <p id="sheet-allumage_bougies" class="text-2xl font-black text-red-600">--:--</p>
             </div>
+        </div>
+
+        <div id="announcement-block" class="annonce-card">
+            <h2 id="sheet-annonce_titre" class="annonce-titre"></h2>
+            <p id="sheet-annonce_texte" class="annonce-texte"></p>
         </div>
 
         <div class="section-card">
@@ -186,21 +213,54 @@
                 const response = await fetch(SHEET_URL + "&cb=" + Date.now());
                 const csvText = await response.text();
                 const lines = csvText.split(/\r?\n/);
+                
+                let annonceTitre = "";
+                let annonceTexte = "";
+
                 lines.forEach((line, index) => {
                     if (index === 0) return;
                     const parts = line.split(/[,;]/);
                     if (parts.length >= 3) {
                         let key = parts[0].replace(/["']/g, "").trim().toLowerCase();
-                        let intitule = parts[1].replace(/["']/g, "").trim();
-                        let value = parts[2].replace(/["']/g, "").trim();
+                        let intitule = parts[1] ? parts[1].replace(/["']/g, "").trim() : "";
+                        let value = parts[2] ? parts[2].replace(/["']/g, "").trim() : "";
                         
+                        // Récupération des données d'annonce (elles peuvent être en colonne B ou C selon comment tu remplis le sheet)
+                        if (key === 'annonce_titre') annonceTitre = value || intitule;
+                        if (key === 'annonce_texte') annonceTexte = value || intitule;
+
+                        // Mise à jour classique pour les autres éléments
                         const labelEl = document.getElementById(`label-${key}`);
                         if (labelEl && intitule !== "") labelEl.textContent = intitule;
                         
                         const valueEl = document.getElementById(`sheet-${key}`);
-                        if (valueEl && value !== "") valueEl.textContent = value;
+                        // On exclut les annonces ici car on les gère plus bas
+                        if (valueEl && value !== "" && key !== 'annonce_titre' && key !== 'annonce_texte') {
+                            valueEl.textContent = value;
+                        }
                     }
                 });
+
+                // --- GESTION DE L'AFFICHAGE DU BLOC ANNONCE ---
+                const annonceBlock = document.getElementById('announcement-block');
+                const titreEl = document.getElementById('sheet-annonce_titre');
+                const texteEl = document.getElementById('sheet-annonce_texte');
+
+                if (annonceTitre !== "" || annonceTexte !== "") {
+                    annonceBlock.style.display = 'block'; // On affiche le bloc
+                    
+                    if (titreEl) {
+                        titreEl.textContent = annonceTitre;
+                        titreEl.style.display = annonceTitre ? 'block' : 'none';
+                    }
+                    if (texteEl) {
+                        texteEl.textContent = annonceTexte;
+                        texteEl.style.display = annonceTexte ? 'block' : 'none';
+                    }
+                } else {
+                    annonceBlock.style.display = 'none'; // On cache le bloc
+                }
+
             } catch (e) { console.error("Sheet error"); }
         }
 
