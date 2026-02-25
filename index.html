@@ -31,6 +31,8 @@
             width: 100%;
             max-width: 500px;
             background: linear-gradient(to bottom, #0f34a1, #0a2472);
+            display: flex;
+            flex-direction: column;
         }
 
         .zman-box {
@@ -73,7 +75,7 @@
             border-radius: 15px;
             padding: 15px;
             background: var(--card-blue);
-            margin-bottom: 15px;
+            margin-bottom: 12px; /* Réduit pour gagner de la place */
         }
 
         .section-title {
@@ -110,6 +112,16 @@
             display: flex;
             justify-content: space-between;
             font-size: 0.85rem;
+        }
+
+        .copyright {
+            margin-top: auto; /* Pousse vers le bas */
+            text-align: right;
+            font-size: 0.65rem;
+            opacity: 0.4;
+            padding-right: 10px;
+            padding-bottom: 5px;
+            font-style: italic;
         }
     </style>
 </head>
@@ -195,6 +207,8 @@
                 </div>
             </div>
         </div>
+
+        <div class="copyright">© Greg u.</div>
     </div>
 
     <script>
