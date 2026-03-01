@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ohavei Tsion - Display</title>
+    <title>Ohavei Tsion</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
@@ -46,7 +46,7 @@
             background: var(--card-blue);
             border: 1px solid rgba(255,255,255,0.15);
             border-radius: 15px;
-            padding: 15px;
+            padding: 20px 15px 15px 15px; /* Plus d'espace en haut pour le titre */
             margin-bottom: 15px;
             display: none;
             position: relative;
@@ -54,17 +54,28 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            text-align: center;
         }
 
         .annonce-titre-style {
             position: absolute;
-            top: 15px;
+            top: 8px;
             left: 15px;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-style: italic;
             font-weight: 600;
-            opacity: 0.8;
+            opacity: 0.6;
             white-space: nowrap;
+            text-transform: uppercase;
+        }
+
+        /* Style spécifique pour le contenu de l'annonce */
+        #sheet-annonce_texte {
+            white-space: pre-wrap; /* RESPECTE LES RETOURS À LA LIGNE */
+            line-height: 1.4;
+            font-weight: 600;
+            font-size: 1.1rem;
+            /* Pas de text-transform ici pour respecter tes minuscules/majuscules */
         }
 
         .section-card {
@@ -72,7 +83,7 @@
             border-radius: 15px;
             padding: 15px;
             background: var(--card-blue);
-            margin-bottom: 8px; /* Espace très réduit sous le bloc */
+            margin-bottom: 8px;
         }
 
         .section-title {
@@ -135,21 +146,19 @@
 
         <div class="grid grid-cols-2 gap-3 mb-6">
             <div class="zman-box">
-                <p class="text-[10px] font-extrabold uppercase opacity-60 mb-1">Paracha</p>
+                <p class="text-[10px] font-extrabold uppercase opacity-60 mb-1">Parasha</p>
                 <p id="auto-paracha" class="text-lg font-black leading-tight">--</p>
             </div>
             <div class="zman-box">
-                <p id="label-allumage_bougies" class="text-[10px] font-extrabold uppercase mb-1 text-red-500">Allumage Bougies</p>
+                <p id="label-allumage_bougies" class="text-[10px] font-extrabold uppercase mb-1 text-red-500">Allumage des nerot</p>
                 <p id="sheet-allumage_bougies" class="text-2xl font-black text-red-600">--:--</p>
             </div>
         </div>
 
         <div id="announcement-block" class="annonce-card">
             <span id="sheet-annonce_titre" class="annonce-titre-style"></span>
-            <div class="section-title">
-                <span id="sheet-annonce_texte"></span>
-                <div class="title-underline"></div>
-            </div>
+            <div id="sheet-annonce_texte"></div>
+            <div class="title-underline mt-3"></div>
         </div>
 
         <div class="section-card">
@@ -226,29 +235,46 @@
             try {
                 const response = await fetch(SHEET_URL + "&cb=" + Date.now());
                 const csvText = await response.text();
-                const lines = csvText.split(/\r?\n/);
                 
+                // Fonction pour parser correctement le CSV (gère les guillemets et retours à la ligne)
+                function parseCSV(text) {
+                    const rows = [];
+                    let row = [];
+                    let col = "";
+                    let inQuotes = false;
+                    for (let i = 0; i < text.length; i++) {
+                        let char = text[i];
+                        let next = text[i+1];
+                        if (char === '"' && inQuotes && next === '"') { col += '"'; i++; }
+                        else if (char === '"') { inQuotes = !inQuotes; }
+                        else if (char === ',' && !inQuotes) { row.push(col); col = ""; }
+                        else if (char === '\n' && !inQuotes) { row.push(col); rows.push(row); row = []; col = ""; }
+                        else if (char !== '\r') { col += char; }
+                    }
+                    if (col || row.length) { row.push(col); rows.push(row); }
+                    return rows;
+                }
+
+                const lines = parseCSV(csvText);
                 let aTitre = "";
                 let aTexte = "";
 
-                lines.forEach((line, index) => {
-                    if (index === 0) return;
-                    const parts = line.split(/[,;]/);
-                    if (parts.length >= 3) {
-                        let key = parts[0].replace(/["']/g, "").trim().toLowerCase();
-                        let intitule = parts[1] ? parts[1].replace(/["']/g, "").trim() : "";
-                        let value = parts[2] ? parts[2].replace(/["']/g, "").trim() : "";
-                        
-                        if (key === 'annonce_titre') aTitre = value || intitule;
-                        if (key === 'annonce_texte') aTexte = value || intitule;
+                lines.forEach((parts, index) => {
+                    if (index === 0 || parts.length < 3) return;
+                    
+                    let key = parts[0].trim().toLowerCase();
+                    let intitule = parts[1] ? parts[1].trim() : "";
+                    let value = parts[2] ? parts[2].trim() : "";
+                    
+                    if (key === 'annonce_titre') aTitre = value || intitule;
+                    if (key === 'annonce_texte') aTexte = value || intitule;
 
-                        const labelEl = document.getElementById(`label-${key}`);
-                        if (labelEl && intitule !== "") labelEl.textContent = intitule;
-                        
-                        const valueEl = document.getElementById(`sheet-${key}`);
-                        if (valueEl && value !== "" && !key.startsWith('annonce')) {
-                            valueEl.textContent = value;
-                        }
+                    const labelEl = document.getElementById(`label-${key}`);
+                    if (labelEl && intitule !== "") labelEl.textContent = intitule;
+                    
+                    const valueEl = document.getElementById(`sheet-${key}`);
+                    if (valueEl && value !== "" && !key.startsWith('annonce')) {
+                        valueEl.textContent = value;
                     }
                 });
 
@@ -259,12 +285,12 @@
                 if (aTitre !== "" || aTexte !== "") {
                     block.style.display = 'flex';
                     tEl.textContent = aTitre;
-                    xEl.textContent = aTexte;
+                    xEl.textContent = aTexte; //textContent respecte maintenant les \n grâce au CSS white-space
                 } else {
                     block.style.display = 'none';
                 }
 
-            } catch (e) { console.error("Sheet error"); }
+            } catch (e) { console.error("Sheet error", e); }
         }
 
         loadZmanim();
