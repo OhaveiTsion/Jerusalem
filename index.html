@@ -46,11 +46,10 @@
             background: var(--card-blue);
             border: 1px solid rgba(255,255,255,0.15);
             border-radius: 15px;
-            padding: 20px 15px 15px 15px; /* Plus d'espace en haut pour le titre */
+            padding: 25px 15px 15px 15px;
             margin-bottom: 15px;
             display: none;
             position: relative;
-            min-height: 80px;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -69,13 +68,15 @@
             text-transform: uppercase;
         }
 
-        /* Style spécifique pour le contenu de l'annonce */
+        /* STYLE ALIGNÉ SUR LE TITRE "SHABBAT" */
         #sheet-annonce_texte {
-            white-space: pre-wrap; /* RESPECTE LES RETOURS À LA LIGNE */
-            line-height: 1.4;
-            font-weight: 600;
-            font-size: 1.1rem;
-            /* Pas de text-transform ici pour respecter tes minuscules/majuscules */
+            white-space: pre-wrap; 
+            line-height: 1.2;
+            font-size: 1.25rem; /* Même taille que SHABBAT */
+            font-weight: 800;    /* Même épaisseur */
+            letter-spacing: 0.1em; /* Espacement proche du titre */
+            color: rgba(255, 255, 255, 0.9);
+            /* Suppression de text-transform: uppercase pour respecter le sheet */
         }
 
         .section-card {
@@ -236,7 +237,6 @@
                 const response = await fetch(SHEET_URL + "&cb=" + Date.now());
                 const csvText = await response.text();
                 
-                // Fonction pour parser correctement le CSV (gère les guillemets et retours à la ligne)
                 function parseCSV(text) {
                     const rows = [];
                     let row = [];
@@ -285,7 +285,7 @@
                 if (aTitre !== "" || aTexte !== "") {
                     block.style.display = 'flex';
                     tEl.textContent = aTitre;
-                    xEl.textContent = aTexte; //textContent respecte maintenant les \n grâce au CSS white-space
+                    xEl.textContent = aTexte;
                 } else {
                     block.style.display = 'none';
                 }
