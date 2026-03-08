@@ -114,6 +114,11 @@
     </div>
 
     <script>
+        const password = prompt("Code d'accès Admin :");
+if (password !== "1948") { // Change 1234 par ton code
+    document.body.innerHTML = "Accès refusé.";
+    throw new Error("Accès refusé");
+}
         const API_URL = "https://script.google.com/macros/s/AKfycbwpTN2pu6rJ8bFa8EMHpJ6vxwxJpwPqRCrNOJqRKtQkp1M_govLnybxrSisayzxDLpm/exec";
         const keys = ['allumage_bougies', 'minha_vendredi', 'chaharit_shabbat', 'shiour_dan', 'shiour_saadia', 'shiour_haviv', 'shiour_guemara', 'minha_shabbat', 'arvit_motsach', 'chaharit_semaine', 'minha_semaine', 'annonce_titre', 'annonce_texte', 'parasha'];
 
