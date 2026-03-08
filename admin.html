@@ -7,91 +7,25 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
-        
-        :root {
-            --bg-deep-blue: #0f34a1;
-            --gold-border: #f1c40f;
-            --card-blue: rgba(255, 255, 255, 0.08);
-        }
-
-        body { 
-            font-family: 'Assistant', sans-serif; 
-            background-color: var(--bg-deep-blue);
-            color: white;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* BARRE DE COMMANDE FIXE */
-        .admin-nav {
-            position: sticky;
-            top: 0;
-            z-index: 2000;
-            width: 100%;
-            max-width: 500px;
-            display: flex;
-            gap: 10px;
-            padding: 10px 0;
-            background: var(--bg-deep-blue);
-        }
-
-        .main-container {
-            border: 3px solid var(--gold-border);
-            border-radius: 20px;
-            padding: 15px;
-            width: 100%;
-            max-width: 500px;
-            background: linear-gradient(to bottom, #0f34a1, #0a2472);
-            position: relative;
-        }
-
-        /* ZONES EDITABLES (Design Zman-box) */
-        .editable {
-            background: rgba(255,255,255,0.05);
-            border: 1px dashed rgba(255,255,255,0.2);
-            padding: 2px 5px;
-            border-radius: 4px;
-            outline: none;
-            transition: all 0.2s;
-        }
-        .editable:focus {
-            background: rgba(255,255,255,0.15);
-            border: 1px solid var(--gold-border);
-            box-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
-        }
-
-        /* REPRISE DES STYLES INDEX */
+        :root { --bg-deep-blue: #0f34a1; --gold-border: #f1c40f; --card-blue: rgba(255, 255, 255, 0.08); }
+        body { font-family: 'Assistant', sans-serif; background-color: var(--bg-deep-blue); color: white; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .admin-nav { position: sticky; top: 0; z-index: 2000; width: 100%; max-width: 500px; display: flex; gap: 10px; padding: 10px 0; background: var(--bg-deep-blue); }
+        .main-container { border: 3px solid var(--gold-border); border-radius: 20px; padding: 15px; width: 100%; max-width: 500px; background: linear-gradient(to bottom, #0f34a1, #0a2472); position: relative; }
+        .editable { background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); padding: 4px; border-radius: 6px; outline: none; min-height: 1.5em; }
+        .editable:focus { background: rgba(255,255,255,0.15); border: 1px solid var(--gold-border); box-shadow: 0 0 10px rgba(241, 196, 15, 0.3); }
         .zman-box { background: white; border-radius: 12px; color: #0f34a1; padding: 10px 5px; text-align: center; }
-        .annonce-card {
-            background: var(--card-blue);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 15px;
-            padding: 25px 15px 15px 15px;
-            margin-bottom: 15px;
-            position: relative;
-            text-align: center;
-        }
-        .annonce-titre-style {
-            position: absolute; top: 8px; left: 15px; font-size: 0.75rem; font-style: italic; opacity: 0.6; text-transform: uppercase;
-        }
+        .annonce-card { background: var(--card-blue); border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 25px 15px 15px 15px; margin-bottom: 15px; position: relative; text-align: center; }
+        .annonce-titre-style { position: absolute; top: 8px; left: 15px; font-size: 0.75rem; font-style: italic; opacity: 0.6; text-transform: uppercase; }
         .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: var(--card-blue); margin-bottom: 8px; }
         .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; margin-bottom: 12px; display: flex; flex-direction: column; align-items: center; }
         .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin-top: 4px; border-radius: 2px; }
         .row-major { display: flex; justify-content: space-between; align-items: center; padding: 10px 8px; }
         .shiour-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 6px 0; display: flex; justify-content: space-between; font-size: 0.85rem; }
-
-        /* BARRE FORMATAGE FLOTTANTE */
-        #floating-toolbar {
-            position: absolute; display: none; background: #222; padding: 5px; border-radius: 8px; border: 1px solid var(--gold-border); z-index: 3000; gap: 5px; transform: translate(-50%, -120%);
-        }
+        #floating-toolbar { position: absolute; display: none; background: #222; padding: 5px; border-radius: 8px; border: 1px solid var(--gold-border); z-index: 3000; gap: 5px; transform: translate(-50%, -120%); }
         .f-btn { font-size: 0.7rem; background: #444; color: white; padding: 4px 10px; border-radius: 4px; border: none; cursor: pointer; font-weight: 700; }
-        
-        /* Rendu visuel direct */
-        .editable b, .f-bold { font-weight: 900 !important; }
-        .editable font[color="red"], .f-red { color: #ff4d4d !important; }
-        .editable strike, .f-strike { text-decoration: line-through !important; opacity: 0.6; }
+        .editable b { font-weight: 900 !important; }
+        .editable font[color="red"] { color: #ff4d4d !important; }
+        .editable strike { text-decoration: line-through !important; opacity: 0.6; }
     </style>
 </head>
 <body>
@@ -102,38 +36,34 @@
     </div>
 
     <div id="floating-toolbar">
-        <button class="f-btn" onmousedown="event.preventDefault(); exec('bold')">Gras</button>
-        <button class="f-btn text-red-400" onmousedown="event.preventDefault(); exec('foreColor', '#ff4d4d')">Rouge</button>
-        <button class="f-btn" onmousedown="event.preventDefault(); exec('strikeThrough')">Barré</button>
-        <button class="f-btn" onmousedown="event.preventDefault(); exec('removeFormat')">Normal</button>
+        <button class="f-btn" onmousedown="event.preventDefault(); document.execCommand('bold')">Gras</button>
+        <button class="f-btn text-red-400" onmousedown="event.preventDefault(); document.execCommand('foreColor', false, '#ff4d4d')">Rouge</button>
+        <button class="f-btn" onmousedown="event.preventDefault(); document.execCommand('strikeThrough')">Barré</button>
+        <button class="f-btn" onmousedown="event.preventDefault(); document.execCommand('removeFormat')">Normal</button>
     </div>
 
     <div class="main-container shadow-2xl">
-        
-        <div class="flex items-center mb-6 border-b border-white/10 pb-3">
-            <div class="w-1/2 flex justify-center">
-                <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" alt="Logo" class="h-10 w-auto rounded bg-white p-1">
-            </div>
-            <div class="w-1/2 flex justify-center">
-                <h1 class="text-xl font-black italic text-white uppercase">ADMIN</h1>
-            </div>
+        <div class="flex items-center mb-6 border-b border-white/10 pb-3 relative">
+            <div class="absolute -top-2 -right-2 bg-red-600 text-[10px] font-black px-2 py-1 rounded-full animate-pulse border border-white">ADMIN MODE</div>
+            <div class="w-1/2 flex justify-center"><img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" class="h-10 w-auto rounded bg-white p-1"></div>
+            <div class="w-1/2 flex justify-center"><h1 class="text-xl font-black italic text-white uppercase">Ohavei Tsion</h1></div>
         </div>
 
         <div class="grid grid-cols-2 gap-3 mb-6">
             <div class="zman-box">
-                <p class="text-[10px] font-extrabold uppercase opacity-60">Parasha (Auto)</p>
-                <p class="text-lg font-black">—</p>
+                <p class="text-[10px] font-extrabold uppercase opacity-60">Parasha</p>
+                <div id="parasha_val" class="editable text-lg font-black leading-tight mx-1" contenteditable="true" placeholder="Auto..."></div>
+                <p id="auto-paracha-hint" class="text-[9px] italic opacity-40 mt-1"></p>
             </div>
             <div class="zman-box">
                 <p class="text-[10px] font-extrabold uppercase mb-1 text-red-500">Allumage</p>
                 <div id="allumage_bougies_val" class="editable text-2xl font-black text-red-600 mx-2" contenteditable="true">--:--</div>
-                <input type="hidden" id="allumage_bougies_label_hidden" value="Allumage des nerot">
             </div>
         </div>
 
         <div class="annonce-card">
             <div id="annonce_titre_val" class="annonce-titre-style editable min-w-[50px]" contenteditable="true">TITRE</div>
-            <div id="annonce_texte_val" class="editable text-xl font-extrabold mt-2" contenteditable="true">Texte de l'annonce...</div>
+            <div id="annonce_texte_val" class="editable text-xl font-extrabold mt-2" contenteditable="true">Annonce...</div>
             <div class="title-underline mt-3 mx-auto"></div>
         </div>
 
@@ -182,82 +112,48 @@
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbwpTN2pu6rJ8bFa8EMHpJ6vxwxJpwPqRCrNOJqRKtQkp1M_govLnybxrSisayzxDLpm/exec";
-        
-        const keys = [
-            'allumage_bougies', 'minha_vendredi', 'chaharit_shabbat', 'shiour_dan', 'shiour_saadia', 
-            'shiour_haviv', 'shiour_guemara', 'minha_shabbat', 'arvit_motsach', 
-            'chaharit_semaine', 'minha_semaine', 'annonce_titre', 'annonce_texte'
-        ];
+        const keys = ['allumage_bougies', 'minha_vendredi', 'chaharit_shabbat', 'shiour_dan', 'shiour_saadia', 'shiour_haviv', 'shiour_guemara', 'minha_shabbat', 'arvit_motsach', 'chaharit_semaine', 'minha_semaine', 'annonce_titre', 'annonce_texte', 'parasha'];
 
-        function exec(cmd, val=null) { document.execCommand(cmd, false, val); }
-
-        // GESTION TOOLBAR
         const toolbar = document.getElementById('floating-toolbar');
-        document.addEventListener('focusin', (e) => {
-            if(e.target.classList.contains('editable')) {
-                const rect = e.target.getBoundingClientRect();
-                toolbar.style.display = 'flex';
-                toolbar.style.top = (window.scrollY + rect.top) + 'px';
-                toolbar.style.left = (rect.left + rect.width / 2) + 'px';
-            }
-        });
-        document.addEventListener('focusout', () => {
-            setTimeout(() => { if (!document.activeElement.classList.contains('editable')) toolbar.style.display = 'none'; }, 150);
-        });
+        document.addEventListener('focusin', (e) => { if(e.target.classList.contains('editable')) { const rect = e.target.getBoundingClientRect(); toolbar.style.display = 'flex'; toolbar.style.top = (window.scrollY + rect.top) + 'px'; toolbar.style.left = (rect.left + rect.width / 2) + 'px'; } });
+        document.addEventListener('focusout', () => { setTimeout(() => { if (!document.activeElement.classList.contains('editable')) toolbar.style.display = 'none'; }, 150); });
 
-        // CONVERSIONS
         function htmlToTags(html) {
             if(!html) return "";
-            return html.replace(/<b>(.*?)<\/b>/gi, "**$1**")
-                        .replace(/<font color="(.*?)">(.*?)<\/font>/gi, "{r}$2{/r}")
-                        .replace(/<strike>(.*?)<\/strike>/gi, "~~$1~~")
-                        .replace(/<div>/gi, "").replace(/<\/div>/gi, "").replace(/<br>/gi, "")
-                        .replace(/&nbsp;/g, " ").trim();
+            return html.replace(/<b>(.*?)<\/b>/gi, "**$1**").replace(/<font color="(.*?)">(.*?)<\/font>/gi, "{r}$2{/r}").replace(/<strike>(.*?)<\/strike>/gi, "~~$1~~").replace(/<br>|<div>/gi, "\n").replace(/<\/div>/gi, "").replace(/&nbsp;/g, " ").trim();
         }
 
         function tagsToHtml(tags) {
             if(!tags) return "";
-            return tags.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-                       .replace(/\{r\}(.*?)\{\/r\}/g, '<font color="red">$1</font>')
-                       .replace(/\~\~(.*?)\~\~/g, "<strike>$1</strike>");
+            return tags.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>").replace(/\{r\}(.*?)\{\/r\}/g, '<font color="red">$1</font>').replace(/\~\~(.*?)\~\~/g, "<strike>$1</strike>").replace(/\n/g, "<br>");
         }
 
-        // CHARGEMENT AUTOMATIQUE
         async function loadData() {
             try {
                 const res = await fetch(API_URL);
                 const data = await res.json();
                 keys.forEach(k => {
-                    if(data[k]) {
-                        const lEl = document.getElementById(`${k}_label`);
-                        const vEl = document.getElementById(`${k}_val`);
-                        if(lEl) lEl.innerHTML = tagsToHtml(data[k].intitule);
-                        if(vEl) vEl.innerHTML = tagsToHtml(data[k].valeur);
-                    }
+                    const lEl = document.getElementById(`${k}_label`), vEl = document.getElementById(`${k}_val`);
+                    if(lEl && data[k]) lEl.innerHTML = tagsToHtml(data[k].intitule);
+                    if(vEl && data[k]) vEl.innerHTML = tagsToHtml(data[k].valeur);
                 });
-            } catch(e) { console.error("Erreur chargement"); }
+                // Info auto parasha
+                const hRes = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s');
+                const hData = await hRes.json();
+                const p = hData.items.find(i => i.category === "parashat");
+                if(p) document.getElementById('auto-paracha-hint').innerText = "Auto : " + p.title.replace("Parashat ","");
+            } catch(e) {}
         }
 
         async function sendData() {
             const payload = {};
             keys.forEach(k => {
-                const lEl = document.getElementById(`${k}_label`);
-                const vEl = document.getElementById(`${k}_val`);
-                const hEl = document.getElementById(`${k}_label_hidden`); // Pour l'allumage qui n'a pas de label editable
-                
-                payload[k] = {
-                    intitule: lEl ? htmlToTags(lEl.innerHTML) : (hEl ? hEl.value : ""),
-                    valeur: vEl ? htmlToTags(vEl.innerHTML) : ""
-                };
+                const lEl = document.getElementById(`${k}_label`), vEl = document.getElementById(`${k}_val`);
+                payload[k] = { intitule: lEl ? htmlToTags(lEl.innerHTML) : (k==='allumage_bougies'?"Allumage":k), valeur: vEl ? htmlToTags(vEl.innerHTML) : "" };
             });
-            
-            try {
-                await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
-                alert("🚀 Mis à jour !");
-            } catch(e) { alert("Erreur d'envoi"); }
+            await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+            alert("🚀 Données enregistrées !");
         }
-
-        // LANCER AU CHARGEMENT
         window.onload = loadData;
     </script>
 </body>
