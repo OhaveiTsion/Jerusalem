@@ -293,6 +293,33 @@
             } catch (e) { console.error("Sheet error", e); }
         }
 
+        // AJOUTE CETTE FONCTION DANS TON <script> DE INDEX.HTML
+function formatRichText(text) {
+    if (!text) return "";
+    return text
+        .replace(/\*\*(.*?)\*\*/g, '<span class="font-black">$1</span>') // Gras
+        .replace(/\{r\}(.*?)\{\/r\}/g, '<span class="text-red-500">$1</span>') // Rouge
+        .replace(/\~\~(.*?)\~\~/g, '<span class="line-through">$1</span>'); // Barré
+}
+
+// ET DANS TA FONCTION loadSheet(), REMPLACE LES LIGNES D'AFFICHAGE PAR :
+const labelEl = document.getElementById(`label-${key}`);
+if (labelEl && intitule !== "") {
+    labelEl.innerHTML = formatRichText(intitule); // On utilise innerHTML ici
+}
+
+const valueEl = document.getElementById(`sheet-${key}`);
+if (valueEl && value !== "" && !key.startsWith('annonce')) {
+    valueEl.innerHTML = formatRichText(value); // On utilise innerHTML ici
+}
+
+// POUR LES ANNONCES :
+if (aTitre !== "" || aTexte !== "") {
+    block.style.display = 'flex';
+    tEl.innerHTML = formatRichText(aTitre);
+    xEl.innerHTML = formatRichText(aTexte);
+}
+
         loadZmanim();
         loadSheet();
         setInterval(loadSheet, 30000);
