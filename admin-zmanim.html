@@ -21,6 +21,12 @@
         .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin-top: 4px; border-radius: 2px; }
         .row-major { display: flex; justify-content: space-between; align-items: center; padding: 10px 8px; }
         .shiour-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 6px 0; display: flex; justify-content: space-between; font-size: 0.85rem; }
+        /* Ajoute ça pour améliorer la sélection sur mobile */
+.editable {
+    -webkit-user-select: text;
+    user-select: text;
+    touch-action: manipulation; /* Évite les zooms accidentels */
+}
         /* NOUVELLE BARRE DE FORMATAGE FIXE */
 #floating-toolbar {
     position: fixed;
