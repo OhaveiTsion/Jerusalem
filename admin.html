@@ -3,259 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Ohavei Tsion</title>
+    <title>Admin Ohavei Tsion</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
-        
-        :root {
-            --bg-deep-blue: #0f34a1;
-            --gold-border: #f1c40f;
-            --card-blue: rgba(255, 255, 255, 0.08);
-        }
-
-        body { 
-            font-family: 'Assistant', sans-serif; 
-            background-color: var(--bg-deep-blue);
-            color: white;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .admin-toolbar {
-            width: 100%;
-            max-width: 500px;
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            position: sticky;
-            top: 10px;
-            z-index: 100;
-        }
-        .btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        .btn-load { background: var(--gold-border); color: #0f34a1; }
-        .btn-send { background: #2ecc71; color: white; }
-
-        .main-container {
-            border: 3px solid var(--gold-border);
-            border-radius: 20px;
-            padding: 15px;
-            width: 100%;
-            max-width: 500px;
-            background: linear-gradient(to bottom, #0f34a1, #0a2472);
-        }
-
-        input, textarea {
-            background: rgba(255,255,255,0.05);
-            border: 1px dashed rgba(255,255,255,0.2);
-            color: white;
-            border-radius: 5px;
-            width: 100%;
-            padding: 4px 8px;
-            font-family: inherit;
-        }
-        
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--gold-border);
-            background: rgba(255,255,255,0.1);
-        }
-
-        .zman-box {
-            background: white;
-            border-radius: 12px;
-            color: #0f34a1;
-            padding: 10px 5px;
-            text-align: center;
-        }
-        .zman-box input {
-            color: #0f34a1;
-            border: 1px dashed rgba(15, 52, 161, 0.2);
-            text-align: center;
-            background: transparent;
-            font-weight: 800;
-        }
-
-        .annonce-card {
-            background: var(--card-blue);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 15px;
-            padding: 20px 15px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .section-card {
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 15px;
-            padding: 15px;
-            background: var(--card-blue);
-            margin-bottom: 8px;
-        }
-
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            text-align: center;
-            margin-bottom: 12px;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .row-major {
-            display: flex;
-            flex-direction: column;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .row-label { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; opacity: 0.6; margin-bottom: 2px; }
-
-        .toolbar-mini { display: flex; gap: 4px; margin-bottom: 5px; justify-content: center; }
-        .tool-btn { font-size: 0.65rem; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; cursor: pointer; }
-
-        .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin: 4px auto; border-radius: 2px; }
+        body { font-family: 'Assistant', sans-serif; background: #0f34a1; color: white; padding: 10px; }
+        .main-container { border: 3px solid #f1c40f; border-radius: 20px; padding: 15px; width: 100%; max-width: 550px; margin: auto; background: linear-gradient(to bottom, #0f34a1, #0a2472); }
+        .admin-toolbar { display: flex; gap: 10px; margin-bottom: 15px; position: sticky; top: 0; z-index: 100; background: #0f34a1; padding: 10px 0; }
+        .btn { flex: 1; padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; border: none; }
+        .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: rgba(255,255,255,0.08); margin-bottom: 15px; }
+        .row-edit { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .inputs-group { display: flex; gap: 8px; margin-top: 5px; }
+        input, textarea { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 6px; padding: 8px; font-size: 0.9rem; flex: 1; }
+        .val-input { max-width: 100px; text-align: center; font-weight: 800; }
+        .format-bar { display: flex; gap: 6px; margin-bottom: 2px; }
+        .f-btn { font-size: 0.65rem; background: rgba(255,255,255,0.2); padding: 3px 6px; border-radius: 4px; cursor: pointer; opacity: 0.7; }
+        .f-btn:hover { opacity: 1; background: rgba(255,255,255,0.3); }
+        label { font-size: 0.65rem; text-transform: uppercase; font-weight: 800; color: #f1c40f; opacity: 0.8; }
     </style>
 </head>
 <body>
 
-    <div class="admin-toolbar">
-        <button onclick="loadData()" class="btn btn-load">🔄 Charger</button>
-        <button onclick="sendData()" class="btn btn-send">🚀 Envoyer</button>
+    <div class="admin-toolbar max-w-[550px] mx-auto">
+        <button onclick="loadData()" class="btn bg-yellow-500 text-blue-900">🔄 Charger la data</button>
+        <button onclick="sendData()" class="btn bg-green-500 text-white">🚀 Envoyer au Sheet</button>
     </div>
 
     <div class="main-container">
-        <div class="flex items-center mb-6 border-b border-white/10 pb-3">
-            <div class="w-1/2 flex justify-center">
-                <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" alt="Logo" class="h-10 w-auto rounded bg-white p-1">
-            </div>
-            <div class="w-1/2 flex justify-center">
-                <h1 class="text-xl font-black italic tracking-tighter text-white uppercase">Console Admin</h1>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3 mb-6">
-            <div class="zman-box opacity-50">
-                <p class="text-[10px] font-extrabold uppercase mb-1">Parasha (Auto)</p>
-                <p id="auto-paracha" class="text-lg font-black leading-tight">--</p>
-            </div>
-            <div class="zman-box">
-                <p class="text-[10px] font-extrabold uppercase mb-1 text-red-500">Allumage des nerot</p>
-                <input type="text" id="allumage_bougies" value="--:--">
-            </div>
-        </div>
-
-        <div class="annonce-card">
-            <div class="row-label text-center">Titre & Texte de l'annonce</div>
-            <input type="text" id="annonce_titre" placeholder="Titre Info." class="mb-2 text-center italic">
-            
-            <div class="toolbar-mini">
-                <span class="tool-btn" onclick="insertTag('**','**')">Gras</span>
-                <span class="tool-btn" onclick="insertTag('{r}','{/r}')">Rouge</span>
-                <span class="tool-btn" onclick="insertTag('~~','~~')">Barré</span>
-            </div>
-            <textarea id="annonce_texte" rows="3" class="text-center font-bold" placeholder="Message..."></textarea>
-            <div class="title-underline mt-3"></div>
-        </div>
+        <h1 class="text-center font-black text-xl mb-6 text-yellow-400 uppercase italic border-b border-white/10 pb-2">Console Administration</h1>
 
         <div class="section-card">
-            <div class="section-title">SHABBAT <div class="title-underline"></div></div>
-            
-            <div class="row-major">
-                <span class="row-label">Minha Vendredi Soir</span>
-                <input type="text" id="minha_vendredi">
+            <h2 class="text-center font-black mb-4 underline decoration-yellow-500">ANNONCES</h2>
+            <div class="row-edit">
+                <label>Titre de l'annonce</label>
+                <div class="format-bar">
+                    <span class="f-btn" onclick="tag('annonce_titre_val')"><b>Gras</b></span>
+                    <span class="f-btn text-red-400" onclick="tag('annonce_titre_val','{r}','{/r}')">Rouge</span>
+                </div>
+                <input type="text" id="annonce_titre_val" class="w-full">
             </div>
-            
-            <div class="row-major">
-                <span class="row-label">Shaharit</span>
-                <input type="text" id="chaharit_shabbat">
-            </div>
-
-            <div class="row-major">
-                <span class="row-label">Kiddouche</span>
-                <input type="text" id="kiddoush_shabbat">
-            </div>
-
-            <div class="bg-black/20 rounded-lg p-3 my-3 space-y-3">
-                <div><span class="row-label">Shiour Dan Chemla</span><input type="text" id="shiour_dan"></div>
-                <div><span class="row-label">Shiour Saadia Khalfon</span><input type="text" id="shiour_saadia"></div>
-                <div><span class="row-label">Shiour Rav Haviv</span><input type="text" id="shiour_haviv"></div>
-                <div><span class="row-label">Shiour Guemara</span><input type="text" id="shiour_guemara"></div>
-            </div>
-
-            <div class="row-major">
-                <span class="row-label">Minha / Seouda Shlishit</span>
-                <input type="text" id="minha_shabbat">
-            </div>
-
-            <div class="row-major border-none">
-                <span class="row-label">Arvit Motsae Shabbat</span>
-                <input type="text" id="arvit_motsach">
+            <div class="row-edit border-none">
+                <label>Texte de l'annonce</label>
+                <div class="format-bar">
+                    <span class="f-btn" onclick="tag('annonce_texte_val')"><b>Gras</b></span>
+                    <span class="f-btn text-red-400" onclick="tag('annonce_texte_val','{r}','{/r}')">Rouge</span>
+                    <span class="f-btn" onclick="tag('annonce_texte_val','~~','~~')">Barré</span>
+                </div>
+                <textarea id="annonce_texte_val" rows="3" class="w-full"></textarea>
             </div>
         </div>
 
         <div class="section-card">
-            <div class="section-title">SEMAINE <div class="title-underline"></div></div>
-            <div class="row-major">
-                <span class="row-label">Shaharit</span>
-                <input type="text" id="chaharit_semaine">
-            </div>
-            <div class="row-major border-none">
-                <span class="row-label">Minha / Arvit</span>
-                <input type="text" id="minha_semaine">
-            </div>
+            <h2 class="text-center font-black mb-4 underline decoration-yellow-500">SHABBAT</h2>
+            <div id="shabbat-fields"></div>
+        </div>
+
+        <div class="section-card">
+            <h2 class="text-center font-black mb-4 underline decoration-yellow-500">SEMAINE</h2>
+            <div id="semaine-fields"></div>
         </div>
     </div>
 
     <script>
-        // REMPLACE CETTE URL PAR TON URL APPS SCRIPT DÉPLOYÉE
-        const API_URL = "https://script.google.com/macros/s/AKfycbz58h41PFAMaiZNWbYc6ess_v3SoJs2daMdA8vd93oE37w3O3mfAE34u1OT63_LF0N3/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbwpTN2pu6rJ8bFa8EMHpJ6vxwxJpwPqRCrNOJqRKtQkp1M_govLnybxrSisayzxDLpm/exec";
+        
+        const keys = {
+            shabbat: ['allumage_bougies', 'minha_vendredi', 'chaharit_shabbat', 'kiddoush_shabbat', 'shiour_dan', 'shiour_saadia', 'shiour_haviv', 'shiour_guemara', 'minha_shabbat', 'arvit_motsach'],
+            semaine: ['chaharit_semaine', 'minha_semaine']
+        };
 
-        const fieldIds = [
-            'annonce_titre', 'annonce_texte', 'allumage_bougies', 
-            'minha_vendredi', 'chaharit_shabbat', 'kiddoush_shabbat',
-            'shiour_dan', 'shiour_saadia', 'shiour_haviv', 'shiour_guemara',
-            'minha_shabbat', 'arvit_motsach', 'chaharit_semaine', 'minha_semaine'
-        ];
+        function createFields() {
+            ['shabbat', 'semaine'].forEach(section => {
+                const container = document.getElementById(`${section}-fields`);
+                keys[section].forEach(key => {
+                    container.innerHTML += `
+                        <div class="row-edit">
+                            <label>${key.replace('_', ' ')}</label>
+                            <div class="format-bar">
+                                <span class="f-btn" onclick="tag('${key}_label')"><b>Gras</b></span>
+                                <span class="f-btn text-red-400" onclick="tag('${key}_label','{r}','{/r}')">Rouge</span>
+                            </div>
+                            <div class="inputs-group">
+                                <input type="text" id="${key}_label" placeholder="Libellé">
+                                <input type="text" id="${key}_val" class="val-input" placeholder="Heure">
+                            </div>
+                        </div>`;
+                });
+            });
+        }
+        createFields();
 
-        function insertTag(start, end) {
-            const area = document.getElementById('annonce_texte');
-            const s = area.selectionStart;
-            const e = area.selectionEnd;
-            const val = area.value;
-            area.value = val.substring(0, s) + start + val.substring(s, e) + end + val.substring(e);
-            area.focus();
+        function tag(id, start="**", end="**") {
+            const el = document.getElementById(id);
+            const s = el.selectionStart, e = el.selectionEnd, v = el.value;
+            el.value = v.substring(0,s) + start + v.substring(s,e) + end + v.substring(e);
+            el.focus();
         }
 
         async function loadData() {
             try {
                 const res = await fetch(API_URL);
                 const data = await res.json();
-                fieldIds.forEach(id => {
-                    if (data[id]) document.getElementById(id).value = data[id];
+                
+                // Annonces
+                if(data.annonce_titre) document.getElementById('annonce_titre_val').value = data.annonce_titre.valeur;
+                if(data.annonce_texte) document.getElementById('annonce_texte_val').value = data.annonce_texte.valeur;
+
+                // Autres
+                [...keys.shabbat, ...keys.semaine].forEach(k => {
+                    if(data[k]) {
+                        document.getElementById(`${k}_label`).value = data[k].intitule;
+                        document.getElementById(`${k}_val`).value = data[k].valeur;
+                    }
                 });
-                alert("Données chargées !");
-            } catch(e) { alert("Erreur de chargement. Vérifie ton URL Apps Script."); }
+                alert("Données récupérées avec succès !");
+            } catch(e) { alert("Erreur lors du chargement des données."); }
         }
 
         async function sendData() {
-            const payload = {};
-            fieldIds.forEach(id => payload[id] = document.getElementById(id).value);
+            const payload = {
+                annonce_titre: { intitule: 'Annonce Titre', valeur: document.getElementById('annonce_titre_val').value },
+                annonce_texte: { intitule: 'Annonce Texte', valeur: document.getElementById('annonce_texte_val').value }
+            };
+            
+            [...keys.shabbat, ...keys.semaine].forEach(k => {
+                payload[k] = {
+                    intitule: document.getElementById(`${k}_label`).value,
+                    valeur: document.getElementById(`${k}_val`).value
+                };
+            });
 
             try {
-                await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
-                alert("Mise à jour réussie sur Google Sheet !");
-            } catch(e) { alert("Erreur d'envoi."); }
+                const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+                alert("Site mis à jour !");
+            } catch(e) { alert("Erreur lors de l'envoi."); }
         }
     </script>
 </body>
