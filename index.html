@@ -7,151 +7,32 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
-        
-        :root {
-            --bg-deep-blue: #0f34a1;
-            --gold-border: #f1c40f;
-            --card-blue: rgba(255, 255, 255, 0.08);
-        }
-
-        body { 
-            font-family: 'Assistant', sans-serif; 
-            background-color: var(--bg-deep-blue);
-            color: white;
-            padding: 10px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .main-container {
-            border: 3px solid var(--gold-border);
-            border-radius: 20px;
-            min-height: calc(100vh - 20px);
-            padding: 15px;
-            width: 100%;
-            max-width: 500px;
-            background: linear-gradient(to bottom, #0f34a1, #0a2472);
-        }
-
-        .zman-box {
-            background: white;
-            border-radius: 12px;
-            color: #0f34a1;
-            padding: 10px 5px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        .annonce-card {
-            background: var(--card-blue);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 15px;
-            padding: 25px 15px 15px 15px;
-            margin-bottom: 15px;
-            display: none; /* Affiché via JS si data */
-            position: relative;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        .annonce-titre-style {
-            position: absolute;
-            top: 8px;
-            left: 15px;
-            font-size: 0.75rem;
-            font-style: italic;
-            font-weight: 600;
-            opacity: 0.6;
-            white-space: nowrap;
-            text-transform: uppercase;
-        }
-
-        #sheet-annonce_texte {
-            white-space: pre-wrap; 
-            line-height: 1.2;
-            font-size: 1.25rem;
-            font-weight: 800;
-            letter-spacing: 0.1em;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .section-card {
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 15px;
-            padding: 15px;
-            background: var(--card-blue);
-            margin-bottom: 8px;
-        }
-
-        .section-title {
-            font-size: 1.25rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            text-align: center;
-            margin-bottom: 12px;
-            color: rgba(255, 255, 255, 0.9);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .title-underline {
-            width: 40px;
-            height: 3px;
-            background-color: var(--gold-border);
-            margin-top: 4px;
-            border-radius: 2px;
-        }
-
-        .row-major {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 8px;
-        }
-
-        .shiour-item {
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding: 6px 0;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-        }
-
-        .copyright {
-            text-align: center;
-            font-size: 0.65rem;
-            opacity: 0.4;
-            padding: 5px 0;
-            font-style: italic;
-            width: 100%;
-        }
-
-        /* Classes de formatage dynamique */
-        .f-bold { font-weight: 900 !important; }
-        .f-red { color: #ff4d4d !important; }
-        .f-strike { text-decoration: line-through !important; opacity: 0.6; }
+        :root { --bg-deep-blue: #0f34a1; --gold-border: #f1c40f; --card-blue: rgba(255, 255, 255, 0.08); }
+        body { font-family: 'Assistant', sans-serif; background-color: var(--bg-deep-blue); color: white; padding: 10px; display: flex; justify-content: center; }
+        .main-container { border: 3px solid var(--gold-border); border-radius: 20px; min-height: calc(100vh - 20px); padding: 15px; width: 100%; max-width: 500px; background: linear-gradient(to bottom, #0f34a1, #0a2472); }
+        .zman-box { background: white; border-radius: 12px; color: #0f34a1; padding: 10px 5px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .annonce-card { background: var(--card-blue); border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 25px 15px 15px 15px; margin-bottom: 15px; display: none; position: relative; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .annonce-titre-style { position: absolute; top: 8px; left: 15px; font-size: 0.75rem; font-style: italic; font-weight: 600; opacity: 0.6; text-transform: uppercase; }
+        #sheet-annonce_texte { white-space: pre-wrap; line-height: 1.2; font-size: 1.25rem; font-weight: 800; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.9); }
+        .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: var(--card-blue); margin-bottom: 8px; }
+        .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; margin-bottom: 12px; color: rgba(255, 255, 255, 0.9); display: flex; flex-direction: column; align-items: center; }
+        .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin-top: 4px; border-radius: 2px; }
+        .row-major { display: flex; justify-content: space-between; align-items: center; padding: 10px 8px; }
+        .shiour-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 6px 0; display: flex; justify-content: space-between; font-size: 0.85rem; }
+        .f-bold { font-weight: 900 !important; } .f-red { color: #ff4d4d !important; } .f-strike { text-decoration: line-through !important; opacity: 0.6; }
     </style>
 </head>
 <body>
-
     <div class="main-container">
         <div class="flex items-center mb-6 border-b border-white/10 pb-3">
-            <div class="w-1/2 flex justify-center">
-                <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" alt="Logo" class="h-10 w-auto rounded bg-white p-1">
-            </div>
-            <div class="w-1/2 flex justify-center">
-                <h1 class="text-xl font-black italic tracking-tighter text-white uppercase">Ohavei Tsion</h1>
-            </div>
+            <div class="w-1/2 flex justify-center"><img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" class="h-10 w-auto rounded bg-white p-1"></div>
+            <div class="w-1/2 flex justify-center"><h1 class="text-xl font-black italic tracking-tighter text-white uppercase">Ohavei Tsion</h1></div>
         </div>
 
         <div class="grid grid-cols-2 gap-3 mb-6">
             <div class="zman-box">
                 <p class="text-[10px] font-extrabold uppercase opacity-60 mb-1">Parasha</p>
-                <p id="auto-paracha" class="text-lg font-black leading-tight">--</p>
+                <p id="parasha-display" class="text-lg font-black leading-tight">--</p>
             </div>
             <div class="zman-box">
                 <p id="label-allumage_bougies" class="text-[10px] font-extrabold uppercase mb-1 text-red-500">Allumage</p>
@@ -166,118 +47,66 @@
         </div>
 
         <div class="section-card">
-            <div class="section-title">
-                SHABBAT
-                <div class="title-underline"></div>
-            </div>
+            <div class="section-title">SHABBAT<div class="title-underline"></div></div>
             <div class="space-y-1">
-                <div class="row-major">
-                    <span id="label-minha_vendredi" class="font-black text-[0.95rem] uppercase">Minha Vendredi</span>
-                    <span id="sheet-minha_vendredi" class="text-xl font-black">--:--</span>
-                </div>
-                
-                <div class="row-major border-t border-white/10 pt-1">
-                    <span id="label-chaharit_shabbat" class="font-black text-[0.95rem] uppercase">Shaharit</span>
-                    <span id="sheet-chaharit_shabbat" class="text-xl font-black">--:--</span>
-                </div>
-                
+                <div class="row-major"><span id="label-minha_vendredi" class="font-black text-[0.95rem] uppercase">Minha Vendredi</span><span id="sheet-minha_vendredi" class="text-xl font-black">--:--</span></div>
+                <div class="row-major border-t border-white/10 pt-1"><span id="label-chaharit_shabbat" class="font-black text-[0.95rem] uppercase">Shaharit</span><span id="sheet-chaharit_shabbat" class="text-xl font-black">--:--</span></div>
                 <div class="bg-black/20 rounded-lg p-3 my-2 space-y-1 border border-white/5">
                     <div class="shiour-item"><span id="label-shiour_dan">...</span><span id="sheet-shiour_dan" class="font-bold">--:--</span></div>
                     <div class="shiour-item"><span id="label-shiour_saadia">...</span><span id="sheet-shiour_saadia" class="font-bold">--:--</span></div>
                     <div class="shiour-item"><span id="label-shiour_haviv">...</span><span id="sheet-shiour_haviv" class="font-bold">--:--</span></div>
                     <div class="shiour-item border-none"><span id="label-shiour_guemara">...</span><span id="sheet-shiour_guemara" class="font-bold">--:--</span></div>
                 </div>
-
-                <div class="row-major border-t border-white/10 pt-1">
-                    <span id="label-minha_shabbat" class="font-black text-[0.95rem] uppercase">Minha / Seouda</span>
-                    <span id="sheet-minha_shabbat" class="text-xl font-black">--:--</span>
-                </div>
-
-                <div class="row-major border-t border-white/20 pt-1">
-                    <span id="label-arvit_motsach" class="font-black text-[0.95rem] uppercase">Arvit Motsae</span>
-                    <span id="sheet-arvit_motsach" class="text-xl font-black">--:--</span>
-                </div>
+                <div class="row-major border-t border-white/10 pt-1"><span id="label-minha_shabbat" class="font-black text-[0.95rem] uppercase">Minha / Seouda</span><span id="sheet-minha_shabbat" class="text-xl font-black">--:--</span></div>
+                <div class="row-major border-t border-white/20 pt-1"><span id="label-arvit_motsach" class="font-black text-[0.95rem] uppercase">Arvit Motsae</span><span id="sheet-arvit_motsach" class="text-xl font-black">--:--</span></div>
             </div>
         </div>
 
         <div class="section-card">
-            <div class="section-title">
-                SEMAINE
-                <div class="title-underline"></div>
-            </div>
+            <div class="section-title">SEMAINE<div class="title-underline"></div></div>
             <div class="space-y-1">
-                <div class="row-major">
-                    <span id="label-chaharit_semaine" class="font-black text-[0.95rem] uppercase">Shaharit</span>
-                    <span id="sheet-chaharit_semaine" class="text-xl font-black">--:--</span>
-                </div>
-                <div class="row-major border-t border-white/20 pt-1">
-                    <span id="label-minha_semaine" class="font-black text-[0.95rem] uppercase">Minha / Arvit</span>
-                    <span id="sheet-minha_semaine" class="text-xl font-black">--:--</span>
-                </div>
+                <div class="row-major"><span id="label-chaharit_semaine" class="font-black text-[0.95rem] uppercase">Shaharit</span><span id="sheet-chaharit_semaine" class="text-xl font-black">--:--</span></div>
+                <div class="row-major border-t border-white/20 pt-1"><span id="label-minha_semaine" class="font-black text-[0.95rem] uppercase">Minha / Arvit</span><span id="sheet-minha_semaine" class="text-xl font-black">--:--</span></div>
             </div>
         </div>
-
-        <div class="copyright">© JLM Tech Solutions</div>
+        <div class="text-center text-[0.6rem] opacity-30 mt-4 italic">© Ohavei Tsion</div>
     </div>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbwpTN2pu6rJ8bFa8EMHpJ6vxwxJpwPqRCrNOJqRKtQkp1M_govLnybxrSisayzxDLpm/exec";
+        function formatRichText(t) { if(!t)return ""; return t.replace(/\*\*(.*?)\*\*/g,'<span class="f-bold">$1</span>').replace(/\{r\}(.*?)\{\/r\}/g,'<span class="f-red">$1</span>').replace(/\~\~(.*?)\~\~/g,'<span class="f-strike">$1</span>').replace(/\n/g,"<br>"); }
 
-        function formatRichText(text) {
-            if (!text) return "";
-            return text
-                .replace(/\*\*(.*?)\*\*/g, '<span class="f-bold">$1</span>')
-                .replace(/\{r\}(.*?)\{\/r\}/g, '<span class="f-red">$1</span>')
-                .replace(/\~\~(.*?)\~\~/g, '<span class="f-strike">$1</span>');
-        }
-
-        async function loadZmanim() {
+        async function loadAll() {
             try {
-                const res = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s');
-                const data = await res.json();
-                const parashaItem = data.items.find(i => i.category === "parashat");
-                if(parashaItem) {
-                    let name = parashaItem.title.replace("Parashat ", "").replace("Parasha ", "");
-                    document.getElementById('auto-paracha').textContent = name;
-                }
-            } catch(e) { console.error("Zmanim error", e); }
-        }
+                // 1. Charger Hebcal (Auto)
+                const hRes = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s');
+                const hData = await hRes.json();
+                const pAuto = hData.items.find(i => i.category === "parashat");
+                let nameAuto = pAuto ? pAuto.title.replace("Parashat ", "").replace("Parasha ", "") : "--";
 
-        async function loadSheetData() {
-            try {
-                const response = await fetch(API_URL);
-                const data = await response.json();
-                
-                for (let key in data) {
-                    const item = data[key];
-                    const labelEl = document.getElementById(`label-${key}`);
-                    if (labelEl) labelEl.innerHTML = formatRichText(item.intitule);
-                    
-                    const valueEl = document.getElementById(`sheet-${key}`);
-                    if (valueEl) valueEl.innerHTML = formatRichText(item.valeur);
+                // 2. Charger Sheet (Manuel)
+                const sRes = await fetch(API_URL);
+                const sData = await sRes.json();
+
+                for (let k in sData) {
+                    const label = document.getElementById(`label-${k}`), val = document.getElementById(`sheet-${k}`);
+                    if(label) label.innerHTML = formatRichText(sData[k].intitule);
+                    if(val) val.innerHTML = formatRichText(sData[k].valeur);
                 }
+
+                // Parasha Logic
+                const pMan = sData.parasha ? sData.parasha.valeur : "";
+                document.getElementById('parasha-display').innerHTML = (pMan && pMan.trim() !== "") ? formatRichText(pMan) : nameAuto;
 
                 // Annonces
-                const block = document.getElementById('announcement-block');
-                const tEl = document.getElementById('sheet-annonce_titre');
-                const xEl = document.getElementById('sheet-annonce_texte');
+                const aT = sData.annonce_titre?sData.annonce_titre.valeur:"", aX = sData.annonce_texte?sData.annonce_texte.valeur:"";
+                const b = document.getElementById('announcement-block');
+                if(aT||aX) { b.style.display='flex'; document.getElementById('sheet-annonce_titre').innerHTML=formatRichText(aT); document.getElementById('sheet-annonce_texte').innerHTML=formatRichText(aX); }
+                else b.style.display='none';
 
-                const aTitre = data.annonce_titre ? data.annonce_titre.valeur : "";
-                const aTexte = data.annonce_texte ? data.annonce_texte.valeur : "";
-
-                if (aTitre.trim() !== "" || aTexte.trim() !== "") {
-                    block.style.display = 'flex';
-                    tEl.innerHTML = formatRichText(aTitre);
-                    xEl.innerHTML = formatRichText(aTexte);
-                } else {
-                    block.style.display = 'none';
-                }
-            } catch (e) { console.error("API error", e); }
+            } catch(e) { console.error(e); }
         }
-
-        loadZmanim();
-        loadSheetData();
-        setInterval(loadSheetData, 30000);
+        loadAll(); setInterval(loadAll, 30000);
     </script>
 </body>
 </html>
