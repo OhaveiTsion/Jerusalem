@@ -8,32 +8,44 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
         :root { --bg-blue: #0f34a1; --gold: #f1c40f; }
-        body { font-family: 'Assistant', sans-serif; background: var(--bg-blue); color: white; padding: 10px; }
-        .main-container { border: 3px solid var(--gold); border-radius: 20px; padding: 15px; width: 100%; max-width: 600px; margin: auto; background: linear-gradient(to bottom, #0f34a1, #0a2472); }
-        .btn { padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; border: none; flex: 1; transition: 0.3s; }
+        body { font-family: 'Assistant', sans-serif; background: var(--bg-blue); color: white; padding: 10px; padding-bottom: 100px; }
+        .main-container { border: 3px solid var(--gold); border-radius: 20px; padding: 15px; width: 100%; max-width: 600px; margin: auto; background: linear-gradient(to bottom, #0f34a1, #0a2472); position: relative; }
+        .btn { padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; border: none; flex: 1; }
         .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: rgba(255,255,255,0.08); margin-bottom: 15px; }
         
         .editable { 
             background: rgba(255,255,255,0.1); 
             border: 1px solid rgba(255,255,255,0.2); 
             color: white; 
-            border-radius: 6px; 
+            border-radius: 8px; 
             padding: 10px; 
             min-height: 42px;
             outline: none;
-            font-size: 0.95rem;
+            transition: all 0.2s;
         }
-        .editable:focus { border-color: var(--gold); background: rgba(255,255,255,0.15); }
-        .val-input { min-width: 180px !important; font-weight: 800; text-align: center; } 
+        .editable:focus { border-color: var(--gold); background: rgba(255,255,255,0.2); }
+        .val-input { min-width: 160px !important; font-weight: 800; text-align: center; } 
         
-        .row-edit { padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .controls-row { display: flex; gap: 8px; margin-bottom: 6px; align-items: center; }
-        .f-btn { font-size: 0.7rem; background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 5px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); font-weight: 600; }
-        .f-btn:hover { background: rgba(255,255,255,0.2); border-color: var(--gold); }
-        
-        label { font-size: 0.75rem; text-transform: uppercase; color: var(--gold); font-weight: 800; flex-grow: 1; }
+        .row-edit { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); position: relative; }
+        label { font-size: 0.7rem; text-transform: uppercase; color: var(--gold); font-weight: 800; opacity: 0.7; margin-bottom: 4px; display: block; }
 
-        /* Rendu visuel dans l'éditeur */
+        /* BARRE DE FORMATAGE FLOTTANTE */
+        #floating-toolbar {
+            position: absolute;
+            display: none; /* Caché par défaut */
+            background: #222;
+            padding: 5px;
+            border-radius: 8px;
+            border: 1px solid var(--gold);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 1000;
+            gap: 5px;
+            transform: translate(-50%, -110%); /* Centré au-dessus */
+        }
+        .f-btn { font-size: 0.7rem; background: #444; color: white; padding: 4px 10px; border-radius: 4px; border: none; cursor: pointer; font-weight: 700; }
+        .f-btn:hover { background: #666; }
+
+        /* Styles internes à l'édition */
         .editable b { font-weight: 900; }
         .editable font[color="red"] { color: #ff4d4d; }
         .editable strike { text-decoration: line-through; }
@@ -46,16 +58,21 @@
         <button onclick="sendData()" class="btn bg-green-500 text-white shadow-lg">🚀 ENVOYER</button>
     </div>
 
-    <div class="main-container shadow-2xl">
-        <h1 class="text-center font-black text-2xl mb-8 text-yellow-400 italic tracking-widest uppercase">Console Admin</h1>
+    <div id="floating-toolbar">
+        <button class="f-btn" onmousedown="event.preventDefault(); exec('bold')">Gras</button>
+        <button class="f-btn text-red-400" onmousedown="event.preventDefault(); exec('foreColor', '#ff4d4d')">Rouge</button>
+        <button class="f-btn" onmousedown="event.preventDefault(); exec('strikeThrough')">Barré</button>
+        <button class="f-btn" onmousedown="event.preventDefault(); exec('removeFormat')">Normal</button>
+    </div>
 
+    <div class="main-container shadow-2xl">
+        <h1 class="text-center font-black text-2xl mb-8 text-yellow-400 italic uppercase">Console Admin</h1>
         <div id="admin-content"></div>
     </div>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbwpTN2pu6rJ8bFa8EMHpJ6vxwxJpwPqRCrNOJqRKtQkp1M_govLnybxrSisayzxDLpm/exec";
         
-        // Structure complète basée sur ton Sheet
         const sections = [
             { title: "ANNONCES", keys: ['annonce_titre', 'annonce_texte'] },
             { title: "SHABBAT", keys: ['allumage_bougies', 'minha_vendredi', 'chaharit_shabbat', 'kiddoush_shabbat', 'shiour_dan', 'shiour_saadia', 'shiour_haviv', 'shiour_guemara', 'minha_shabbat', 'arvit_motsach'] },
@@ -64,51 +81,51 @@
 
         function exec(cmd, val=null) { document.execCommand(cmd, false, val); }
 
-        // Génération automatique des lignes avec les boutons par ligne
+        // Génération de l'interface sans boutons visibles
         const mainDiv = document.getElementById('admin-content');
         sections.forEach(sec => {
-            let html = `<div class="section-card"><h2 class="text-center font-black mb-6 text-lg border-b border-white/10 pb-2">${sec.title}</h2>`;
+            let html = `<div class="section-card"><h2 class="text-center font-black mb-4 border-b border-white/10 pb-2">${sec.title}</h2>`;
             sec.keys.forEach(k => {
                 const isAnnonce = k.startsWith('annonce');
                 html += `
                 <div class="row-edit">
-                    <div class="controls-row">
-                        <label>${k.replace('_', ' ')}</label>
-                        <button class="f-btn" onclick="document.getElementById('${k}_target').focus(); exec('bold')">Gras</button>
-                        <button class="f-btn text-red-400" onclick="document.getElementById('${k}_target').focus(); exec('foreColor', '#ff4d4d')">Rouge</button>
-                        <button class="f-btn" onclick="document.getElementById('${k}_target').focus(); exec('strikeThrough')">Barré</button>
-                        <button class="f-btn" onclick="document.getElementById('${k}_target').focus(); exec('removeFormat')">Normal</button>
-                    </div>
-                    ${isAnnonce ? `
-                        <div id="${k}_val" class="editable w-full" contenteditable="true" onfocus="window.lastFocused='${k}_val'"></div>
-                        <input type="hidden" id="${k}_target" value="${k}_val">
-                    ` : `
-                        <div class="flex gap-3 mt-2">
-                            <div id="${k}_label" class="editable flex-1" contenteditable="true" onfocus="window.lastFocused='${k}_label'"></div>
-                            <div id="${k}_val" class="editable val-input" contenteditable="true" onfocus="window.lastFocused='${k}_val'"></div>
-                        </div>
-                        <input type="hidden" id="${k}_target" value="${window.lastFocused || k+'_label'}">
-                    `}
+                    <label>${k.replace('_', ' ')}</label>
+                    ${isAnnonce ? 
+                        `<div id="${k}_val" class="editable w-full" contenteditable="true"></div>` : 
+                        `<div class="flex gap-3">
+                            <div id="${k}_label" class="editable flex-1" contenteditable="true"></div>
+                            <div id="${k}_val" class="editable val-input" contenteditable="true"></div>
+                        </div>`
+                    }
                 </div>`;
             });
             html += `</div>`;
             mainDiv.innerHTML += html;
         });
 
-        // Capture du dernier champ cliqué pour que les boutons agissent dessus
+        // GESTION DE LA BARRE FLOTTANTE
+        const toolbar = document.getElementById('floating-toolbar');
+        
         document.addEventListener('focusin', (e) => {
             if(e.target.classList.contains('editable')) {
-                const row = e.target.closest('.row-edit');
-                row.querySelector('input[type="hidden"]').id = e.target.id + "_focus";
-                // On met à jour les boutons pour cibler cet ID spécifique
-                const btns = row.querySelectorAll('.f-btn');
-                btns.forEach(b => {
-                    const func = b.getAttribute('onclick').split(';')[1];
-                    b.setAttribute('onclick', `document.getElementById('${e.target.id}').focus(); ${func}`);
-                });
+                const rect = e.target.getBoundingClientRect();
+                toolbar.style.display = 'flex';
+                // Calcul de la position : centré au dessus du champ
+                toolbar.style.top = (window.scrollY + rect.top) + 'px';
+                toolbar.style.left = (rect.left + rect.width / 2) + 'px';
             }
         });
 
+        document.addEventListener('focusout', (e) => {
+            // Un petit délai pour permettre le clic sur le bouton avant de cacher
+            setTimeout(() => {
+                if (!document.activeElement.classList.contains('editable')) {
+                    toolbar.style.display = 'none';
+                }
+            }, 100);
+        });
+
+        // FONCTIONS DE CONVERSION (Identiques à la version précédente)
         function htmlToTags(html) {
             if(!html) return "";
             let t = html.replace(/<b>(.*?)<\/b>/gi, "**$1**")
@@ -116,8 +133,7 @@
                         .replace(/<font color="(.*?)">(.*?)<\/font>/gi, "{r}$2{/r}")
                         .replace(/<strike>(.*?)<\/strike>/gi, "~~$1~~")
                         .replace(/<div>/gi, "\n").replace(/<\/div>/gi, "")
-                        .replace(/<br>/gi, "\n")
-                        .replace(/&nbsp;/g, " ");
+                        .replace(/<br>/gi, "\n").replace(/&nbsp;/g, " ");
             let tmp = document.createElement("DIV");
             tmp.innerHTML = t;
             return tmp.textContent || tmp.innerText || "";
@@ -135,7 +151,6 @@
             try {
                 const res = await fetch(API_URL);
                 const data = await res.json();
-                
                 sections.forEach(sec => {
                     sec.keys.forEach(k => {
                         if(data[k]) {
@@ -148,8 +163,8 @@
                         }
                     });
                 });
-                alert("✅ Données synchronisées !");
-            } catch(e) { alert("❌ Erreur lors du chargement."); }
+                alert("✅ Chargement terminé !");
+            } catch(e) { alert("❌ Erreur"); }
         }
 
         async function sendData() {
@@ -166,11 +181,8 @@
                     }
                 });
             });
-
-            try {
-                await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
-                alert("🚀 Mise à jour réussie sur le site !");
-            } catch(e) { alert("❌ Erreur lors de l'envoi."); }
+            await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+            alert("🚀 Données envoyées !");
         }
     </script>
 </body>
