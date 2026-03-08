@@ -60,14 +60,6 @@
 </head>
 <body>
 
-    <script>
-        const pass = prompt("Code d'accès Admin :");
-        if (pass !== "0026") { // REMPLACE PAR TON CODE
-            document.body.innerHTML = "<h1 style='color:white;text-align:center;margin-top:50px;'>Accès refusé.</h1>";
-            window.stop();
-        }
-    </script>
-
     <div class="admin-nav">
         <button onclick="location.reload()" class="flex-1 bg-blue-500 text-white p-3 rounded-xl font-bold text-sm uppercase">🔄 Actualiser</button>
         <button onclick="sendData()" class="flex-[2] bg-green-500 text-white p-3 rounded-xl font-black text-lg uppercase shadow-lg">🚀 Envoyer</button>
@@ -146,7 +138,7 @@
                 </div>
             </div>
         </div>
-        <div class="text-center text-[0.6rem] opacity-30 mt-4 italic">© Greg u.</div>
+        <div class="text-center text-[0.6rem] opacity-30 mt-4 italic">© Greg u</div>
     </div>
 
     <script>
@@ -197,6 +189,9 @@
         }
 
         async function sendData() {
+            const userPass = prompt("Entrez le mot de passe pour valider l'envoi :");
+            if(!userPass) return;
+
             const payload = {};
             keys.forEach(k => {
                 const lEl = document.getElementById(`${k}_label`), vEl = document.getElementById(`${k}_val`);
@@ -205,8 +200,22 @@
                     valeur: vEl ? htmlToTags(vEl.innerHTML) : "" 
                 };
             });
-            await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
-            alert("🚀 Données enregistrées !");
+
+            try {
+                const response = await fetch(API_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ auth: userPass, payload: payload }) 
+                });
+                const result = await response.text();
+                
+                if (result.includes("Succès")) {
+                    alert("🚀 Données enregistrées avec succès !");
+                } else {
+                    alert("❌ " + result);
+                }
+            } catch(e) {
+                alert("Erreur de connexion au serveur.");
+            }
         }
         window.onload = loadData;
     </script>
