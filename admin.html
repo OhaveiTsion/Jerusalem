@@ -24,13 +24,15 @@
             align-items: center;
         }
 
-        /* Barre de contrôle en haut */
         .admin-toolbar {
             width: 100%;
             max-width: 500px;
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
         }
         .btn {
             flex: 1;
@@ -40,7 +42,7 @@
             text-transform: uppercase;
             cursor: pointer;
             border: none;
-            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         .btn-load { background: var(--gold-border); color: #0f34a1; }
         .btn-send { background: #2ecc71; color: white; }
@@ -54,23 +56,20 @@
             background: linear-gradient(to bottom, #0f34a1, #0a2472);
         }
 
-        /* Style des inputs pour qu'ils se fondent dans le décor */
         input, textarea {
-            background: rgba(255,255,255,0.1);
-            border: 1px dashed rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.05);
+            border: 1px dashed rgba(255,255,255,0.2);
             color: white;
             border-radius: 5px;
             width: 100%;
-            padding: 2px 5px;
+            padding: 4px 8px;
             font-family: inherit;
         }
         
-        /* Cas particulier : les boites blanches */
-        .zman-box input {
-            color: #0f34a1;
-            border: 1px dashed rgba(15, 52, 161, 0.3);
-            text-align: center;
-            background: transparent;
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--gold-border);
+            background: rgba(255,255,255,0.1);
         }
 
         .zman-box {
@@ -79,19 +78,22 @@
             color: #0f34a1;
             padding: 10px 5px;
             text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .zman-box input {
+            color: #0f34a1;
+            border: 1px dashed rgba(15, 52, 161, 0.2);
+            text-align: center;
+            background: transparent;
+            font-weight: 800;
         }
 
         .annonce-card {
             background: var(--card-blue);
             border: 1px solid rgba(255,255,255,0.15);
             border-radius: 15px;
-            padding: 25px 15px 15px 15px;
+            padding: 20px 15px;
             margin-bottom: 15px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            text-align: center;
         }
 
         .section-card {
@@ -106,45 +108,23 @@
             font-size: 1.25rem;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.2em;
             text-align: center;
             margin-bottom: 12px;
             color: rgba(255, 255, 255, 0.9);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         .row-major {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 8px;
-        }
-
-        .row-major input {
-            width: 80px;
-            text-align: right;
-            font-weight: 900;
-            font-size: 1.1rem;
-        }
-
-        .shiour-item {
+            flex-direction: column;
+            padding: 8px 0;
             border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding: 6px 0;
-            display: flex;
-            justify-content: space-between;
         }
-        
-        .shiour-item input { width: 70px; font-weight: 700; text-align: right; }
+        .row-label { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; opacity: 0.6; margin-bottom: 2px; }
 
-        .title-underline {
-            width: 40px;
-            height: 3px;
-            background-color: var(--gold-border);
-            margin-top: 4px;
-            border-radius: 2px;
-        }
+        .toolbar-mini { display: flex; gap: 4px; margin-bottom: 5px; justify-content: center; }
+        .tool-btn { font-size: 0.65rem; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; cursor: pointer; }
+
+        .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin: 4px auto; border-radius: 2px; }
     </style>
 </head>
 <body>
@@ -160,82 +140,102 @@
                 <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" alt="Logo" class="h-10 w-auto rounded bg-white p-1">
             </div>
             <div class="w-1/2 flex justify-center">
-                <h1 class="text-xl font-black italic tracking-tighter text-white uppercase">CONSOLE ADMIN</h1>
+                <h1 class="text-xl font-black italic tracking-tighter text-white uppercase">Console Admin</h1>
             </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3 mb-6">
-            <div class="zman-box">
-                <p class="text-[10px] font-extrabold uppercase opacity-60 mb-1">Parasha (Auto)</p>
+            <div class="zman-box opacity-50">
+                <p class="text-[10px] font-extrabold uppercase mb-1">Parasha (Auto)</p>
                 <p id="auto-paracha" class="text-lg font-black leading-tight">--</p>
             </div>
             <div class="zman-box">
                 <p class="text-[10px] font-extrabold uppercase mb-1 text-red-500">Allumage des nerot</p>
-                <input type="text" id="allumage_bougies" class="text-2xl font-black text-red-600" value="--:--">
+                <input type="text" id="allumage_bougies" value="--:--">
             </div>
         </div>
 
         <div class="annonce-card">
-            <input type="text" id="annonce_titre" placeholder="Titre (ex: MAZAL TOV)" class="text-xs italic font-semibold opacity-70 mb-2">
-            <textarea id="annonce_texte" placeholder="Votre annonce ici..." rows="3" class="text-lg font-extrabold text-center"></textarea>
+            <div class="row-label text-center">Titre & Texte de l'annonce</div>
+            <input type="text" id="annonce_titre" placeholder="Titre Info." class="mb-2 text-center italic">
+            
+            <div class="toolbar-mini">
+                <span class="tool-btn" onclick="insertTag('**','**')">Gras</span>
+                <span class="tool-btn" onclick="insertTag('{r}','{/r}')">Rouge</span>
+                <span class="tool-btn" onclick="insertTag('~~','~~')">Barré</span>
+            </div>
+            <textarea id="annonce_texte" rows="3" class="text-center font-bold" placeholder="Message..."></textarea>
             <div class="title-underline mt-3"></div>
         </div>
 
         <div class="section-card">
             <div class="section-title">SHABBAT <div class="title-underline"></div></div>
-            <div class="space-y-1">
-                <div class="row-major">
-                    <span class="font-black text-[0.85rem] uppercase">Minha Vendredi</span>
-                    <input type="text" id="minha_vendredi">
-                </div>
-                <div class="row-major border-t border-white/10 pt-1">
-                    <span class="font-black text-[0.85rem] uppercase">Shaharit</span>
-                    <input type="text" id="chaharit_shabbat">
-                </div>
-                
-                <div class="bg-black/20 rounded-lg p-3 my-2 space-y-1 border border-white/5">
-                    <div class="shiour-item"><span>Shiour 1</span><input type="text" id="shiour_dan"></div>
-                    <div class="shiour-item"><span>Shiour 2</span><input type="text" id="shiour_saadia"></div>
-                    <div class="shiour-item"><span>Shiour 3</span><input type="text" id="shiour_haviv"></div>
-                    <div class="shiour-item border-none"><span>Shiour 4</span><input type="text" id="shiour_guemara"></div>
-                </div>
+            
+            <div class="row-major">
+                <span class="row-label">Minha Vendredi Soir</span>
+                <input type="text" id="minha_vendredi">
+            </div>
+            
+            <div class="row-major">
+                <span class="row-label">Shaharit</span>
+                <input type="text" id="chaharit_shabbat">
+            </div>
 
-                <div class="row-major border-t border-white/10 pt-1">
-                    <span class="font-black text-[0.85rem] uppercase">Minha Shabbat</span>
-                    <input type="text" id="minha_shabbat">
-                </div>
+            <div class="row-major">
+                <span class="row-label">Kiddouche</span>
+                <input type="text" id="kiddoush_shabbat">
+            </div>
 
-                <div class="row-major border-t border-white/20 pt-1">
-                    <span class="font-black text-[0.85rem] uppercase">Arvit Motsach</span>
-                    <input type="text" id="arvit_motsach">
-                </div>
+            <div class="bg-black/20 rounded-lg p-3 my-3 space-y-3">
+                <div><span class="row-label">Shiour Dan Chemla</span><input type="text" id="shiour_dan"></div>
+                <div><span class="row-label">Shiour Saadia Khalfon</span><input type="text" id="shiour_saadia"></div>
+                <div><span class="row-label">Shiour Rav Haviv</span><input type="text" id="shiour_haviv"></div>
+                <div><span class="row-label">Shiour Guemara</span><input type="text" id="shiour_guemara"></div>
+            </div>
+
+            <div class="row-major">
+                <span class="row-label">Minha / Seouda Shlishit</span>
+                <input type="text" id="minha_shabbat">
+            </div>
+
+            <div class="row-major border-none">
+                <span class="row-label">Arvit Motsae Shabbat</span>
+                <input type="text" id="arvit_motsach">
             </div>
         </div>
 
         <div class="section-card">
             <div class="section-title">SEMAINE <div class="title-underline"></div></div>
-            <div class="space-y-1">
-                <div class="row-major">
-                    <span class="font-black text-[0.85rem] uppercase">Shaharit</span>
-                    <input type="text" id="chaharit_semaine">
-                </div>
-                <div class="row-major border-t border-white/20 pt-1">
-                    <span class="font-black text-[0.85rem] uppercase">Minha / Arvit</span>
-                    <input type="text" id="minha_semaine">
-                </div>
+            <div class="row-major">
+                <span class="row-label">Shaharit</span>
+                <input type="text" id="chaharit_semaine">
+            </div>
+            <div class="row-major border-none">
+                <span class="row-label">Minha / Arvit</span>
+                <input type="text" id="minha_semaine">
             </div>
         </div>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbz4l4ZazkVSzrQMTA6RaX87ha2VzUGbEDEdsyNNck079iMwIdwzK8wu6vY-SA9y09Ql/exec"; // <--- REMPLACE PAR TON URL
+        // REMPLACE CETTE URL PAR TON URL APPS SCRIPT DÉPLOYÉE
+        const API_URL = "https://script.google.com/macros/s/AKfycbz4l4ZazkVSzrQMTA6RaX87ha2VzUGbEDEdsyNNck079iMwIdwzK8wu6vY-SA9y09Ql/exec"; 
 
         const fieldIds = [
-            'allumage_bougies', 'annonce_titre', 'annonce_texte', 
-            'minha_vendredi', 'chaharit_shabbat', 'minha_shabbat', 
-            'arvit_motsach', 'chaharit_semaine', 'minha_semaine',
-            'shiour_dan', 'shiour_saadia', 'shiour_haviv', 'shiour_guemara'
+            'annonce_titre', 'annonce_texte', 'allumage_bougies', 
+            'minha_vendredi', 'chaharit_shabbat', 'kiddoush_shabbat',
+            'shiour_dan', 'shiour_saadia', 'shiour_haviv', 'shiour_guemara',
+            'minha_shabbat', 'arvit_motsach', 'chaharit_semaine', 'minha_semaine'
         ];
+
+        function insertTag(start, end) {
+            const area = document.getElementById('annonce_texte');
+            const s = area.selectionStart;
+            const e = area.selectionEnd;
+            const val = area.value;
+            area.value = val.substring(0, s) + start + val.substring(s, e) + end + val.substring(e);
+            area.focus();
+        }
 
         async function loadData() {
             try {
@@ -244,23 +244,18 @@
                 fieldIds.forEach(id => {
                     if (data[id]) document.getElementById(id).value = data[id];
                 });
-                alert("Données récupérées !");
-            } catch(e) { alert("Erreur de chargement"); }
+                alert("Données chargées !");
+            } catch(e) { alert("Erreur de chargement. Vérifie ton URL Apps Script."); }
         }
 
         async function sendData() {
             const payload = {};
-            fieldIds.forEach(id => {
-                payload[id] = document.getElementById(id).value;
-            });
+            fieldIds.forEach(id => payload[id] = document.getElementById(id).value);
 
             try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
-                });
-                alert("Mise à jour réussie !");
-            } catch(e) { alert("Erreur lors de l'envoi"); }
+                await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+                alert("Mise à jour réussie sur Google Sheet !");
+            } catch(e) { alert("Erreur d'envoi."); }
         }
     </script>
 </body>
