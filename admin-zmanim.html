@@ -2,17 +2,47 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Admin - Ohavei Tsion</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
         :root { --bg-deep-blue: #0f34a1; --gold-border: #f1c40f; --card-blue: rgba(255, 255, 255, 0.08); }
-        body { font-family: 'Assistant', sans-serif; background-color: var(--bg-deep-blue); color: white; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        
+        body { 
+            font-family: 'Assistant', sans-serif; 
+            background-color: var(--bg-deep-blue); 
+            color: white; padding: 10px; 
+            display: flex; flex-direction: column; align-items: center; 
+        }
+
+        /* BARRE DE FORMATAGE FIXE EN HAUT (Anti-conflit Android) */
+        #floating-toolbar { 
+            position: fixed; 
+            top: 75px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            display: none; 
+            background: #1a1a1a; 
+            padding: 8px 15px; 
+            border-radius: 50px; 
+            border: 2px solid var(--gold-border); 
+            z-index: 9999; 
+            gap: 12px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
         .admin-nav { position: sticky; top: 0; z-index: 2000; width: 100%; max-width: 500px; display: flex; gap: 10px; padding: 10px 0; background: var(--bg-deep-blue); }
         .main-container { border: 3px solid var(--gold-border); border-radius: 20px; padding: 15px; width: 100%; max-width: 500px; background: linear-gradient(to bottom, #0f34a1, #0a2472); position: relative; }
-        .editable { background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); padding: 4px; border-radius: 6px; outline: none; min-height: 1.5em; }
-        .editable:focus { background: rgba(255,255,255,0.15); border: 1px solid var(--gold-border); box-shadow: 0 0 10px rgba(241, 196, 15, 0.3); }
+        
+        .editable { 
+            background: rgba(255,255,255,0.05); 
+            border: 1px dashed rgba(255,255,255,0.2); 
+            padding: 4px; border-radius: 6px; outline: none; min-height: 1.5em; 
+            -webkit-user-select: text; user-select: text;
+        }
+        .editable:focus { background: rgba(255,255,255,0.15); border: 1px solid var(--gold-border); }
+
         .zman-box { background: white; border-radius: 12px; color: #0f34a1; padding: 10px 5px; text-align: center; }
         .annonce-card { background: var(--card-blue); border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 25px 15px 15px 15px; margin-bottom: 15px; position: relative; text-align: center; }
         .annonce-titre-style { position: absolute; top: 8px; left: 15px; font-size: 0.75rem; font-style: italic; opacity: 0.6; text-transform: uppercase; }
@@ -21,36 +51,22 @@
         .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin-top: 4px; border-radius: 2px; }
         .row-major { display: flex; justify-content: space-between; align-items: center; padding: 10px 8px; }
         .shiour-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 6px 0; display: flex; justify-content: space-between; font-size: 0.85rem; }
-        /* Ajoute ça pour améliorer la sélection sur mobile */
-.editable {
-    -webkit-user-select: text;
-    user-select: text;
-    touch-action: manipulation; /* Évite les zooms accidentels */
-}
-        /* NOUVELLE BARRE DE FORMATAGE FIXE */
-#floating-toolbar {
-    position: fixed;
-    top: 70px; /* Juste en dessous de tes boutons Actualiser/Envoyer */
-    left: 50%;
-    transform: translateX(-50%);
-    display: none; 
-    background: #222;
-    padding: 8px 15px;
-    border-radius: 50px; /* Look arrondi plus moderne */
-    border: 2px solid var(--gold-border);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-    z-index: 3000;
-    gap: 15px;
-    width: auto;
-    white-space: nowrap;
-}
-        .f-btn { font-size: 0.7rem; background: #444; color: white; padding: 4px 10px; border-radius: 4px; border: none; cursor: pointer; font-weight: 700; }
+        
+        .f-btn { font-size: 0.75rem; background: #333; color: white; padding: 5px 12px; border-radius: 20px; border: none; cursor: pointer; font-weight: 700; }
         .editable b { font-weight: 900 !important; }
         .editable font[color="red"] { color: #ff4d4d !important; }
         .editable strike { text-decoration: line-through !important; opacity: 0.6; }
     </style>
 </head>
 <body>
+
+    <script>
+        const pass = prompt("Code d'accès Admin :");
+        if (pass !== "0026") { // REMPLACE PAR TON CODE
+            document.body.innerHTML = "<h1 style='color:white;text-align:center;margin-top:50px;'>Accès refusé.</h1>";
+            window.stop();
+        }
+    </script>
 
     <div class="admin-nav">
         <button onclick="location.reload()" class="flex-1 bg-blue-500 text-white p-3 rounded-xl font-bold text-sm uppercase">🔄 Actualiser</button>
@@ -69,13 +85,12 @@
             <div class="absolute -top-2 -right-2 bg-red-600 text-[10px] font-black px-2 py-1 rounded-full animate-pulse border border-white">ADMIN MODE</div>
             <div class="w-1/2 flex justify-center"><img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" class="h-10 w-auto rounded bg-white p-1"></div>
             <div class="w-1/2 flex justify-center"><h1 class="text-xl font-black italic text-white uppercase">Ohavei Tsion</h1></div>
-            
         </div>
 
         <div class="grid grid-cols-2 gap-3 mb-6">
             <div class="zman-box">
                 <p class="text-[10px] font-extrabold uppercase opacity-60">Parasha</p>
-                <div id="parasha_val" class="editable text-lg font-black leading-tight mx-1" contenteditable="true" placeholder="Auto..."></div>
+                <div id="parasha_val" class="editable text-lg font-black leading-tight mx-1" contenteditable="true"></div>
                 <p id="auto-paracha-hint" class="text-[9px] italic opacity-40 mt-1"></p>
             </div>
             <div class="zman-box">
@@ -116,7 +131,6 @@
                     <div id="arvit_motsach_val" class="editable text-xl font-black" contenteditable="true">--:--</div>
                 </div>
             </div>
-            
         </div>
 
         <div class="section-card">
@@ -132,30 +146,38 @@
                 </div>
             </div>
         </div>
-        <div class="text-center text-[0.6rem] opacity-30 mt-4 italic">© Greg u</div>
+        <div class="text-center text-[0.6rem] opacity-30 mt-4 italic">© Greg u.</div>
     </div>
 
     <script>
-        const password = prompt("Code d'accès Admin :");
-if (password !== "1948") { // Change 1234 par ton code
-    document.body.innerHTML = "Accès refusé.";
-    throw new Error("Accès refusé");
-}
         const API_URL = "https://script.google.com/macros/s/AKfycbwpTN2pu6rJ8bFa8EMHpJ6vxwxJpwPqRCrNOJqRKtQkp1M_govLnybxrSisayzxDLpm/exec";
         const keys = ['allumage_bougies', 'minha_vendredi', 'chaharit_shabbat', 'shiour_dan', 'shiour_saadia', 'shiour_haviv', 'shiour_guemara', 'minha_shabbat', 'arvit_motsach', 'chaharit_semaine', 'minha_semaine', 'annonce_titre', 'annonce_texte', 'parasha'];
 
         const toolbar = document.getElementById('floating-toolbar');
-        document.addEventListener('focusin', (e) => { if(e.target.classList.contains('editable')) { const rect = e.target.getBoundingClientRect(); toolbar.style.display = 'flex'; toolbar.style.top = (window.scrollY + rect.top) + 'px'; toolbar.style.left = (rect.left + rect.width / 2) + 'px'; } });
-        document.addEventListener('focusout', () => { setTimeout(() => { if (!document.activeElement.classList.contains('editable')) toolbar.style.display = 'none'; }, 150); });
+
+        // GESTION TOOLBAR FIXE
+        document.addEventListener('focusin', (e) => { 
+            if(e.target.classList.contains('editable')) toolbar.style.display = 'flex'; 
+        });
+        document.addEventListener('focusout', () => { 
+            setTimeout(() => { if (!document.activeElement.classList.contains('editable')) toolbar.style.display = 'none'; }, 300); 
+        });
 
         function htmlToTags(html) {
             if(!html) return "";
-            return html.replace(/<b>(.*?)<\/b>/gi, "**$1**").replace(/<font color="(.*?)">(.*?)<\/font>/gi, "{r}$2{/r}").replace(/<strike>(.*?)<\/strike>/gi, "~~$1~~").replace(/<br>|<div>/gi, "\n").replace(/<\/div>/gi, "").replace(/&nbsp;/g, " ").trim();
+            return html.replace(/<b>(.*?)<\/b>/gi, "**$1**")
+                       .replace(/<font color="(.*?)">(.*?)<\/font>/gi, "{r}$2{/r}")
+                       .replace(/<strike>(.*?)<\/strike>/gi, "~~$1~~")
+                       .replace(/<br>|<div>/gi, "\n")
+                       .replace(/<\/div>/gi, "").replace(/&nbsp;/g, " ").trim();
         }
 
         function tagsToHtml(tags) {
             if(!tags) return "";
-            return tags.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>").replace(/\{r\}(.*?)\{\/r\}/g, '<font color="red">$1</font>').replace(/\~\~(.*?)\~\~/g, "<strike>$1</strike>").replace(/\n/g, "<br>");
+            return tags.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+                       .replace(/\{r\}(.*?)\{\/r\}/g, '<font color="red">$1</font>')
+                       .replace(/\~\~(.*?)\~\~/g, "<strike>$1</strike>")
+                       .replace(/\n/g, "<br>");
         }
 
         async function loadData() {
@@ -167,7 +189,6 @@ if (password !== "1948") { // Change 1234 par ton code
                     if(lEl && data[k]) lEl.innerHTML = tagsToHtml(data[k].intitule);
                     if(vEl && data[k]) vEl.innerHTML = tagsToHtml(data[k].valeur);
                 });
-                // Info auto parasha
                 const hRes = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s');
                 const hData = await hRes.json();
                 const p = hData.items.find(i => i.category === "parashat");
@@ -179,7 +200,10 @@ if (password !== "1948") { // Change 1234 par ton code
             const payload = {};
             keys.forEach(k => {
                 const lEl = document.getElementById(`${k}_label`), vEl = document.getElementById(`${k}_val`);
-                payload[k] = { intitule: lEl ? htmlToTags(lEl.innerHTML) : (k==='allumage_bougies'?"Allumage":k), valeur: vEl ? htmlToTags(vEl.innerHTML) : "" };
+                payload[k] = { 
+                    intitule: lEl ? htmlToTags(lEl.innerHTML) : (k==='allumage_bougies'?"Allumage":k), 
+                    valeur: vEl ? htmlToTags(vEl.innerHTML) : "" 
+                };
             });
             await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
             alert("🚀 Données enregistrées !");
