@@ -7,136 +7,145 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
-        body { font-family: 'Assistant', sans-serif; background: #0f34a1; color: white; padding: 10px; }
-        .main-container { border: 3px solid #f1c40f; border-radius: 20px; padding: 15px; width: 100%; max-width: 550px; margin: auto; background: linear-gradient(to bottom, #0f34a1, #0a2472); }
-        .admin-toolbar { display: flex; gap: 10px; margin-bottom: 15px; position: sticky; top: 0; z-index: 100; background: #0f34a1; padding: 10px 0; }
-        .btn { flex: 1; padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; border: none; }
+        :root { --bg-blue: #0f34a1; --gold: #f1c40f; }
+        body { font-family: 'Assistant', sans-serif; background: var(--bg-blue); color: white; padding: 10px; }
+        .main-container { border: 3px solid var(--gold); border-radius: 20px; padding: 15px; width: 100%; max-width: 550px; margin: auto; background: linear-gradient(to bottom, #0f34a1, #0a2472); }
+        .btn { padding: 12px; border-radius: 10px; font-weight: 800; cursor: pointer; border: none; flex: 1; }
         .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: rgba(255,255,255,0.08); margin-bottom: 15px; }
-        .row-edit { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .inputs-group { display: flex; gap: 8px; margin-top: 5px; }
-        input, textarea { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 6px; padding: 8px; font-size: 0.9rem; flex: 1; }
-        .val-input { max-width: 100px; text-align: center; font-weight: 800; }
-        .format-bar { display: flex; gap: 6px; margin-bottom: 2px; }
-        .f-btn { font-size: 0.65rem; background: rgba(255,255,255,0.2); padding: 3px 6px; border-radius: 4px; cursor: pointer; opacity: 0.7; }
-        .f-btn:hover { opacity: 1; background: rgba(255,255,255,0.3); }
-        label { font-size: 0.65rem; text-transform: uppercase; font-weight: 800; color: #f1c40f; opacity: 0.8; }
+        
+        /* Styles des zones éditables */
+        .editable { 
+            background: rgba(255,255,255,0.1); 
+            border: 1px solid rgba(255,255,255,0.2); 
+            color: white; 
+            border-radius: 6px; 
+            padding: 8px; 
+            min-height: 40px;
+            outline: none;
+        }
+        .editable:focus { border-color: var(--gold); background: rgba(255,255,255,0.15); }
+        .val-input { width: 150px !important; font-weight: 800; text-align: center; } /* Élargi pour "07:00 (hodou)" */
+        
+        .row-edit { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .controls { display: flex; gap: 5px; margin-bottom: 5px; }
+        .f-btn { font-size: 0.7rem; background: #333; padding: 4px 8px; border-radius: 4px; cursor: pointer; border: 1px solid #555; }
+        .f-btn:hover { background: #555; }
+        label { font-size: 0.65rem; text-transform: uppercase; color: var(--gold); font-weight: 800; }
+
+        /* Styles internes à l'édition */
+        .editable b { font-weight: bold; }
+        .editable font[color="red"] { color: #ff4d4d; }
+        .editable strike { text-decoration: line-through; }
     </style>
 </head>
 <body>
 
-    <div class="admin-toolbar max-w-[550px] mx-auto">
-        <button onclick="loadData()" class="btn bg-yellow-500 text-blue-900">🔄 Charger la data</button>
-        <button onclick="sendData()" class="btn bg-green-500 text-white">🚀 Envoyer au Sheet</button>
+    <div class="flex gap-2 max-w-[550px] mx-auto mb-4">
+        <button onclick="loadData()" class="btn bg-yellow-500 text-blue-900">🔄 CHARGER</button>
+        <button onclick="sendData()" class="btn bg-green-500 text-white">🚀 ENVOYER AU SHEET</button>
     </div>
 
     <div class="main-container">
-        <h1 class="text-center font-black text-xl mb-6 text-yellow-400 uppercase italic border-b border-white/10 pb-2">Console Administration</h1>
+        <h1 class="text-center font-black text-xl mb-6 text-yellow-400 italic">CONSOLE ADMIN</h1>
 
         <div class="section-card">
-            <h2 class="text-center font-black mb-4 underline decoration-yellow-500">ANNONCES</h2>
+            <h2 class="text-center font-black mb-4 underline">ANNONCES</h2>
             <div class="row-edit">
-                <label>Titre de l'annonce</label>
-                <div class="format-bar">
-                    <span class="f-btn" onclick="tag('annonce_titre_val')"><b>Gras</b></span>
-                    <span class="f-btn text-red-400" onclick="tag('annonce_titre_val','{r}','{/r}')">Rouge</span>
+                <label>Titre / Texte de l'annonce</label>
+                <div class="controls">
+                    <button class="f-btn" onclick="exec('bold')"><b>B</b></button>
+                    <button class="f-btn text-red-500" onclick="exec('foreColor', '#ff4d4d')">Rouge</button>
+                    <button class="f-btn" onclick="exec('strikeThrough')"><s>S</s></button>
+                    <button class="f-btn" onclick="exec('removeFormat')">CLR</button>
                 </div>
-                <input type="text" id="annonce_titre_val" class="w-full">
-            </div>
-            <div class="row-edit border-none">
-                <label>Texte de l'annonce</label>
-                <div class="format-bar">
-                    <span class="f-btn" onclick="tag('annonce_texte_val')"><b>Gras</b></span>
-                    <span class="f-btn text-red-400" onclick="tag('annonce_texte_val','{r}','{/r}')">Rouge</span>
-                    <span class="f-btn" onclick="tag('annonce_texte_val','~~','~~')">Barré</span>
-                </div>
-                <textarea id="annonce_texte_val" rows="3" class="w-full"></textarea>
+                <div id="annonce_titre_val" class="editable mb-2" contenteditable="true"></div>
+                <div id="annonce_texte_val" class="editable" contenteditable="true" style="min-height: 80px;"></div>
             </div>
         </div>
 
-        <div class="section-card">
-            <h2 class="text-center font-black mb-4 underline decoration-yellow-500">SHABBAT</h2>
-            <div id="shabbat-fields"></div>
-        </div>
-
-        <div class="section-card">
-            <h2 class="text-center font-black mb-4 underline decoration-yellow-500">SEMAINE</h2>
-            <div id="semaine-fields"></div>
-        </div>
+        <div id="dynamic-sections"></div>
     </div>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbwpTN2pu6rJ8bFa8EMHpJ6vxwxJpwPqRCrNOJqRKtQkp1M_govLnybxrSisayzxDLpm/exec";
         
         const keys = {
-            shabbat: ['allumage_bougies', 'minha_vendredi', 'chaharit_shabbat', 'kiddoush_shabbat', 'shiour_dan', 'shiour_saadia', 'shiour_haviv', 'shiour_guemara', 'minha_shabbat', 'arvit_motsach'],
-            semaine: ['chaharit_semaine', 'minha_semaine']
+            "SHABBAT": ['allumage_bougies', 'minha_vendredi', 'chaharit_shabbat', 'kiddoush_shabbat', 'shiour_dan', 'shiour_saadia', 'shiour_haviv', 'shiour_guemara', 'minha_shabbat', 'arvit_motsach'],
+            "SEMAINE": ['chaharit_semaine', 'minha_semaine']
         };
 
-        function createFields() {
-            ['shabbat', 'semaine'].forEach(section => {
-                const container = document.getElementById(`${section}-fields`);
-                keys[section].forEach(key => {
-                    container.innerHTML += `
-                        <div class="row-edit">
-                            <label>${key.replace('_', ' ')}</label>
-                            <div class="format-bar">
-                                <span class="f-btn" onclick="tag('${key}_label')"><b>Gras</b></span>
-                                <span class="f-btn text-red-400" onclick="tag('${key}_label','{r}','{/r}')">Rouge</span>
-                            </div>
-                            <div class="inputs-group">
-                                <input type="text" id="${key}_label" placeholder="Libellé">
-                                <input type="text" id="${key}_val" class="val-input" placeholder="Heure">
-                            </div>
-                        </div>`;
-                });
-            });
-        }
-        createFields();
+        function exec(cmd, val=null) { document.execCommand(cmd, false, val); }
 
-        function tag(id, start="**", end="**") {
-            const el = document.getElementById(id);
-            const s = el.selectionStart, e = el.selectionEnd, v = el.value;
-            el.value = v.substring(0,s) + start + v.substring(s,e) + end + v.substring(e);
-            el.focus();
+        // Génération de l'interface
+        const container = document.getElementById('dynamic-sections');
+        for (let section in keys) {
+            let html = `<div class="section-card"><h2 class="text-center font-black mb-4 underline">${section}</h2>`;
+            keys[section].forEach(k => {
+                html += `
+                <div class="row-edit">
+                    <label>${k.replace('_', ' ')}</label>
+                    <div class="flex gap-2 mt-1">
+                        <div id="${k}_label" class="editable flex-1" contenteditable="true"></div>
+                        <div id="${k}_val" class="editable val-input" contenteditable="true"></div>
+                    </div>
+                </div>`;
+            });
+            html += `</div>`;
+            container.innerHTML += html;
+        }
+
+        // Conversion HTML vers Balises (Gras -> **, Rouge -> {r})
+        function htmlToTags(html) {
+            let t = html.replace(/<b>(.*?)<\/b>/gi, "**$1**")
+                        .replace(/<strong>(.*?)<\/strong>/gi, "**$1**")
+                        .replace(/<font color="(.*?)">(.*?)<\/font>/gi, "{r}$2{/r}")
+                        .replace(/<strike>(.*?)<\/strike>/gi, "~~$1~~")
+                        .replace(/<div>/gi, "\n").replace(/<\/div>/gi, "")
+                        .replace(/<br>/gi, "\n");
+            let tmp = document.createElement("DIV");
+            tmp.innerHTML = t;
+            return tmp.textContent || tmp.innerText || "";
+        }
+
+        // Conversion Balises vers HTML (inverse)
+        function tagsToHtml(tags) {
+            if(!tags) return "";
+            return tags.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+                       .replace(/\{r\}(.*?)\{\/r\}/g, '<font color="red">$1</font>')
+                       .replace(/\~\~(.*?)\~\~/g, "<strike>$1</strike>")
+                       .replace(/\n/g, "<br>");
         }
 
         async function loadData() {
             try {
                 const res = await fetch(API_URL);
                 const data = await res.json();
+                document.getElementById('annonce_titre_val').innerHTML = tagsToHtml(data.annonce_titre?.valeur);
+                document.getElementById('annonce_texte_val').innerHTML = tagsToHtml(data.annonce_texte?.valeur);
                 
-                // Annonces
-                if(data.annonce_titre) document.getElementById('annonce_titre_val').value = data.annonce_titre.valeur;
-                if(data.annonce_texte) document.getElementById('annonce_texte_val').value = data.annonce_texte.valeur;
-
-                // Autres
-                [...keys.shabbat, ...keys.semaine].forEach(k => {
+                Object.values(keys).flat().forEach(k => {
                     if(data[k]) {
-                        document.getElementById(`${k}_label`).value = data[k].intitule;
-                        document.getElementById(`${k}_val`).value = data[k].valeur;
+                        document.getElementById(`${k}_label`).innerHTML = tagsToHtml(data[k].intitule);
+                        document.getElementById(`${k}_val`).innerHTML = tagsToHtml(data[k].valeur);
                     }
                 });
-                alert("Données récupérées avec succès !");
-            } catch(e) { alert("Erreur lors du chargement des données."); }
+                alert("Données chargées !");
+            } catch(e) { alert("Erreur chargement"); }
         }
 
         async function sendData() {
             const payload = {
-                annonce_titre: { intitule: 'Annonce Titre', valeur: document.getElementById('annonce_titre_val').value },
-                annonce_texte: { intitule: 'Annonce Texte', valeur: document.getElementById('annonce_texte_val').value }
+                annonce_titre: { intitule: "Annonce Titre", valeur: htmlToTags(document.getElementById('annonce_titre_val').innerHTML) },
+                annonce_texte: { intitule: "Annonce Texte", valeur: htmlToTags(document.getElementById('annonce_texte_val').innerHTML) }
             };
-            
-            [...keys.shabbat, ...keys.semaine].forEach(k => {
+            Object.values(keys).flat().forEach(k => {
                 payload[k] = {
-                    intitule: document.getElementById(`${k}_label`).value,
-                    valeur: document.getElementById(`${k}_val`).value
+                    intitule: htmlToTags(document.getElementById(`${k}_label`).innerHTML),
+                    valeur: htmlToTags(document.getElementById(`${k}_val`).innerHTML)
                 };
             });
-
-            try {
-                const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
-                alert("Site mis à jour !");
-            } catch(e) { alert("Erreur lors de l'envoi."); }
+            await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+            alert("Sheet mis à jour !");
         }
     </script>
 </body>
