@@ -21,16 +21,26 @@
         .row-major { display: flex; justify-content: space-between; align-items: center; padding: 10px 8px; }
         .shiour-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 6px 0; display: flex; justify-content: space-between; font-size: 0.85rem; }
         .f-bold { font-weight: 900 !important; } .f-red { color: #ff4d4d !important; } .f-strike { text-decoration: line-through !important; opacity: 0.6; }
-    </style>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-1NFFHGYEW7"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-1NFFHGYEW7');
-</script>
+        /* ANIMATION GLOW OPTION 2 */
+        @keyframes shabbatGlow {
+            0% { opacity: 0.4; text-shadow: 0 0 0px var(--gold-border); }
+            50% { opacity: 1; text-shadow: 0 0 8px var(--gold-border); }
+            100% { opacity: 0.4; text-shadow: 0 0 0px var(--gold-border); }
+        }
+        .is-loading {
+            animation: shabbatGlow 1.5s infinite ease-in-out;
+            pointer-events: none;
+        }
+    </style>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1NFFHGYEW7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-1NFFHGYEW7');
+    </script>
 </head>
 <body>
     <div class="main-container">
@@ -42,11 +52,11 @@
         <div class="grid grid-cols-2 gap-3 mb-6">
             <div class="zman-box">
                 <p class="text-[10px] font-extrabold uppercase opacity-60 mb-1">Parasha</p>
-                <p id="parasha-display" class="text-lg font-black leading-tight">--</p>
+                <p id="parasha-display" class="text-lg font-black leading-tight is-loading">--</p>
             </div>
             <div class="zman-box">
                 <p id="label-allumage_bougies" class="text-[10px] font-extrabold uppercase mb-1 text-red-500">Allumage</p>
-                <p id="sheet-allumage_bougies" class="text-2xl font-black text-red-600">--:--</p>
+                <p id="sheet-allumage_bougies" class="text-2xl font-black text-red-600 is-loading">--:--</p>
             </div>
         </div>
 
@@ -59,24 +69,24 @@
         <div class="section-card">
             <div class="section-title">SHABBAT<div class="title-underline"></div></div>
             <div class="space-y-1">
-                <div class="row-major"><span id="label-minha_vendredi" class="font-black text-[0.95rem] uppercase">Minha Vendredi</span><span id="sheet-minha_vendredi" class="text-xl font-black">--:--</span></div>
-                <div class="row-major border-t border-white/10 pt-1"><span id="label-chaharit_shabbat" class="font-black text-[0.95rem] uppercase">Shaharit</span><span id="sheet-chaharit_shabbat" class="text-xl font-black">--:--</span></div>
+                <div class="row-major"><span id="label-minha_vendredi" class="font-black text-[0.95rem] uppercase">Minha Vendredi</span><span id="sheet-minha_vendredi" class="text-xl font-black is-loading">--:--</span></div>
+                <div class="row-major border-t border-white/10 pt-1"><span id="label-chaharit_shabbat" class="font-black text-[0.95rem] uppercase">Shaharit</span><span id="sheet-chaharit_shabbat" class="text-xl font-black is-loading">--:--</span></div>
                 <div class="bg-black/20 rounded-lg p-3 my-2 space-y-1 border border-white/5">
-                    <div class="shiour-item"><span id="label-shiour_dan">...</span><span id="sheet-shiour_dan" class="font-bold">--:--</span></div>
-                    <div class="shiour-item"><span id="label-shiour_saadia">...</span><span id="sheet-shiour_saadia" class="font-bold">--:--</span></div>
-                    <div class="shiour-item"><span id="label-shiour_haviv">...</span><span id="sheet-shiour_haviv" class="font-bold">--:--</span></div>
-                    <div class="shiour-item border-none"><span id="label-shiour_guemara">...</span><span id="sheet-shiour_guemara" class="font-bold">--:--</span></div>
+                    <div class="shiour-item"><span id="label-shiour_dan">...</span><span id="sheet-shiour_dan" class="font-bold is-loading">--:--</span></div>
+                    <div class="shiour-item"><span id="label-shiour_saadia">...</span><span id="sheet-shiour_saadia" class="font-bold is-loading">--:--</span></div>
+                    <div class="shiour-item"><span id="label-shiour_haviv">...</span><span id="sheet-shiour_haviv" class="font-bold is-loading">--:--</span></div>
+                    <div class="shiour-item border-none"><span id="label-shiour_guemara">...</span><span id="sheet-shiour_guemara" class="font-bold is-loading">--:--</span></div>
                 </div>
-                <div class="row-major border-t border-white/10 pt-1"><span id="label-minha_shabbat" class="font-black text-[0.95rem] uppercase">Minha / Seouda</span><span id="sheet-minha_shabbat" class="text-xl font-black">--:--</span></div>
-                <div class="row-major border-t border-white/20 pt-1"><span id="label-arvit_motsach" class="font-black text-[0.95rem] uppercase">Arvit Motsae</span><span id="sheet-arvit_motsach" class="text-xl font-black">--:--</span></div>
+                <div class="row-major border-t border-white/10 pt-1"><span id="label-minha_shabbat" class="font-black text-[0.95rem] uppercase">Minha / Seouda</span><span id="sheet-minha_shabbat" class="text-xl font-black is-loading">--:--</span></div>
+                <div class="row-major border-t border-white/20 pt-1"><span id="label-arvit_motsach" class="font-black text-[0.95rem] uppercase">Arvit Motsae</span><span id="sheet-arvit_motsach" class="text-xl font-black is-loading">--:--</span></div>
             </div>
         </div>
 
         <div class="section-card">
             <div class="section-title">SEMAINE<div class="title-underline"></div></div>
             <div class="space-y-1">
-                <div class="row-major"><span id="label-chaharit_semaine" class="font-black text-[0.95rem] uppercase">Shaharit</span><span id="sheet-chaharit_semaine" class="text-xl font-black">--:--</span></div>
-                <div class="row-major border-t border-white/20 pt-1"><span id="label-minha_semaine" class="font-black text-[0.95rem] uppercase">Minha / Arvit</span><span id="sheet-minha_semaine" class="text-xl font-black">--:--</span></div>
+                <div class="row-major"><span id="label-chaharit_semaine" class="font-black text-[0.95rem] uppercase">Shaharit</span><span id="sheet-chaharit_semaine" class="text-xl font-black is-loading">--:--</span></div>
+                <div class="row-major border-t border-white/20 pt-1"><span id="label-minha_semaine" class="font-black text-[0.95rem] uppercase">Minha / Arvit</span><span id="sheet-minha_semaine" class="text-xl font-black is-loading">--:--</span></div>
             </div>
         </div>
         <div class="text-center text-[0.6rem] opacity-30 mt-4 italic">© Greg u</div>
@@ -84,7 +94,19 @@
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbwpTN2pu6rJ8bFa8EMHpJ6vxwxJpwPqRCrNOJqRKtQkp1M_govLnybxrSisayzxDLpm/exec";
-        function formatRichText(t) { if(!t)return ""; return t.replace(/\*\*(.*?)\*\*/g,'<span class="f-bold">$1</span>').replace(/\{r\}(.*?)\{\/r\}/g,'<span class="f-red">$1</span>').replace(/\~\~(.*?)\~\~/g,'<span class="f-strike">$1</span>').replace(/\n/g,"<br>"); }
+        
+        function formatRichText(t) { 
+            if(!t)return ""; 
+            return t.replace(/\*\*(.*?)\*\*/g,'<span class="f-bold">$1</span>')
+                    .replace(/\{r\}(.*?)\{\/r\}/g,'<span class="f-red">$1</span>')
+                    .replace(/\~\~(.*?)\~\~/g,'<span class="f-strike">$1</span>')
+                    .replace(/\n/g,"<br>"); 
+        }
+
+        // Fonction pour retirer l'animation de glow
+        function stopLoading() {
+            document.querySelectorAll('.is-loading').forEach(el => el.classList.remove('is-loading'));
+        }
 
         async function loadAll() {
             try {
@@ -98,10 +120,13 @@
                 const sRes = await fetch(API_URL);
                 const sData = await sRes.json();
 
+                // On arrête l'animation dès qu'on reçoit les datas
+                stopLoading();
+
                 for (let k in sData) {
                     const label = document.getElementById(`label-${k}`), val = document.getElementById(`sheet-${k}`);
-                    if(label) label.innerHTML = formatRichText(sData[k].intitule);
-                    if(val) val.innerHTML = formatRichText(sData[k].valeur);
+                    if(label && sData[k].intitule) label.innerHTML = formatRichText(sData[k].intitule);
+                    if(val && sData[k].valeur) val.innerHTML = formatRichText(sData[k].valeur);
                 }
 
                 // Parasha Logic
@@ -109,14 +134,25 @@
                 document.getElementById('parasha-display').innerHTML = (pMan && pMan.trim() !== "") ? formatRichText(pMan) : nameAuto;
 
                 // Annonces
-                const aT = sData.annonce_titre?sData.annonce_titre.valeur:"", aX = sData.annonce_texte?sData.annonce_texte.valeur:"";
+                const aT = sData.annonce_titre ? sData.annonce_titre.valeur : "", aX = sData.annonce_texte ? sData.annonce_texte.valeur : "";
                 const b = document.getElementById('announcement-block');
-                if(aT||aX) { b.style.display='flex'; document.getElementById('sheet-annonce_titre').innerHTML=formatRichText(aT); document.getElementById('sheet-annonce_texte').innerHTML=formatRichText(aX); }
-                else b.style.display='none';
+                if(aT || aX) { 
+                    b.style.display='flex'; 
+                    document.getElementById('sheet-annonce_titre').innerHTML=formatRichText(aT); 
+                    document.getElementById('sheet-annonce_texte').innerHTML=formatRichText(aX); 
+                } else {
+                    b.style.display='none';
+                }
 
-            } catch(e) { console.error(e); }
+            } catch(e) { 
+                console.error(e);
+                // En cas d'erreur, on arrête quand même le glow pour ne pas perturber l'utilisateur indéfiniment
+                stopLoading();
+            }
         }
-        loadAll(); setInterval(loadAll, 30000);
+
+        loadAll(); 
+        setInterval(loadAll, 30000);
     </script>
 </body>
 </html>
