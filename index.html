@@ -8,9 +8,87 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
-        :root { --bg-deep-blue: #0f34a1; --gold-border: #f1c40f; --card-blue: rgba(255, 255, 255, 0.08); }
-        body { font-family: 'Assistant', sans-serif; background-color: var(--bg-deep-blue); color: white; padding: 10px; display: flex; justify-content: center; }
-        .main-container { border: 3px solid var(--gold-border); border-radius: 20px; min-height: calc(100vh - 20px); padding: 15px; width: 100%; max-width: 500px; background: linear-gradient(to bottom, #0f34a1, #0a2472); }
+        
+        :root { 
+            --bg-deep-blue: #0f34a1; 
+            --gold-border: #f1c40f; 
+            --card-blue: rgba(255, 255, 255, 0.08); 
+        }
+
+        body { 
+            font-family: 'Assistant', sans-serif; 
+            background-color: var(--bg-deep-blue); 
+            color: white; 
+            padding: 10px; 
+            display: flex; 
+            justify-content: center; 
+            margin: 0;
+        }
+
+        /* --- ÉCRAN DE CHARGEMENT (SPLASH) --- */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--bg-deep-blue);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease-out;
+        }
+
+        .loader-line {
+            width: 150px;
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+
+        .loader-line::after {
+            content: "";
+            position: absolute;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gold-border);
+            animation: loadingBar 1.5s infinite ease-in-out;
+        }
+
+        @keyframes loadingBar {
+            0% { left: -100%; }
+            50% { left: 0%; }
+            100% { left: 100%; }
+        }
+
+        .loaded #splash-screen {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* --- DESIGN DU SITE --- */
+        .main-container { 
+            border: 3px solid var(--gold-border); 
+            border-radius: 20px; 
+            min-height: calc(100vh - 20px); 
+            padding: 15px; 
+            width: 100%; 
+            max-width: 500px; 
+            background: linear-gradient(to bottom, #0f34a1, #0a2472); 
+            opacity: 0; /* Caché au début */
+            transform: scale(0.98);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .loaded .main-container {
+            opacity: 1;
+            transform: scale(1);
+        }
+
         .zman-box { background: white; border-radius: 12px; color: #0f34a1; padding: 10px 5px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .annonce-card { background: var(--card-blue); border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 25px 15px 15px 15px; margin-bottom: 15px; display: none; position: relative; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
         .annonce-titre-style { position: absolute; top: 8px; left: 15px; font-size: 0.75rem; font-style: italic; font-weight: 600; opacity: 0.6; text-transform: uppercase; }
@@ -20,18 +98,11 @@
         .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin-top: 4px; border-radius: 2px; }
         .row-major { display: flex; justify-content: space-between; align-items: center; padding: 10px 8px; }
         .shiour-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 6px 0; display: flex; justify-content: space-between; font-size: 0.85rem; }
-        .f-bold { font-weight: 900 !important; } .f-red { color: #ff4d4d !important; } .f-strike { text-decoration: line-through !important; opacity: 0.6; }
-
-        /* ANIMATION GLOW OPTION 2 */
-        @keyframes shabbatGlow {
-            0% { opacity: 0.4; text-shadow: 0 0 0px var(--gold-border); }
-            50% { opacity: 1; text-shadow: 0 0 8px var(--gold-border); }
-            100% { opacity: 0.4; text-shadow: 0 0 0px var(--gold-border); }
-        }
-        .is-loading {
-            animation: shabbatGlow 1.5s infinite ease-in-out;
-            pointer-events: none;
-        }
+        
+        /* Formatage texte */
+        .f-bold { font-weight: 900 !important; } 
+        .f-red { color: #ff4d4d !important; } 
+        .f-strike { text-decoration: line-through !important; opacity: 0.6; }
     </style>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-1NFFHGYEW7"></script>
@@ -43,20 +114,31 @@
     </script>
 </head>
 <body>
+
+    <div id="splash-screen">
+        <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" class="h-20 w-auto rounded bg-white p-2 shadow-2xl">
+        <div class="loader-line"></div>
+        <p class="text-white font-bold mt-4 opacity-50 tracking-widest text-xs uppercase">Chargement des horaires...</p>
+    </div>
+
     <div class="main-container">
         <div class="flex items-center mb-6 border-b border-white/10 pb-3">
-            <div class="w-1/2 flex justify-center"><img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" class="h-10 w-auto rounded bg-white p-1"></div>
-            <div class="w-1/2 flex justify-center"><h1 class="text-xl font-black italic tracking-tighter text-white uppercase">Ohavei Tsion</h1></div>
+            <div class="w-1/2 flex justify-center">
+                <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" class="h-10 w-auto rounded bg-white p-1">
+            </div>
+            <div class="w-1/2 flex justify-center">
+                <h1 class="text-xl font-black italic tracking-tighter text-white uppercase">Ohavei Tsion</h1>
+            </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3 mb-6">
             <div class="zman-box">
                 <p class="text-[10px] font-extrabold uppercase opacity-60 mb-1">Parasha</p>
-                <p id="parasha-display" class="text-lg font-black leading-tight is-loading">--</p>
+                <p id="parasha-display" class="text-lg font-black leading-tight">--</p>
             </div>
             <div class="zman-box">
                 <p id="label-allumage_bougies" class="text-[10px] font-extrabold uppercase mb-1 text-red-500">Allumage</p>
-                <p id="sheet-allumage_bougies" class="text-2xl font-black text-red-600 is-loading">--:--</p>
+                <p id="sheet-allumage_bougies" class="text-2xl font-black text-red-600">--:--</p>
             </div>
         </div>
 
@@ -69,26 +151,29 @@
         <div class="section-card">
             <div class="section-title">SHABBAT<div class="title-underline"></div></div>
             <div class="space-y-1">
-                <div class="row-major"><span id="label-minha_vendredi" class="font-black text-[0.95rem] uppercase">Minha Vendredi</span><span id="sheet-minha_vendredi" class="text-xl font-black is-loading">--:--</span></div>
-                <div class="row-major border-t border-white/10 pt-1"><span id="label-chaharit_shabbat" class="font-black text-[0.95rem] uppercase">Shaharit</span><span id="sheet-chaharit_shabbat" class="text-xl font-black is-loading">--:--</span></div>
+                <div class="row-major"><span id="label-minha_vendredi" class="font-black text-[0.95rem] uppercase">Minha Vendredi</span><span id="sheet-minha_vendredi" class="text-xl font-black">--:--</span></div>
+                <div class="row-major border-t border-white/10 pt-1"><span id="label-chaharit_shabbat" class="font-black text-[0.95rem] uppercase">Shaharit</span><span id="sheet-chaharit_shabbat" class="text-xl font-black">--:--</span></div>
+                
                 <div class="bg-black/20 rounded-lg p-3 my-2 space-y-1 border border-white/5">
-                    <div class="shiour-item"><span id="label-shiour_dan">...</span><span id="sheet-shiour_dan" class="font-bold is-loading">--:--</span></div>
-                    <div class="shiour-item"><span id="label-shiour_saadia">...</span><span id="sheet-shiour_saadia" class="font-bold is-loading">--:--</span></div>
-                    <div class="shiour-item"><span id="label-shiour_haviv">...</span><span id="sheet-shiour_haviv" class="font-bold is-loading">--:--</span></div>
-                    <div class="shiour-item border-none"><span id="label-shiour_guemara">...</span><span id="sheet-shiour_guemara" class="font-bold is-loading">--:--</span></div>
+                    <div class="shiour-item"><span id="label-shiour_dan">...</span><span id="sheet-shiour_dan" class="font-bold">--:--</span></div>
+                    <div class="shiour-item"><span id="label-shiour_saadia">...</span><span id="sheet-shiour_saadia" class="font-bold">--:--</span></div>
+                    <div class="shiour-item"><span id="label-shiour_haviv">...</span><span id="sheet-shiour_haviv" class="font-bold">--:--</span></div>
+                    <div class="shiour-item border-none"><span id="label-shiour_guemara">...</span><span id="sheet-shiour_guemara" class="font-bold">--:--</span></div>
                 </div>
-                <div class="row-major border-t border-white/10 pt-1"><span id="label-minha_shabbat" class="font-black text-[0.95rem] uppercase">Minha / Seouda</span><span id="sheet-minha_shabbat" class="text-xl font-black is-loading">--:--</span></div>
-                <div class="row-major border-t border-white/20 pt-1"><span id="label-arvit_motsach" class="font-black text-[0.95rem] uppercase">Arvit Motsae</span><span id="sheet-arvit_motsach" class="text-xl font-black is-loading">--:--</span></div>
+
+                <div class="row-major border-t border-white/10 pt-1"><span id="label-minha_shabbat" class="font-black text-[0.95rem] uppercase">Minha / Seouda</span><span id="sheet-minha_shabbat" class="text-xl font-black">--:--</span></div>
+                <div class="row-major border-t border-white/20 pt-1"><span id="label-arvit_motsach" class="font-black text-[0.95rem] uppercase">Arvit Motsae</span><span id="sheet-arvit_motsach" class="text-xl font-black">--:--</span></div>
             </div>
         </div>
 
         <div class="section-card">
             <div class="section-title">SEMAINE<div class="title-underline"></div></div>
             <div class="space-y-1">
-                <div class="row-major"><span id="label-chaharit_semaine" class="font-black text-[0.95rem] uppercase">Shaharit</span><span id="sheet-chaharit_semaine" class="text-xl font-black is-loading">--:--</span></div>
-                <div class="row-major border-t border-white/20 pt-1"><span id="label-minha_semaine" class="font-black text-[0.95rem] uppercase">Minha / Arvit</span><span id="sheet-minha_semaine" class="text-xl font-black is-loading">--:--</span></div>
+                <div class="row-major"><span id="label-chaharit_semaine" class="font-black text-[0.95rem] uppercase">Shaharit</span><span id="sheet-chaharit_semaine" class="text-xl font-black">--:--</span></div>
+                <div class="row-major border-t border-white/20 pt-1"><span id="label-minha_semaine" class="font-black text-[0.95rem] uppercase">Minha / Arvit</span><span id="sheet-minha_semaine" class="text-xl font-black">--:--</span></div>
             </div>
         </div>
+
         <div class="text-center text-[0.6rem] opacity-30 mt-4 italic">© Greg u</div>
     </div>
 
@@ -96,37 +181,32 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbwpTN2pu6rJ8bFa8EMHpJ6vxwxJpwPqRCrNOJqRKtQkp1M_govLnybxrSisayzxDLpm/exec";
         
         function formatRichText(t) { 
-            if(!t)return ""; 
+            if(!t) return ""; 
             return t.replace(/\*\*(.*?)\*\*/g,'<span class="f-bold">$1</span>')
                     .replace(/\{r\}(.*?)\{\/r\}/g,'<span class="f-red">$1</span>')
                     .replace(/\~\~(.*?)\~\~/g,'<span class="f-strike">$1</span>')
                     .replace(/\n/g,"<br>"); 
         }
 
-        // Fonction pour retirer l'animation de glow
-        function stopLoading() {
-            document.querySelectorAll('.is-loading').forEach(el => el.classList.remove('is-loading'));
-        }
-
         async function loadAll() {
             try {
-                // 1. Charger Hebcal (Auto)
-                const hRes = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s');
-                const hData = await hRes.json();
+                // 1. Charger Hebcal (en parallèle pour gagner du temps)
+                const hebcalPromise = fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s').then(res => res.json());
+                
+                // 2. Charger Google Sheet
+                const sheetRes = await fetch(API_URL);
+                const sData = await sheetRes.json();
+
+                // On récupère Hebcal
+                const hData = await hebcalPromise;
                 const pAuto = hData.items.find(i => i.category === "parashat");
                 let nameAuto = pAuto ? pAuto.title.replace("Parashat ", "").replace("Parasha ", "") : "--";
 
-                // 2. Charger Sheet (Manuel)
-                const sRes = await fetch(API_URL);
-                const sData = await sRes.json();
-
-                // On arrête l'animation dès qu'on reçoit les datas
-                stopLoading();
-
+                // Remplissage des données
                 for (let k in sData) {
                     const label = document.getElementById(`label-${k}`), val = document.getElementById(`sheet-${k}`);
-                    if(label && sData[k].intitule) label.innerHTML = formatRichText(sData[k].intitule);
-                    if(val && sData[k].valeur) val.innerHTML = formatRichText(sData[k].valeur);
+                    if(label) label.innerHTML = formatRichText(sData[k].intitule);
+                    if(val) val.innerHTML = formatRichText(sData[k].valeur);
                 }
 
                 // Parasha Logic
@@ -144,14 +224,21 @@
                     b.style.display='none';
                 }
 
+                // --- RÉVÉLATION DU SITE ---
+                // On ajoute la classe 'loaded' au body pour déclencher les transitions CSS
+                document.body.classList.add('loaded');
+
             } catch(e) { 
-                console.error(e);
-                // En cas d'erreur, on arrête quand même le glow pour ne pas perturber l'utilisateur indéfiniment
-                stopLoading();
+                console.error("Erreur de chargement:", e);
+                // En cas d'erreur, on force quand même l'affichage pour ne pas bloquer l'utilisateur sur le splash
+                document.body.classList.add('loaded');
             }
         }
 
+        // Démarrage
         loadAll(); 
+        
+        // Rafraîchissement automatique toutes les 30 secondes (sans splash)
         setInterval(loadAll, 30000);
     </script>
 </body>
