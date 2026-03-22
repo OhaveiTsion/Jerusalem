@@ -131,7 +131,7 @@
         </div>
 
         <div class="mt-auto pt-4 text-center">
-            <p class="text-[10px] opacity-30 italic">Greg u.</p>
+            <p class="text-[10px] opacity-30 italic">© Greg u.</p>
         </div>
     </div>
 
@@ -148,17 +148,14 @@
 
         async function loadAll() {
             try {
-                // 1. API Hebcal
                 const hRes = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s');
                 const hData = await hRes.json();
                 const pAuto = hData.items.find(i => i.category === "parashat");
                 const nameAuto = pAuto ? pAuto.title.replace("Parashat ", "") : "--";
 
-                // 2. Google Sheet
                 const sheetRes = await fetch(API_URL);
                 const sData = await sheetRes.json();
 
-                // 3. Remplissage Classique
                 const keys = ['allumage_bougies', 'minha_vendredi', 'chaharit_shabbat', 'shiour_dan', 'shiour_saadia', 'shiour_haviv', 'shiour_guemara', 'minha_shabbat', 'arvit_motsach', 'chaharit_semaine', 'minha_semaine'];
                 keys.forEach(k => {
                     const label = document.getElementById(`label-${k}`), val = document.getElementById(`sheet-${k}`);
@@ -166,7 +163,6 @@
                     if(val && sData[k]) val.innerHTML = formatRichText(sData[k].valeur);
                 });
 
-                // 4. PARASHA : Priorité Sheet, sinon API en gras
                 const pSheet = (sData.parasha && sData.parasha.valeur.trim() !== "" && sData.parasha.valeur !== "--") ? sData.parasha.valeur : null;
                 if (pSheet) {
                     document.getElementById('parasha-display').innerHTML = formatRichText(pSheet);
@@ -174,7 +170,6 @@
                     document.getElementById('parasha-display').innerHTML = `<span class="f-bold">${nameAuto}</span>`;
                 }
 
-                // 5. Annonces
                 const aT = sData.annonce_titre ? sData.annonce_titre.valeur : "";
                 const aX = sData.annonce_texte ? sData.annonce_texte.valeur : "";
                 const b = document.getElementById('announcement-block');
