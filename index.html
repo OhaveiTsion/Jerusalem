@@ -55,6 +55,7 @@
             background: linear-gradient(to bottom, #0f34a1, #0a2472);
             opacity: 0; transform: scale(0.98);
             transition: opacity 0.8s ease, transform 0.8s ease;
+            display: flex; flex-direction: column;
         }
         .loaded .main-container { opacity: 1; transform: scale(1); }
 
@@ -78,7 +79,6 @@
     <div id="splash-screen">
         <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" class="h-20 w-auto rounded bg-white p-2">
         <div class="loader-line"></div>
-		<p class="text-white font-bold mt-4 opacity-50 tracking-widest text-xs">Chargement des horaires...</p>
     </div>
 
     <div class="main-container shadow-2xl">
@@ -129,6 +129,10 @@
                 <div class="row-major border-t border-white/10 pt-1"><span id="label-minha_semaine">Minha / Arvit</span><span id="sheet-minha_semaine" class="text-xl">--:--</span></div>
             </div>
         </div>
+
+        <div class="mt-auto pt-4 text-center">
+            <p class="text-[10px] opacity-30 italic">Greg u.</p>
+        </div>
     </div>
 
     <script>
@@ -162,7 +166,7 @@
                     if(val && sData[k]) val.innerHTML = formatRichText(sData[k].valeur);
                 });
 
-                // 4. PARASHA : Priorité Sheet, sinon API
+                // 4. PARASHA : Priorité Sheet, sinon API en gras
                 const pSheet = (sData.parasha && sData.parasha.valeur.trim() !== "" && sData.parasha.valeur !== "--") ? sData.parasha.valeur : null;
                 if (pSheet) {
                     document.getElementById('parasha-display').innerHTML = formatRichText(pSheet);
