@@ -8,209 +8,123 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
         :root { --bg-deep-blue: #0f34a1; --gold-border: #f1c40f; --card-blue: rgba(255, 255, 255, 0.08); }
+        body { font-family: 'Assistant', sans-serif; background-color: var(--bg-deep-blue); color: white; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         
-        body { 
-            font-family: 'Assistant', sans-serif; 
-            background-color: var(--bg-deep-blue); 
-            color: white; padding: 10px; 
-            display: flex; flex-direction: column; align-items: center; 
-        }
-
+        #floating-toolbar { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); display: none; background: #1a1a1a; padding: 8px 15px; border-radius: 50px; border: 2px solid var(--gold-border); z-index: 9999; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         .admin-nav { position: sticky; top: 0; z-index: 2000; width: 100%; max-width: 500px; display: flex; gap: 10px; padding: 10px 0; background: var(--bg-deep-blue); }
-        .main-container { border: 3px solid var(--gold-border); border-radius: 20px; padding: 15px; width: 100%; max-width: 500px; background: linear-gradient(to bottom, #0f34a1, #0a2472); position: relative; }
+        .main-container { border: 3px solid var(--gold-border); border-radius: 20px; padding: 15px; width: 100%; max-width: 500px; background: linear-gradient(to bottom, #0f34a1, #0a2472); }
         
-        .editable { 
-            background: rgba(255,255,255,0.05); 
-            border: 1px dashed rgba(255,255,255,0.2); 
-            padding: 4px; border-radius: 6px; outline: none; min-height: 1.5em; 
-            -webkit-user-select: text; user-select: text; white-space: pre-wrap;
-        }
-        .editable:focus { background: rgba(255,255,255,0.15); border: 1px solid var(--gold-border); }
-        .editable:empty:before { content: attr(placeholder); color: rgba(255,255,255,0.3); }
-
+        .editable { background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); padding: 4px; border-radius: 6px; outline: none; min-height: 1.2em; }
+        .editable:focus { border: 1px solid var(--gold-border); background: rgba(255,255,255,0.1); }
+        
         .zman-box { background: white; border-radius: 12px; color: #0f34a1; padding: 10px 5px; text-align: center; }
-        .annonce-card { background: var(--card-blue); border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 25px 15px 15px 15px; margin-bottom: 15px; position: relative; text-align: center; }
-        .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; margin-bottom: 12px; display: flex; flex-direction: column; align-items: center; }
+        .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: var(--card-blue); margin-bottom: 8px; }
+        .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; display: flex; flex-direction: column; align-items: center; }
         .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin-top: 4px; border-radius: 2px; }
         .row-major { display: flex; justify-content: space-between; align-items: center; padding: 10px 8px; }
-        .shiour-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 6px 0; display: flex; justify-content: space-between; font-size: 0.85rem; }
-        .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: var(--card-blue); margin-bottom: 8px; }
+        .f-btn { font-size: 0.7rem; background: #333; color: white; padding: 4px 10px; border-radius: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
-
     <div class="admin-nav">
-        <button onclick="location.reload()" class="flex-1 bg-blue-500 text-white p-3 rounded-xl font-bold text-xs uppercase">🔄 Actu.</button>
-        <button onclick="sendData()" class="flex-[2] bg-green-500 text-white p-3 rounded-xl font-black text-lg uppercase shadow-lg">🚀 Envoyer</button>
+        <button onclick="location.reload()" class="flex-1 bg-blue-600 text-white p-3 rounded-xl font-bold text-xs">🔄 ACTU</button>
+        <button onclick="sendData()" class="flex-[2] bg-green-600 text-white p-3 rounded-xl font-black text-lg shadow-lg">🚀 ENVOYER</button>
+    </div>
+
+    <div id="floating-toolbar">
+        <button class="f-btn" onmousedown="event.preventDefault(); document.execCommand('bold')">Gras</button>
+        <button class="f-btn text-red-500" onmousedown="event.preventDefault(); document.execCommand('foreColor', false, '#ff4d4d')">Rouge</button>
+        <button class="f-btn" onmousedown="event.preventDefault(); document.execCommand('removeFormat')">Normal</button>
     </div>
 
     <div class="main-container shadow-2xl">
         <div class="grid grid-cols-2 gap-3 mb-6">
             <div class="zman-box">
-                <p class="text-[10px] opacity-60">Parasha</p>
-                <div id="parasha_val" class="editable text-lg leading-tight mx-1 font-bold" contenteditable="plaintext-only" placeholder="Laisser vide pour Auto"></div>
-                <p id="auto-paracha-hint" class="text-[9px] italic opacity-40 mt-1"></p>
+                <p class="text-[10px] opacity-60 uppercase font-bold">Shabbat</p>
+                <div id="parasha_val" class="editable text-lg font-bold" contenteditable="true"></div>
+                <p id="auto-paracha-hint" class="text-[9px] italic opacity-40"></p>
             </div>
             <div class="zman-box">
-                <p id="allumage_bougies_label" class="editable text-[10px] mb-1 text-red-500" contenteditable="plaintext-only">Allumage</p>
-                <div id="allumage_bougies_val" class="editable text-2xl text-red-600 mx-2 font-bold" contenteditable="plaintext-only">--:--</div>
+                <p id="allumage_bougies_label" class="editable text-[10px] text-red-500 font-bold uppercase" contenteditable="true">Allumage</p>
+                <div id="allumage_bougies_val" class="editable text-2xl text-red-600 font-bold" contenteditable="true">--:--</div>
             </div>
         </div>
 
-        <div class="annonce-card">
-            <div id="annonce_titre_val" class="editable text-[0.75rem] italic" contenteditable="plaintext-only" placeholder="Titre Annonce (vide = caché)"></div>
-            <div id="annonce_texte_val" class="editable text-xl mt-2 font-bold" contenteditable="plaintext-only" placeholder="Texte Annonce (vide = caché)"></div>
+        <div class="section-card text-center">
+            <div id="annonce_titre_val" class="editable text-xs italic opacity-60" contenteditable="true" placeholder="Titre..."></div>
+            <div id="annonce_texte_val" class="editable text-xl font-bold mt-2" contenteditable="true" placeholder="Texte..."></div>
         </div>
 
-        <button onclick="createExtraSection()" class="w-full bg-indigo-600/30 border border-indigo-400 border-dashed text-indigo-200 p-3 rounded-xl font-bold text-sm uppercase mb-3 hover:bg-indigo-600/50 transition">
-            ➕ Ajouter une zone (Fête, etc.)
-        </button>
-        <div id="extra-sections-wrapper" class="w-full mb-6"></div>
+        <button onclick="addZone()" class="w-full bg-white/10 border border-dashed border-white/30 p-2 rounded-lg text-xs font-bold mb-4">+ AJOUTER ZONE (FÊTE...)</button>
+        <div id="extra-sections"></div>
 
         <div class="section-card">
             <div class="section-title">SHABBAT<div class="title-underline"></div></div>
-            <div class="space-y-1">
-                <div class="row-major"><div id="minha_vendredi_label" class="editable text-sm" contenteditable="plaintext-only">Minha Vendredi</div><div id="minha_vendredi_val" class="editable text-xl font-bold" contenteditable="plaintext-only">--:--</div></div>
-                <div class="row-major border-t border-white/10 pt-1"><div id="chaharit_shabbat_label" class="editable text-sm" contenteditable="plaintext-only">Shaharit</div><div id="chaharit_shabbat_val" class="editable text-xl font-bold" contenteditable="plaintext-only">--:--</div></div>
-                
-                <div class="bg-black/20 rounded-lg p-3 my-2 space-y-2 border border-white/5">
-                    <div class="shiour-item"><div id="shiour_dan_label" class="editable text-xs" contenteditable="plaintext-only">...</div><div id="shiour_dan_val" class="editable font-bold" contenteditable="plaintext-only">--:--</div></div>
-                    <div class="shiour-item"><div id="shiour_saadia_label" class="editable text-xs" contenteditable="plaintext-only">...</div><div id="shiour_saadia_val" class="editable font-bold" contenteditable="plaintext-only">--:--</div></div>
-                    <div class="shiour-item"><div id="shiour_haviv_label" class="editable text-xs" contenteditable="plaintext-only">...</div><div id="shiour_haviv_val" class="editable font-bold" contenteditable="plaintext-only">--:--</div></div>
-                    <div class="shiour-item border-none"><div id="shiour_guemara_label" class="editable text-xs" contenteditable="plaintext-only">...</div><div id="shiour_guemara_val" class="editable font-bold" contenteditable="plaintext-only">--:--</div></div>
-                </div>
-
-                <div class="row-major border-t border-white/10 pt-1"><div id="minha_shabbat_label" class="editable text-sm" contenteditable="plaintext-only">Minha / Seouda</div><div id="minha_shabbat_val" class="editable text-xl font-bold" contenteditable="plaintext-only">--:--</div></div>
-                <div class="row-major border-t border-white/10 pt-1"><div id="arvit_motsach_label" class="editable text-sm" contenteditable="plaintext-only">Arvit Motsae</div><div id="arvit_motsach_val" class="editable text-xl font-bold" contenteditable="plaintext-only">--:--</div></div>
+            <div class="space-y-1 mt-4">
+                <div class="row-major"><div id="minha_vendredi_label" class="editable text-sm" contenteditable="true">Minha Vendredi</div><div id="minha_vendredi_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
+                <div class="row-major border-t border-white/10 pt-1"><div id="chaharit_shabbat_label" class="editable text-sm" contenteditable="true">Shaharit</div><div id="chaharit_shabbat_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
+                <div class="row-major border-t border-white/10 pt-1"><div id="minha_shabbat_label" class="editable text-sm" contenteditable="true">Minha / Seouda</div><div id="minha_shabbat_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
+                <div class="row-major border-t border-white/10 pt-1"><div id="arvit_motsach_label" class="editable text-sm" contenteditable="true">Arvit Motsae</div><div id="arvit_motsach_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
             </div>
         </div>
 
         <div class="section-card">
             <div class="section-title">SEMAINE<div class="title-underline"></div></div>
-            <div class="space-y-1">
-                <div class="row-major"><div id="chaharit_semaine_label" class="editable text-sm" contenteditable="plaintext-only">Shaharit</div><div id="chaharit_semaine_val" class="editable text-xl font-bold" contenteditable="plaintext-only">--:--</div></div>
-                <div class="row-major border-t border-white/10 pt-1"><div id="minha_semaine_label" class="editable text-sm" contenteditable="plaintext-only">Minha / Arvit</div><div id="minha_semaine_val" class="editable text-xl font-bold" contenteditable="plaintext-only">--:--</div></div>
+            <div class="space-y-1 mt-4">
+                <div class="row-major"><div id="chaharit_semaine_label" class="editable text-sm" contenteditable="true">Shaharit</div><div id="chaharit_semaine_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
+                <div class="row-major border-t border-white/10 pt-1"><div id="minha_semaine_label" class="editable text-sm" contenteditable="true">Minha / Arvit</div><div id="minha_semaine_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
             </div>
         </div>
     </div>
 
     <script>
         const API_URL = "https://api-syna.gregyman.workers.dev/";
-        const keys = ['allumage_bougies', 'minha_vendredi', 'chaharit_shabbat', 'shiour_dan', 'shiour_saadia', 'shiour_haviv', 'shiour_guemara', 'minha_shabbat', 'arvit_motsach', 'chaharit_semaine', 'minha_semaine', 'annonce_titre', 'annonce_texte', 'parasha'];
+        const keys = ['allumage_bougies', 'minha_vendredi', 'chaharit_shabbat', 'minha_shabbat', 'arvit_motsach', 'chaharit_semaine', 'minha_semaine', 'annonce_titre', 'annonce_texte', 'parasha'];
+        
+        const toolbar = document.getElementById('floating-toolbar');
+        document.addEventListener('focusin', e => { if(e.target.classList.contains('editable')) toolbar.style.display='flex'; });
+        document.addEventListener('focusout', () => setTimeout(()=> { if(!document.activeElement.classList.contains('editable')) toolbar.style.display='none'; }, 200));
 
-        // Gestion des sections dynamiques
-        function createExtraSection(title = "PESSAH", rows = []) {
-            const id = 'sec-' + Date.now();
-            const html = `
-            <div class="section-card extra-section mb-3 border-indigo-500" id="${id}">
-                <div class="flex justify-between items-center mb-2">
-                    <div class="section-title editable mb-0 text-indigo-300 flex-1 text-left ml-2" contenteditable="plaintext-only">${title}</div>
-                    <button onclick="document.getElementById('${id}').remove()" class="text-red-500 bg-red-500/20 px-2 py-1 rounded text-xs font-bold ml-2">Supprimer la zone</button>
-                </div>
-                <div class="title-underline mx-auto mb-4 bg-indigo-400"></div>
-                <div class="space-y-1 rows-container"></div>
-                <button onclick="addExtraRow('${id}')" class="mt-3 text-xs bg-indigo-500/20 text-indigo-200 px-3 py-2 rounded-lg w-full font-bold">+ Ajouter une ligne d'horaire</button>
-            </div>`;
-            document.getElementById('extra-sections-wrapper').insertAdjacentHTML('beforeend', html);
-            
-            if (rows.length === 0) {
-                addExtraRow(id, "Minha", "18:00"); // Exemple par défaut
-            } else {
-                rows.forEach(r => addExtraRow(id, r.label, r.val));
-            }
+        function htmlToTags(h) { return h.replace(/<b>(.*?)<\/b>/gi, "**$1**").replace(/<font color="(.*?)">(.*?)<\/font>/gi, "{r}$2{/r}").replace(/<br>|<div>/gi, "\n").replace(/<\/div>|&nbsp;/g, " ").trim(); }
+        function tagsToHtml(t) { return t.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>").replace(/\{r\}(.*?)\{\/r\}/g, '<font color="#ff4d4d">$1</font>').replace(/\n/g, "<br>"); }
+
+        function addZone(title="TITRE ZONE", rows=[]) {
+            const id = 'z'+Date.now();
+            const html = `<div class="section-card extra-z" id="${id}"><div class="flex justify-between items-start"><button onclick="this.parentElement.parentElement.remove()" class="text-[10px] bg-red-900/50 p-1 rounded">X</button><div class="section-title editable flex-1" contenteditable="true">${title}</div></div><div class="title-underline mx-auto mb-4"></div><div class="rows-cont space-y-1"></div><button onclick="addRow('${id}')" class="w-full text-[10px] mt-2 opacity-50">+ LIGNE</button></div>`;
+            document.getElementById('extra-sections').insertAdjacentHTML('beforeend', html);
+            if(rows.length) rows.forEach(r => addRow(id, r.label, r.val)); else addRow(id);
         }
-
-        function addExtraRow(secId, label = "Nouvel Horaire", val = "--:--") {
-            const container = document.querySelector(`#${secId} .rows-container`);
-            const html = `
-                <div class="row-major border-t border-white/10 pt-1 extra-row">
-                    <div class="flex-[2] editable text-sm" contenteditable="plaintext-only">${label}</div>
-                    <div class="flex-1 editable text-xl text-right font-bold" contenteditable="plaintext-only">${val}</div>
-                    <button onclick="this.closest('.extra-row').remove()" class="ml-3 text-red-500 text-lg opacity-70">×</button>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', html);
+        function addRow(zid, l="Libellé", v="--:--") {
+            const cont = document.querySelector(`#${zid} .rows-cont`);
+            cont.insertAdjacentHTML('beforeend', `<div class="row-major border-t border-white/10 pt-1 extra-r"><div class="editable text-sm flex-1" contenteditable="true">${tagsToHtml(l)}</div><div class="editable text-xl font-bold text-right" contenteditable="true">${tagsToHtml(v)}</div><button onclick="this.parentElement.remove()" class="ml-2 opacity-30">x</button></div>`);
         }
 
         async function loadData() {
             try {
-                const res = await fetch(API_URL);
-                const data = await res.json();
-                
-                // Remplissage Classique
-                keys.forEach(k => {
-                    const lEl = document.getElementById(`${k}_label`), vEl = document.getElementById(`${k}_val`);
-                    if(lEl && data[k]) lEl.innerText = data[k].intitule || "";
-                    if(vEl && data[k]) vEl.innerText = data[k].valeur || "";
-                });
-
-                // Remplissage Sections Supplémentaires
-                if (data.extra_sections && data.extra_sections.length > 0) {
-                    data.extra_sections.forEach(sec => createExtraSection(sec.title, sec.rows));
-                }
-
-                // Logique Hebcal pour Suggestion Parasha/Fête
+                const res = await fetch(API_URL); const data = await res.json();
+                keys.forEach(k => { const lEl=document.getElementById(`${k}_label`), vEl=document.getElementById(`${k}_val`); if(lEl && data[k]) lEl.innerHTML=tagsToHtml(data[k].intitule); if(vEl && data[k]) vEl.innerHTML=tagsToHtml(data[k].valeur); });
+                if(data.extra_sections) data.extra_sections.forEach(s => addZone(s.title, s.rows));
                 const hRes = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s');
                 const hData = await hRes.json();
-                
-                let nomSuggere = "--";
-                const p = hData.items.find(i => i.category === "parashat");
-                if (p) {
-                    nomSuggere = p.title.replace("Parashat ", "");
-                } else {
-                    const f = hData.items.find(i => i.category === "holiday");
-                    if (f) nomSuggere = f.title;
-                }
-                document.getElementById('auto-paracha-hint').innerText = "Hebcal Suggère : " + nomSuggere;
-
-            } catch(e) { console.error("Erreur de chargement"); }
+                const p = hData.items.find(i => i.category === "parashat" || i.category === "holiday");
+                if(p) document.getElementById('auto-paracha-hint').innerText = "Hebcal : " + p.title.replace("Parashat ","");
+            } catch(e) {}
         }
 
         async function sendData() {
-            const pass = prompt("Mot de passe :");
-            if(!pass) return;
+            const pass = prompt("Mot de passe :"); if(!pass) return;
             const payload = {};
-            
-            // Collecte des champs normaux (.innerText retire automatiquement les balises HTML/Gras)
-            keys.forEach(k => {
-                const lEl = document.getElementById(`${k}_label`), vEl = document.getElementById(`${k}_val`);
-                payload[k] = { 
-                    intitule: lEl ? lEl.innerText.trim() : k, 
-                    valeur: vEl ? vEl.innerText.trim() : "" 
-                };
-            });
-
-            // Collecte des sections dynamiques
+            keys.forEach(k => { const lEl=document.getElementById(`${k}_label`), vEl=document.getElementById(`${k}_val`); payload[k] = { intitule: lEl?htmlToTags(lEl.innerHTML):k, valeur: vEl?htmlToTags(vEl.innerHTML):"" }; });
             payload.extra_sections = [];
-            document.querySelectorAll('.extra-section').forEach(sec => {
-                const title = sec.querySelector('.section-title').innerText.trim();
-                const rows = [];
-                sec.querySelectorAll('.extra-row').forEach(row => {
-                    const fields = row.querySelectorAll('.editable');
-                    rows.push({
-                        label: fields[0].innerText.trim(),
-                        val: fields[1].innerText.trim()
-                    });
-                });
-                payload.extra_sections.push({ title, rows });
+            document.querySelectorAll('.extra-z').forEach(z => {
+                const rows = []; z.querySelectorAll('.extra-r').forEach(r => { const eds = r.querySelectorAll('.editable'); rows.push({label: htmlToTags(eds[0].innerHTML), val: htmlToTags(eds[1].innerHTML)}); });
+                payload.extra_sections.push({title: z.querySelector('.section-title').innerText, rows});
             });
-
             try {
-                const response = await fetch(API_URL, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ auth: pass, payload: payload }) 
-                });
-                const result = await response.text();
-                
-                if(response.ok) {
-                    alert("🚀 Envoyé avec succès !");
-                } else {
-                    alert("Erreur : " + result);
-                }
+                const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ auth: pass, payload: payload }) });
+                alert((await r.text()).includes("Succès") ? "🚀 OK !" : "Erreur");
             } catch(e) { alert("Erreur réseau"); }
         }
-        
         window.onload = loadData;
     </script>
 </body>
