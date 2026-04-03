@@ -22,30 +22,21 @@
             display: flex; justify-content: center; margin: 0;
         }
 
-        /* SPLASH SCREEN */
         #splash-screen {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--bg-deep-blue);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 9999;
-            transition: opacity 0.6s ease-out;
+            z-index: 9999; transition: opacity 0.6s ease-out;
         }
         .loader-line {
-            width: 150px; height: 3px;
-            background: rgba(255,255,255,0.1);
+            width: 150px; height: 3px; background: rgba(255,255,255,0.1);
             margin-top: 20px; position: relative; overflow: hidden; border-radius: 2px;
         }
         .loader-line::after {
-            content: ""; position: absolute; left: -100%;
-            width: 100%; height: 100%;
-            background: var(--gold-border);
-            animation: loadingBar 1.5s infinite ease-in-out;
+            content: ""; position: absolute; left: -100%; width: 100%; height: 100%;
+            background: var(--gold-border); animation: loadingBar 1.5s infinite ease-in-out;
         }
-        @keyframes loadingBar {
-            0% { left: -100%; } 50% { left: 0%; } 100% { left: 100%; }
-        }
+        @keyframes loadingBar { 0% { left: -100%; } 50% { left: 0%; } 100% { left: 100%; } }
         .loaded #splash-screen { opacity: 0; pointer-events: none; }
 
         .main-container { 
@@ -54,8 +45,7 @@
             width: 100%; max-width: 500px; 
             background: linear-gradient(to bottom, #0f34a1, #0a2472);
             opacity: 0; transform: scale(0.98);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-            display: flex; flex-direction: column;
+            transition: opacity 0.8s ease, transform 0.8s ease; display: flex; flex-direction: column;
         }
         .loaded .main-container { opacity: 1; transform: scale(1); }
 
@@ -68,10 +58,6 @@
         .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin-top: 4px; border-radius: 2px; }
         .row-major { display: flex; justify-content: space-between; align-items: center; padding: 10px 8px; }
         .shiour-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 6px 0; display: flex; justify-content: space-between; font-size: 0.85rem; }
-
-        .f-bold { font-weight: 900 !important; }
-        .f-red { color: #ff4d4d !important; }
-        .f-strike { text-decoration: line-through !important; opacity: 0.6; }
     </style>
 </head>
 <body>
@@ -89,8 +75,8 @@
 
         <div class="grid grid-cols-2 gap-3 mb-6">
             <div class="zman-box">
-                <p class="text-[10px] opacity-60 mb-1">Parasha</p>
-                <p id="parasha-display" class="text-lg leading-tight">--</p>
+                <p class="text-[10px] opacity-60 mb-1">Parasha / Fête</p>
+                <p id="parasha-display" class="text-lg leading-tight font-bold">--</p>
             </div>
             <div class="zman-box">
                 <p id="label-allumage_bougies" class="text-[10px] mb-1 text-red-500">Allumage</p>
@@ -100,33 +86,35 @@
 
         <div id="announcement-block" class="annonce-card">
             <span id="sheet-annonce_titre" class="annonce-titre-style"></span>
-            <div id="sheet-annonce_texte" class="text-xl mt-2"></div>
+            <div id="sheet-annonce_texte" class="text-xl mt-2 font-bold"></div>
             <div class="title-underline mt-3 mx-auto"></div>
         </div>
+
+        <div id="extra-sections-container"></div>
 
         <div class="section-card">
             <div class="section-title">SHABBAT<div class="title-underline"></div></div>
             <div class="space-y-1">
-                <div class="row-major"><span id="label-minha_vendredi">Minha Vendredi</span><span id="sheet-minha_vendredi" class="text-xl">--:--</span></div>
-                <div class="row-major border-t border-white/10 pt-1"><span id="label-chaharit_shabbat">Shaharit</span><span id="sheet-chaharit_shabbat" class="text-xl">--:--</span></div>
+                <div class="row-major"><span id="label-minha_vendredi">Minha Vendredi</span><span id="sheet-minha_vendredi" class="text-xl font-bold">--:--</span></div>
+                <div class="row-major border-t border-white/10 pt-1"><span id="label-chaharit_shabbat">Shaharit</span><span id="sheet-chaharit_shabbat" class="text-xl font-bold">--:--</span></div>
                 
                 <div class="bg-black/20 rounded-lg p-3 my-2 space-y-1 border border-white/5">
-                    <div class="shiour-item"><span id="label-shiour_dan">...</span><span id="sheet-shiour_dan">--:--</span></div>
-                    <div class="shiour-item"><span id="label-shiour_saadia">...</span><span id="sheet-shiour_saadia">--:--</span></div>
-                    <div class="shiour-item"><span id="label-shiour_haviv">...</span><span id="sheet-shiour_haviv">--:--</span></div>
-                    <div class="shiour-item border-none"><span id="label-shiour_guemara">...</span><span id="sheet-shiour_guemara">--:--</span></div>
+                    <div class="shiour-item"><span id="label-shiour_dan">...</span><span id="sheet-shiour_dan" class="font-bold">--:--</span></div>
+                    <div class="shiour-item"><span id="label-shiour_saadia">...</span><span id="sheet-shiour_saadia" class="font-bold">--:--</span></div>
+                    <div class="shiour-item"><span id="label-shiour_haviv">...</span><span id="sheet-shiour_haviv" class="font-bold">--:--</span></div>
+                    <div class="shiour-item border-none"><span id="label-shiour_guemara">...</span><span id="sheet-shiour_guemara" class="font-bold">--:--</span></div>
                 </div>
 
-                <div class="row-major border-t border-white/10 pt-1"><span id="label-minha_shabbat">Minha / Seouda</span><span id="sheet-minha_shabbat" class="text-xl">--:--</span></div>
-                <div class="row-major border-t border-white/10 pt-1"><span id="label-arvit_motsach">Arvit Motsae</span><span id="sheet-arvit_motsach" class="text-xl">--:--</span></div>
+                <div class="row-major border-t border-white/10 pt-1"><span id="label-minha_shabbat">Minha / Seouda</span><span id="sheet-minha_shabbat" class="text-xl font-bold">--:--</span></div>
+                <div class="row-major border-t border-white/10 pt-1"><span id="label-arvit_motsach">Arvit Motsae</span><span id="sheet-arvit_motsach" class="text-xl font-bold">--:--</span></div>
             </div>
         </div>
 
         <div class="section-card">
             <div class="section-title">SEMAINE<div class="title-underline"></div></div>
             <div class="space-y-1">
-                <div class="row-major"><span id="label-chaharit_semaine">Shaharit</span><span id="sheet-chaharit_semaine" class="text-xl">--:--</span></div>
-                <div class="row-major border-t border-white/10 pt-1"><span id="label-minha_semaine">Minha / Arvit</span><span id="sheet-minha_semaine" class="text-xl">--:--</span></div>
+                <div class="row-major"><span id="label-chaharit_semaine">Shaharit</span><span id="sheet-chaharit_semaine" class="text-xl font-bold">--:--</span></div>
+                <div class="row-major border-t border-white/10 pt-1"><span id="label-minha_semaine">Minha / Arvit</span><span id="sheet-minha_semaine" class="text-xl font-bold">--:--</span></div>
             </div>
         </div>
 
@@ -138,47 +126,72 @@
     <script>
         const API_URL = "https://api-syna.gregyman.workers.dev/";
 
-        function formatRichText(t) { 
-            if(!t) return ""; 
-            return t.replace(/\*\*(.*?)\*\*/g,'<span class="f-bold">$1</span>')
-                    .replace(/\{r\}(.*?)\{\/r\}/g,'<span class="f-red">$1</span>')
-                    .replace(/\~\~(.*?)\~\~/g,'<span class="f-strike">$1</span>')
-                    .replace(/\n/g,"<br>"); 
-        }
-
         async function loadAll() {
             try {
+                // 1. Logique Parasha / Fête depuis Hebcal
                 const hRes = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s');
                 const hData = await hRes.json();
-                const pAuto = hData.items.find(i => i.category === "parashat");
-                const nameAuto = pAuto ? pAuto.title.replace("Parashat ", "") : "--";
+                let nameAuto = "--";
+                const parashaEvent = hData.items.find(i => i.category === "parashat");
+                
+                if (parashaEvent) {
+                    nameAuto = parashaEvent.title.replace("Parashat ", "");
+                } else {
+                    // S'il n'y a pas de parasha (ex: Shabbat de Fête), on cherche la fête
+                    const holidayEvent = hData.items.find(i => i.category === "holiday");
+                    if (holidayEvent) nameAuto = holidayEvent.title;
+                }
 
+                // 2. Chargement des données du Worker
                 const sheetRes = await fetch(API_URL);
                 const sData = await sheetRes.json();
 
+                // Remplissage des champs classiques
                 const keys = ['allumage_bougies', 'minha_vendredi', 'chaharit_shabbat', 'shiour_dan', 'shiour_saadia', 'shiour_haviv', 'shiour_guemara', 'minha_shabbat', 'arvit_motsach', 'chaharit_semaine', 'minha_semaine'];
                 keys.forEach(k => {
                     const label = document.getElementById(`label-${k}`), val = document.getElementById(`sheet-${k}`);
-                    if(label && sData[k]) label.innerHTML = formatRichText(sData[k].intitule);
-                    if(val && sData[k]) val.innerHTML = formatRichText(sData[k].valeur);
+                    if(label && sData[k]) label.innerText = sData[k].intitule;
+                    if(val && sData[k]) val.innerText = sData[k].valeur;
                 });
 
-                const pSheet = (sData.parasha && sData.parasha.valeur && sData.parasha.valeur.trim() !== "" && sData.parasha.valeur !== "--") ? sData.parasha.valeur : null;
-                if (pSheet) {
-                    document.getElementById('parasha-display').innerHTML = formatRichText(pSheet);
+                // 3. Affichage Parasha (Manuel ou Auto)
+                const pManuel = (sData.parasha && sData.parasha.valeur && sData.parasha.valeur.trim() !== "" && sData.parasha.valeur !== "--") ? sData.parasha.valeur : null;
+                document.getElementById('parasha-display').innerText = pManuel || nameAuto;
+
+                // 4. Gestion de l'Annonce (Indépendant)
+                const aTitre = sData.annonce_titre ? sData.annonce_titre.valeur.trim() : "";
+                const aTexte = sData.annonce_texte ? sData.annonce_texte.valeur.trim() : "";
+                const blockAnnonce = document.getElementById('announcement-block');
+                const spanTitre = document.getElementById('sheet-annonce_titre');
+                const divTexte = document.getElementById('sheet-annonce_texte');
+
+                if (aTitre === "" && aTexte === "") {
+                    blockAnnonce.style.display = 'none';
                 } else {
-                    document.getElementById('parasha-display').innerHTML = `<span class="f-bold">${nameAuto}</span>`;
+                    blockAnnonce.style.display = 'block';
+                    spanTitre.innerText = aTitre;
+                    spanTitre.style.display = aTitre === "" ? 'none' : 'block';
+                    divTexte.innerText = aTexte;
+                    divTexte.style.display = aTexte === "" ? 'none' : 'block';
                 }
 
-                const aT = sData.annonce_titre ? sData.annonce_titre.valeur : "";
-                const aX = sData.annonce_texte ? sData.annonce_texte.valeur : "";
-                const b = document.getElementById('announcement-block');
-                if(aT || aX) { 
-                    b.style.display = 'block'; 
-                    document.getElementById('sheet-annonce_titre').innerHTML = formatRichText(aT); 
-                    document.getElementById('sheet-annonce_texte').innerHTML = formatRichText(aX); 
-                } else { 
-                    b.style.display = 'none'; 
+                // 5. Affichage des Zones Dynamiques (Fêtes)
+                const extraContainer = document.getElementById('extra-sections-container');
+                extraContainer.innerHTML = '';
+                if (sData.extra_sections && sData.extra_sections.length > 0) {
+                    sData.extra_sections.forEach(sec => {
+                        let rowsHtml = '';
+                        sec.rows.forEach((r, index) => {
+                            const borderClass = index === 0 ? '' : 'border-t border-white/10 pt-1';
+                            rowsHtml += `<div class="row-major ${borderClass}"><span class="text-sm">${r.label}</span><span class="text-xl font-bold">${r.val}</span></div>`;
+                        });
+                        extraContainer.insertAdjacentHTML('beforeend', `
+                            <div class="section-card border-indigo-400">
+                                <div class="section-title text-indigo-300">${sec.title}<div class="title-underline bg-indigo-400"></div></div>
+                                <div class="space-y-1">${rowsHtml}</div>
+                            </div>
+                        `);
+                    });
                 }
 
                 document.body.classList.add('loaded');
