@@ -16,40 +16,42 @@
         @keyframes load { 0% { left: -100%; } 100% { left: 100%; } }
         .loaded #splash-screen { opacity: 0; pointer-events: none; }
 
-        .main-container { border: 3px solid var(--gold-border); border-radius: 20px; width: 100%; max-width: 500px; padding: 15px; background: linear-gradient(to bottom, #0f34a1, #0a2472); display: flex; flex-direction: column; }
+        .main-container { border: 3px solid var(--gold-border); border-radius: 20px; width: 100%; max-width: 500px; padding: 15px; background: linear-gradient(to bottom, #0f34a1, #0a2472); min-height: calc(100vh - 20px); display: flex; flex-direction: column; }
         .zman-box { background: white; border-radius: 12px; color: #0f34a1; padding: 10px 5px; text-align: center; }
-        .annonce-card { background: var(--card-blue); border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 20px; margin-bottom: 15px; text-align: center; position: relative; }
+        .annonce-card { background: var(--card-blue); border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 25px 15px 15px 15px; margin-bottom: 15px; text-align: center; position: relative; }
+        .annonce-titre-style { position: absolute; top: 8px; left: 15px; font-size: 0.75rem; font-style: italic; opacity: 0.6; }
+        
         .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: var(--card-blue); margin-bottom: 10px; }
-        .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; }
+        .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; display: flex; flex-direction: column; align-items: center; margin-bottom: 12px; }
         .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin-top: 4px; border-radius: 2px; }
-        .row-major { display: flex; justify-content: space-between; align-items: center; padding: 8px; }
+        .row-major { display: flex; justify-content: space-between; align-items: center; padding: 10px 8px; }
         .shiour-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 6px 0; display: flex; justify-content: space-between; font-size: 0.85rem; }
         .f-bold { font-weight: 800; } .f-red { color: #ff4d4d; }
     </style>
 </head>
 <body>
-    <div id="splash-screen"><img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" class="h-16"><div class="loader-line"></div></div>
+    <div id="splash-screen"><img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" class="h-20"><div class="loader-line"></div></div>
 
-    <div class="main-container">
+    <div class="main-container shadow-2xl">
         <div class="flex items-center mb-6 border-b border-white/10 pb-3">
-            <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" class="h-8 bg-white p-1 rounded">
-            <h1 class="ml-4 text-xl font-black italic uppercase">Ohavei Tsion</h1>
+            <div class="w-1/2 flex justify-center"><img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" class="h-10 w-auto rounded bg-white p-1"></div>
+            <div class="w-1/2 flex justify-center"><h1 class="text-xl font-black italic text-white uppercase">Ohavei Tsion</h1></div>
         </div>
 
         <div class="grid grid-cols-2 gap-3 mb-6">
             <div class="zman-box">
-                <p class="text-[10px] font-bold uppercase opacity-60">Shabbat</p>
-                <p id="shabbat-name" class="text-lg font-bold">--</p>
+                <p class="text-[10px] font-bold uppercase opacity-60 mb-1">Shabbat</p>
+                <p id="shabbat-name" class="text-lg font-bold leading-tight">--</p>
             </div>
             <div class="zman-box">
-                <p id="label-allumage_bougies" class="text-[10px] font-bold uppercase text-red-500">Allumage</p>
+                <p id="label-allumage_bougies" class="text-[10px] font-bold uppercase text-red-500 mb-1">Allumage</p>
                 <p id="sheet-allumage_bougies" class="text-2xl font-bold text-red-600">--:--</p>
             </div>
         </div>
 
         <div id="announcement-block" class="annonce-card" style="display:none">
-            <span id="sheet-annonce_titre" class="block text-xs italic opacity-70 mb-1"></span>
-            <div id="sheet-annonce_texte" class="text-lg font-bold"></div>
+            <span id="sheet-annonce_titre" class="annonce-titre-style"></span>
+            <div id="sheet-annonce_texte" class="text-xl mt-2 font-bold"></div>
             <div class="title-underline mx-auto mt-3"></div>
         </div>
 
@@ -60,11 +62,11 @@
             <div class="row-major"><span id="label-minha_vendredi">Minha Vendredi</span><span id="sheet-minha_vendredi" class="text-xl font-bold">--:--</span></div>
             <div class="row-major border-t border-white/10 pt-1"><span id="label-chaharit_shabbat">Shaharit</span><span id="sheet-chaharit_shabbat" class="text-xl font-bold">--:--</span></div>
             
-            <div class="bg-black/20 rounded-lg p-3 my-2 space-y-1">
-                <div id="box-dan" class="shiour-item"><span>Dan Chemla</span><span id="sheet-shiour_dan" class="font-bold">--:--</span></div>
-                <div id="box-saadia" class="shiour-item"><span>Saadia Khalfon</span><span id="sheet-shiour_saadia" class="font-bold">--:--</span></div>
-                <div id="box-haviv" class="shiour-item"><span>Rav Haviv</span><span id="sheet-shiour_haviv" class="font-bold">--:--</span></div>
-                <div id="box-guemara" class="shiour-item border-none"><span>Guemara</span><span id="sheet-shiour_guemara" class="font-bold">--:--</span></div>
+            <div class="bg-black/20 rounded-lg p-3 my-2 space-y-1 border border-white/5">
+                <div id="box-dan" class="shiour-item"><span id="label-shiour_dan">Dan Chemla</span><span id="sheet-shiour_dan" class="font-bold">--:--</span></div>
+                <div id="box-saadia" class="shiour-item"><span id="label-shiour_saadia">Saadia Khalfon</span><span id="sheet-shiour_saadia" class="font-bold">--:--</span></div>
+                <div id="box-haviv" class="shiour-item"><span id="label-shiour_haviv">Rav Haviv</span><span id="sheet-shiour_haviv" class="font-bold">--:--</span></div>
+                <div id="box-guemara" class="shiour-item border-none"><span id="label-shiour_guemara">Guemara</span><span id="sheet-shiour_guemara" class="font-bold">--:--</span></div>
             </div>
 
             <div class="row-major border-t border-white/10 pt-1"><span id="label-minha_shabbat">Minha / Seouda</span><span id="sheet-minha_shabbat" class="text-xl font-bold">--:--</span></div>
@@ -73,8 +75,12 @@
 
         <div class="section-card">
             <div class="section-title">SEMAINE<div class="title-underline"></div></div>
-            <div class="row-major"><span>Shaharit</span><span id="sheet-chaharit_semaine" class="text-xl font-bold">--:--</span></div>
-            <div class="row-major border-t border-white/10 pt-1"><span>Minha / Arvit</span><span id="sheet-minha_semaine" class="text-xl font-bold">--:--</span></div>
+            <div class="row-major"><span id="label-chaharit_semaine">Shaharit</span><span id="sheet-chaharit_semaine" class="text-xl font-bold">--:--</span></div>
+            <div class="row-major border-t border-white/10 pt-1"><span id="label-minha_semaine">Minha / Arvit</span><span id="sheet-minha_semaine" class="text-xl font-bold">--:--</span></div>
+        </div>
+
+        <div class="mt-auto pt-4 text-center">
+            <p class="text-[10px] opacity-30 italic">© Greg u.</p>
         </div>
     </div>
 
@@ -94,38 +100,32 @@
                 const hData = await hRes.json();
                 const sData = await sRes.json();
 
-                // Shabbat / Parasha
                 const pAuto = hData.items.find(i => i.category === "parashat" || i.category === "holiday")?.title.replace("Parashat ", "") || "--";
                 const pMan = sData.parasha?.valeur;
-                document.getElementById('shabbat-name').innerHTML = (pMan && pMan !== "--") ? format(pMan) : `<b>${pAuto}</b>`;
+                document.getElementById('shabbat-name').innerHTML = (pMan && pMan !== "--" && pMan !== "") ? format(pMan) : `<b>${pAuto}</b>`;
 
-                // Champs Classiques
                 const keys = ['allumage_bougies','minha_vendredi','chaharit_shabbat','shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara','minha_shabbat','arvit_motsach','chaharit_semaine','minha_semaine'];
                 keys.forEach(k => {
-                    const el = document.getElementById(`sheet-${k}`);
-                    if (el && sData[k]) {
-                        el.innerHTML = format(sData[k].valeur);
-                        // Cacher les shiourim vides
-                        if (k.startsWith('shiour_') && (!sData[k].valeur || sData[k].valeur === "--:--")) {
-                            document.getElementById(`box-${k.split('_')[1]}`).style.display = 'none';
-                        } else if (k.startsWith('shiour_')) {
-                            document.getElementById(`box-${k.split('_')[1]}`).style.display = 'flex';
+                    const label = document.getElementById(`label-${k}`), val = document.getElementById(`sheet-${k}`);
+                    if(label && sData[k]) label.innerHTML = format(sData[k].intitule);
+                    if(val && sData[k]) {
+                        val.innerHTML = format(sData[k].valeur);
+                        if (k.startsWith('shiour_')) {
+                            const box = document.getElementById(`box-${k.split('_')[1]}`);
+                            box.style.display = (sData[k].valeur === "" || sData[k].valeur === "--:--") ? 'none' : 'flex';
                         }
                     }
                 });
 
-                // Annonces
                 const aT = sData.annonce_titre?.valeur, aX = sData.annonce_texte?.valeur;
                 const b = document.getElementById('announcement-block');
-                if(aT || aX) {
+                if((aT && aT !== "") || (aX && aX !== "")) {
                     b.style.display = 'block';
-                    document.getElementById('sheet-annonce_titre').innerHTML = format(aT);
-                    document.getElementById('sheet-annonce_texte').innerHTML = format(aX);
-                    document.getElementById('sheet-annonce_titre').style.display = aT ? 'block' : 'none';
-                    document.getElementById('sheet-annonce_texte').style.display = aX ? 'block' : 'none';
+                    const tEl = document.getElementById('sheet-annonce_titre'), xEl = document.getElementById('sheet-annonce_texte');
+                    tEl.innerHTML = format(aT); tEl.style.display = aT ? 'block' : 'none';
+                    xEl.innerHTML = format(aX); xEl.style.display = aX ? 'block' : 'none';
                 } else { b.style.display = 'none'; }
 
-                // Zones supplémentaires
                 const container = document.getElementById('extra-sections-container');
                 container.innerHTML = '';
                 if(sData.extra_sections) {
