@@ -10,120 +10,119 @@
         :root { --bg-deep-blue: #0f34a1; --gold-border: #f1c40f; --card-blue: rgba(255, 255, 255, 0.08); }
         body { font-family: 'Assistant', sans-serif; background-color: var(--bg-deep-blue); color: white; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         
-        #floating-toolbar { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); display: none; background: #1a1a1a; padding: 8px 15px; border-radius: 50px; border: 2px solid var(--gold-border); z-index: 9999; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        #toolbar { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); display: none; background: #1a1a1a; padding: 10px; border-radius: 50px; border: 2px solid var(--gold-border); z-index: 9999; gap: 8px; }
         .admin-nav { position: sticky; top: 0; z-index: 2000; width: 100%; max-width: 500px; display: flex; gap: 10px; padding: 10px 0; background: var(--bg-deep-blue); }
         .main-container { border: 3px solid var(--gold-border); border-radius: 20px; padding: 15px; width: 100%; max-width: 500px; background: linear-gradient(to bottom, #0f34a1, #0a2472); }
         
-        .editable { background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); padding: 4px; border-radius: 6px; outline: none; min-height: 1.2em; }
+        .editable { background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); padding: 4px; border-radius: 6px; outline: none; }
         .editable:focus { border: 1px solid var(--gold-border); background: rgba(255,255,255,0.1); }
         
-        .zman-box { background: white; border-radius: 12px; color: #0f34a1; padding: 10px 5px; text-align: center; }
-        .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: var(--card-blue); margin-bottom: 8px; }
-        .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; display: flex; flex-direction: column; align-items: center; }
-        .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin-top: 4px; border-radius: 2px; }
-        .row-major { display: flex; justify-content: space-between; align-items: center; padding: 10px 8px; }
-        .f-btn { font-size: 0.7rem; background: #333; color: white; padding: 4px 10px; border-radius: 15px; font-weight: bold; }
+        .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: var(--card-blue); margin-bottom: 10px; }
+        .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin-top: 4px; }
+        .row-major { display: flex; justify-content: space-between; align-items: center; padding: 8px; }
+        .f-btn { font-size: 10px; font-weight: bold; padding: 5px 12px; border-radius: 20px; background: #333; }
     </style>
 </head>
 <body>
     <div class="admin-nav">
-        <button onclick="location.reload()" class="flex-1 bg-blue-600 text-white p-3 rounded-xl font-bold text-xs">🔄 ACTU</button>
-        <button onclick="sendData()" class="flex-[2] bg-green-600 text-white p-3 rounded-xl font-black text-lg shadow-lg">🚀 ENVOYER</button>
+        <button onclick="location.reload()" class="flex-1 bg-blue-600 p-3 rounded-xl font-bold">🔄 ACTU</button>
+        <button onclick="sendData()" class="flex-[2] bg-green-600 p-3 rounded-xl font-black text-lg">🚀 ENVOYER</button>
     </div>
 
-    <div id="floating-toolbar">
-        <button class="f-btn" onmousedown="event.preventDefault(); document.execCommand('bold')">Gras</button>
-        <button class="f-btn text-red-500" onmousedown="event.preventDefault(); document.execCommand('foreColor', false, '#ff4d4d')">Rouge</button>
-        <button class="f-btn" onmousedown="event.preventDefault(); document.execCommand('removeFormat')">Normal</button>
+    <div id="toolbar">
+        <button class="f-btn" onmousedown="event.preventDefault(); document.execCommand('bold')">GRAS</button>
+        <button class="f-btn text-red-500" onmousedown="event.preventDefault(); document.execCommand('foreColor', false, '#ff4d4d')">ROUGE</button>
+        <button class="f-btn" onmousedown="event.preventDefault(); document.execCommand('removeFormat')">NORMAL</button>
     </div>
 
-    <div class="main-container shadow-2xl">
+    <div class="main-container">
         <div class="grid grid-cols-2 gap-3 mb-6">
-            <div class="zman-box">
-                <p class="text-[10px] opacity-60 uppercase font-bold">Shabbat</p>
+            <div class="bg-white rounded-xl p-2 text-blue-900 text-center">
+                <p class="text-[10px] font-bold uppercase">Shabbat</p>
                 <div id="parasha_val" class="editable text-lg font-bold" contenteditable="true"></div>
-                <p id="auto-paracha-hint" class="text-[9px] italic opacity-40"></p>
+                <p id="auto-hint" class="text-[9px] italic opacity-50"></p>
             </div>
-            <div class="zman-box">
-                <p id="allumage_bougies_label" class="editable text-[10px] text-red-500 font-bold uppercase" contenteditable="true">Allumage</p>
-                <div id="allumage_bougies_val" class="editable text-2xl text-red-600 font-bold" contenteditable="true">--:--</div>
+            <div class="bg-white rounded-xl p-2 text-blue-900 text-center">
+                <p class="text-[10px] font-bold text-red-500 uppercase">Allumage</p>
+                <div id="allumage_bougies_val" class="editable text-2xl font-bold text-red-600" contenteditable="true">--:--</div>
             </div>
         </div>
 
         <div class="section-card text-center">
             <div id="annonce_titre_val" class="editable text-xs italic opacity-60" contenteditable="true" placeholder="Titre..."></div>
-            <div id="annonce_texte_val" class="editable text-xl font-bold mt-2" contenteditable="true" placeholder="Texte..."></div>
+            <div id="annonce_texte_val" class="editable text-lg font-bold mt-2" contenteditable="true" placeholder="Texte de l'annonce..."></div>
         </div>
 
-        <button onclick="addZone()" class="w-full bg-white/10 border border-dashed border-white/30 p-2 rounded-lg text-xs font-bold mb-4">+ AJOUTER ZONE (FÊTE...)</button>
+        <button onclick="addZone()" class="w-full bg-white/10 border border-dashed p-2 rounded-lg text-xs font-bold mb-4">+ AJOUTER ZONE (PESSAH...)</button>
         <div id="extra-sections"></div>
 
         <div class="section-card">
             <div class="section-title">SHABBAT<div class="title-underline"></div></div>
             <div class="space-y-1 mt-4">
-                <div class="row-major"><div id="minha_vendredi_label" class="editable text-sm" contenteditable="true">Minha Vendredi</div><div id="minha_vendredi_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
-                <div class="row-major border-t border-white/10 pt-1"><div id="chaharit_shabbat_label" class="editable text-sm" contenteditable="true">Shaharit</div><div id="chaharit_shabbat_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
-                <div class="row-major border-t border-white/10 pt-1"><div id="minha_shabbat_label" class="editable text-sm" contenteditable="true">Minha / Seouda</div><div id="minha_shabbat_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
-                <div class="row-major border-t border-white/10 pt-1"><div id="arvit_motsach_label" class="editable text-sm" contenteditable="true">Arvit Motsae</div><div id="arvit_motsach_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
+                <div class="row-major"><span>Minha Vend.</span><div id="minha_vendredi_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
+                <div class="row-major border-t border-white/10 pt-1"><span>Shaharit</span><div id="chaharit_shabbat_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
+                <div class="bg-black/20 rounded-lg p-2 my-2 text-xs space-y-2">
+                    <div class="flex justify-between"><span>Dan Chemla</span><div id="shiour_dan_val" class="editable font-bold" contenteditable="true">--:--</div></div>
+                    <div class="flex justify-between"><span>Saadia Khalfon</span><div id="shiour_saadia_val" class="editable font-bold" contenteditable="true">--:--</div></div>
+                    <div class="flex justify-between"><span>Rav Haviv</span><div id="shiour_haviv_val" class="editable font-bold" contenteditable="true">--:--</div></div>
+                    <div class="flex justify-between"><span>Guemara</span><div id="shiour_guemara_val" class="editable font-bold" contenteditable="true">--:--</div></div>
+                </div>
+                <div class="row-major border-t border-white/10 pt-1"><span>Minha / Seouda</span><div id="minha_shabbat_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
+                <div class="row-major border-t border-white/10 pt-1"><span>Arvit Motsae</span><div id="arvit_motsach_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
             </div>
         </div>
 
         <div class="section-card">
             <div class="section-title">SEMAINE<div class="title-underline"></div></div>
-            <div class="space-y-1 mt-4">
-                <div class="row-major"><div id="chaharit_semaine_label" class="editable text-sm" contenteditable="true">Shaharit</div><div id="chaharit_semaine_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
-                <div class="row-major border-t border-white/10 pt-1"><div id="minha_semaine_label" class="editable text-sm" contenteditable="true">Minha / Arvit</div><div id="minha_semaine_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
-            </div>
+            <div class="row-major mt-4"><span>Shaharit</span><div id="chaharit_semaine_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
+            <div class="row-major border-t border-white/10 pt-1"><span>Minha / Arvit</span><div id="minha_semaine_val" class="editable text-xl font-bold" contenteditable="true">--:--</div></div>
         </div>
     </div>
 
     <script>
         const API_URL = "https://api-syna.gregyman.workers.dev/";
-        const keys = ['allumage_bougies', 'minha_vendredi', 'chaharit_shabbat', 'minha_shabbat', 'arvit_motsach', 'chaharit_semaine', 'minha_semaine', 'annonce_titre', 'annonce_texte', 'parasha'];
+        const keys = ['allumage_bougies','minha_vendredi','chaharit_shabbat','shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara','minha_shabbat','arvit_motsach','chaharit_semaine','minha_semaine','annonce_titre','annonce_texte','parasha'];
         
-        const toolbar = document.getElementById('floating-toolbar');
-        document.addEventListener('focusin', e => { if(e.target.classList.contains('editable')) toolbar.style.display='flex'; });
-        document.addEventListener('focusout', () => setTimeout(()=> { if(!document.activeElement.classList.contains('editable')) toolbar.style.display='none'; }, 200));
+        document.addEventListener('focusin', e => { if(e.target.classList.contains('editable')) document.getElementById('toolbar').style.display='flex'; });
+        document.addEventListener('focusout', () => setTimeout(()=> { if(!document.activeElement.classList.contains('editable')) document.getElementById('toolbar').style.display='none'; }, 200));
 
-        function htmlToTags(h) { return h.replace(/<b>(.*?)<\/b>/gi, "**$1**").replace(/<font color="(.*?)">(.*?)<\/font>/gi, "{r}$2{/r}").replace(/<br>|<div>/gi, "\n").replace(/<\/div>|&nbsp;/g, " ").trim(); }
-        function tagsToHtml(t) { return t.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>").replace(/\{r\}(.*?)\{\/r\}/g, '<font color="#ff4d4d">$1</font>').replace(/\n/g, "<br>"); }
+        function toTags(h) { return h.replace(/<b>(.*?)<\/b>/gi, "**$1**").replace(/<font color="(.*?)">(.*?)<\/font>/gi, "{r}$2{/r}").replace(/<br>|<div>/gi, "\n").replace(/<\/div>|&nbsp;/g, "").trim(); }
+        function toHtml(t) { return t.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>").replace(/\{r\}(.*?)\{\/r\}/g, '<font color="#ff4d4d">$1</font>').replace(/\n/g, "<br>"); }
 
         function addZone(title="TITRE ZONE", rows=[]) {
             const id = 'z'+Date.now();
-            const html = `<div class="section-card extra-z" id="${id}"><div class="flex justify-between items-start"><button onclick="this.parentElement.parentElement.remove()" class="text-[10px] bg-red-900/50 p-1 rounded">X</button><div class="section-title editable flex-1" contenteditable="true">${title}</div></div><div class="title-underline mx-auto mb-4"></div><div class="rows-cont space-y-1"></div><button onclick="addRow('${id}')" class="w-full text-[10px] mt-2 opacity-50">+ LIGNE</button></div>`;
+            const html = `<div class="section-card extra-z" id="${id}"><div class="flex justify-between items-center"><div class="section-title editable flex-1 uppercase" contenteditable="true">${title}</div><button onclick="this.closest('.extra-z').remove()" class="text-red-500 font-bold ml-2">X</button></div><div class="title-underline mx-auto mb-4"></div><div class="rows-cont"></div><button onclick="addRow('${id}')" class="w-full text-[10px] mt-2 opacity-50">+ LIGNE</button></div>`;
             document.getElementById('extra-sections').insertAdjacentHTML('beforeend', html);
             if(rows.length) rows.forEach(r => addRow(id, r.label, r.val)); else addRow(id);
         }
         function addRow(zid, l="Libellé", v="--:--") {
             const cont = document.querySelector(`#${zid} .rows-cont`);
-            cont.insertAdjacentHTML('beforeend', `<div class="row-major border-t border-white/10 pt-1 extra-r"><div class="editable text-sm flex-1" contenteditable="true">${tagsToHtml(l)}</div><div class="editable text-xl font-bold text-right" contenteditable="true">${tagsToHtml(v)}</div><button onclick="this.parentElement.remove()" class="ml-2 opacity-30">x</button></div>`);
+            cont.insertAdjacentHTML('beforeend', `<div class="row-major border-t border-white/10 pt-1 extra-r"><div class="editable text-sm flex-1" contenteditable="true">${toHtml(l)}</div><div class="editable text-xl font-bold text-right ml-2" contenteditable="true">${toHtml(v)}</div><button onclick="this.parentElement.remove()" class="ml-2 opacity-30">x</button></div>`);
         }
 
         async function loadData() {
             try {
                 const res = await fetch(API_URL); const data = await res.json();
-                keys.forEach(k => { const lEl=document.getElementById(`${k}_label`), vEl=document.getElementById(`${k}_val`); if(lEl && data[k]) lEl.innerHTML=tagsToHtml(data[k].intitule); if(vEl && data[k]) vEl.innerHTML=tagsToHtml(data[k].valeur); });
+                keys.forEach(k => { const vEl=document.getElementById(`${k}_val`); if(vEl && data[k]) vEl.innerHTML=toHtml(data[k].valeur); });
                 if(data.extra_sections) data.extra_sections.forEach(s => addZone(s.title, s.rows));
-                const hRes = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s');
-                const hData = await hRes.json();
-                const p = hData.items.find(i => i.category === "parashat" || i.category === "holiday");
-                if(p) document.getElementById('auto-paracha-hint').innerText = "Hebcal : " + p.title.replace("Parashat ","");
+                const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
+                const p = h.items.find(i => i.category === "parashat" || i.category === "holiday");
+                if(p) document.getElementById('auto-hint').innerText = "Hebcal : " + p.title.replace("Parashat ","");
             } catch(e) {}
         }
 
         async function sendData() {
             const pass = prompt("Mot de passe :"); if(!pass) return;
             const payload = {};
-            keys.forEach(k => { const lEl=document.getElementById(`${k}_label`), vEl=document.getElementById(`${k}_val`); payload[k] = { intitule: lEl?htmlToTags(lEl.innerHTML):k, valeur: vEl?htmlToTags(vEl.innerHTML):"" }; });
+            keys.forEach(k => { const vEl=document.getElementById(`${k}_val`); payload[k] = { intitule: k, valeur: vEl?toTags(vEl.innerHTML):"" }; });
             payload.extra_sections = [];
             document.querySelectorAll('.extra-z').forEach(z => {
-                const rows = []; z.querySelectorAll('.extra-r').forEach(r => { const eds = r.querySelectorAll('.editable'); rows.push({label: htmlToTags(eds[0].innerHTML), val: htmlToTags(eds[1].innerHTML)}); });
+                const rows = []; z.querySelectorAll('.extra-r').forEach(r => { const eds = r.querySelectorAll('.editable'); rows.push({label: toTags(eds[0].innerHTML), val: toTags(eds[1].innerHTML)}); });
                 payload.extra_sections.push({title: z.querySelector('.section-title').innerText, rows});
             });
-            try {
-                const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ auth: pass, payload: payload }) });
-                alert((await r.text()).includes("Succès") ? "🚀 OK !" : "Erreur");
-            } catch(e) { alert("Erreur réseau"); }
+            const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ auth: pass, payload: payload }) });
+            alert((await r.text()).includes("Succès") ? "🚀 Envoyé !" : "Erreur");
         }
         window.onload = loadData;
     </script>
