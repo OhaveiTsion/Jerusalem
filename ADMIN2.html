@@ -130,23 +130,30 @@
                 });
                 if(data.extra_sections) data.extra_sections.forEach(s => addZone(s.title, s.rows));
                 
-                // HEBCAL EVENTS LOGIC
+                // HEBCAL EVENTS LOGIC (AVEC FILTRE DOUBLONS)
                 const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
                 let events = [];
-                let parashaTrouvee = false;
+                let seenNames = new Set(); // Pour filtrer les doublons
 
                 h.items.forEach(i => {
+                    let name = i.title;
                     if (i.category === "parashat") {
-                        events.push(`<b>${i.title.replace("Parashat ", "")}</b>`);
-                        parashaTrouvee = true;
+                        name = i.title.replace("Parashat ", "");
+                        if(!seenNames.has(name)){
+                            events.push(`<b>${name}</b>`);
+                            seenNames.add(name);
+                        }
                     } else if (i.category === "holiday" || i.category === "roshchodesh" || i.category === "mevarchim") {
-                        events.push(i.title);
+                        if(!seenNames.has(name)){
+                            events.push(name);
+                            seenNames.add(name);
+                        }
                     }
                 });
 
                 const divHint = document.getElementById('auto-hint');
                 if (events.length > 0) {
-                    divHint.innerHTML = events.join(" <br> ");
+                    divHint.innerHTML = "<b>Suggéré :</b><br>" + events.join(" <br> ");
                 } else {
                     divHint.innerHTML = "Aucun événement cette semaine";
                 }
