@@ -109,19 +109,25 @@
         function toTags(h) { 
     if(!h) return "";
     
-    let temp = h.replace(/<div>|<\/p>|<p>/gi, "\n")
-                .replace(/<\/div>/gi, "");
-    
-    // 1. Capture le gras et la couleur
-    temp = temp.replace(/<b>(.*?)<\/b>|<strong>(.*?)<\/strong>/gi, "**$1$2**")
-               .replace(/<font color="(.*?)">(.*?)<\/font>/gi, "{r}$2{/r}");
+    let temp = h;
 
-    // 2. NETTOYAGE RADICAL DES ESPACES
-    return temp.replace(/&nbsp;/g, " ")       // Remplace &nbsp; par espace normal
-               .replace(/\u00A0/g, " ")       // Remplace l'espace insécable unicode
-               .replace(/[\s\uFEFF\xA0]+/g, ' ') // Réduit tous les types d'espaces multiples en un seul
-               .replace(/\n /g, "\n")         // Nettoie les espaces en début de ligne
-               .replace(/ \n/g, "\n")         // Nettoie les espaces en fin de ligne
+    // 1. On remplace les structures de bloc par des sauts de ligne
+    temp = temp.replace(/<(div|p|br|li)[^>]*>/gi, "\n")
+               .replace(/<\/(div|p|li)>/gi, "");
+
+    // 2. On sauve UNIQUEMENT le gras et notre format couleur {r}
+    // On transforme les <b>, <strong> et les <font color>
+    temp = temp.replace(/<(b|strong)[^>]*>(.*?)<\/\1>/gi, "**$2**");
+    temp = temp.replace(/<font color="[^"]*">(.*?)<\/font>/gi, "{r}$1{/r}");
+
+    // 3. ON SUPPRIME TOUTES LES AUTRES BALISES (span, id, class, etc.)
+    temp = temp.replace(/<[^>]*>/g, "");
+
+    // 4. NETTOYAGE DES ESPACES ET CARACTÈRES SPÉCIAUX
+    return temp.replace(/&nbsp;/g, " ")
+               .replace(/\u00A0/g, " ")
+               .replace(/[ ]{2,}/g, " ") // Pas plus d'un espace de suite
+               .replace(/\n\s*\n/g, "\n") // Pas de lignes vides inutiles
                .trim(); 
     }
         function toHtml(t) { 
