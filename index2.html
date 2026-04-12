@@ -108,18 +108,16 @@
         function format(t) { 
     if(!t) return "";
     
-    // Nettoyage des espaces fantômes et des styles collés
-    let clean = t.replace(/style=".*?"/gi, "")
-                 .replace(/&nbsp;/g, " ")
-                 .replace(/\u00A0/g, " ")
-                 .replace(/[ ]{2,}/g, " ") // Remplace 2 espaces ou plus par 1 seul
+    // On nettoie au cas où des vieilles données sales traîneraient en base
+    let clean = t.replace(/<[^>]*>/g, "") // Supprime toute balise HTML résiduelle
+                 .replace(/&nbsp;|\u00A0/g, " ")
+                 .replace(/[ ]{2,}/g, " ")
                  .trim();
 
-    // Application du gras et du rouge
     return clean.replace(/\*\*(.*?)\*\*/g, '<span class="f-bold">$1</span>')
                 .replace(/\{r\}(.*?)\{\/r\}/g, '<span class="f-red">$1</span>')
                 .replace(/\n/g, "<br>");
-        }
+    }
 
         async function loadAll() {
             try {
