@@ -107,19 +107,25 @@
         document.addEventListener('focusout', () => setTimeout(()=> { if(!document.activeElement.classList.contains('editable')) document.getElementById('toolbar').style.display='none'; }, 200));
 
         function toTags(h) { 
-            return h.replace(/<b>(.*?)<\/b>|<strong>(.*?)<\/strong>/gi, "**$1$2**")
-                    .replace(/<font color="(.*?)">(.*?)<\/font>/gi, "{r}$2{/r}")
-                    .replace(/<br>|<div>/gi, "\n")
-                    .replace(/<\/div>/g, "")
-                    .replace(/&nbsp;/g, " ")
-                    .replace(/style=".*?"/gi, "") // Nettoie les styles collés
-                    .trim(); 
+    // 1. Remplace les div/p par des sauts de ligne simples
+    let temp = h.replace(/<div>|<\/p>|<p>/gi, "\n")
+                .replace(/<\/div>/gi, "");
+    
+    // 2. Capture le gras et la couleur
+    temp = temp.replace(/<b>(.*?)<\/b>|<strong>(.*?)<\/strong>/gi, "**$1$2**")
+               .replace(/<font color="(.*?)">(.*?)<\/font>/gi, "{r}$2{/r}");
+
+    // 3. Nettoyage final
+    return temp.replace(/&nbsp;/g, " ") // Remplace les espaces insécables par des espaces normaux
+               .replace(/\n\s*\n/g, "\n") // Supprime les doubles retours à la ligne
+               .replace(/[ ]{2,}/g, " ")  // Supprime les doubles espaces
+               .trim(); 
         }
         function toHtml(t) { 
-            if(!t) return "";
-            return t.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-                    .replace(/\{r\}(.*?)\{\/r\}/g, '<font color="#ff4d4d">$1</font>')
-                    .replace(/\n/g, "<br>"); 
+    if(!t) return "";
+    return t.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+            .replace(/\{r\}(.*?)\{\/r\}/g, '<font color="#ff4d4d">$1</font>')
+            .replace(/\n/g, "<br>"); 
         }
 
         function addZone(title="TITRE ZONE", rows=[]) {
