@@ -20,8 +20,27 @@
     .loaded .main-container { opacity: 1; transform: scale(1); }
 
     .zman-box { background: white; border-radius: 12px; color: #0f34a1; padding: 10px 5px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-    .annonce-card { background: var(--card-blue); border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 25px 15px 15px 15px; margin-bottom: 15px; display: none; position: relative; text-align: center; }
-    .annonce-titre-style { position: absolute; top: 8px; left: 15px; font-size: 0.75rem; font-style: italic; opacity: 0.6; }
+    .annonce-card { 
+    background: var(--card-blue); 
+    border: 1px solid rgba(255,255,255,0.15); 
+    border-radius: 15px; 
+    padding: 45px 15px 15px 15px; /* L'espace du haut passe de 25px à 45px pour faire de la place */
+    margin-bottom: 15px; 
+    display: none; 
+    position: relative; 
+    text-align: center; 
+}
+
+.annonce-titre-style { 
+    position: absolute; 
+    top: 12px; 
+    left: 15px; 
+    text-align: left; /* Force le texte à s'aligner à gauche s'il y a plusieurs lignes */
+    font-size: 0.75rem; 
+    font-style: italic; 
+    opacity: 0.6; 
+    line-height: 1.4; /* Ajoute un petit espace entre les lignes pour que ce soit plus lisible */
+}
     
     .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: var(--card-blue); margin-bottom: 8px; }
     .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; margin-bottom: 12px; display: flex; flex-direction: column; align-items: center; }
