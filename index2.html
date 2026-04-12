@@ -112,7 +112,11 @@
             try {
                 const hRes = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s');
                 const hData = await hRes.json();
-                const pAuto = hData.items.find(i => i.category === "parashat" || i.category === "holiday")?.title.replace("Parashat ", "") || "--";
+                
+                // FIX HEBCAL ICI : On cherche la parasha en priorité absolue.
+                const pItem = hData.items.find(i => i.category === "parashat");
+                const hItem = hData.items.find(i => i.category === "holiday");
+                const pAuto = pItem ? pItem.title.replace("Parashat ", "") : (hItem ? hItem.title : "--");
 
                 const sheetRes = await fetch(API_URL);
                 const sData = await sheetRes.json();
@@ -128,7 +132,6 @@
                     
                     if(val && sData[k]) {
                         val.innerHTML = format(sData[k].valeur);
-                        // Cacher les shiourim vides
                         if (k.startsWith('shiour_')) {
                             const box = document.getElementById(`box-${k.split('_')[1]}`);
                             if (box) box.style.display = (sData[k].valeur.trim() === "" || sData[k].valeur === "--:--") ? 'none' : 'flex';
