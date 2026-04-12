@@ -110,19 +110,25 @@
 
         async function loadAll() {
             try {
+                // HEBCAL API
                 const hRes = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s');
                 const hData = await hRes.json();
                 
-                // FIX HEBCAL ICI : On cherche la parasha en priorité absolue.
-                const pItem = hData.items.find(i => i.category === "parashat");
-                const hItem = hData.items.find(i => i.category === "holiday");
-                const pAuto = pItem ? pItem.title.replace("Parashat ", "") : (hItem ? hItem.title : "--");
+                let nomShabbatAuto = "--";
+                const eventParasha = hData.items.find(i => i.category === "parashat");
+                if (eventParasha) {
+                    nomShabbatAuto = eventParasha.title.replace("Parashat ", "");
+                } else {
+                    const eventFete = hData.items.find(i => i.category === "holiday");
+                    if (eventFete) nomShabbatAuto = eventFete.title;
+                }
 
+                // WORKER API
                 const sheetRes = await fetch(API_URL);
                 const sData = await sheetRes.json();
 
                 const pMan = sData.parasha?.valeur;
-                document.getElementById('shabbat-name').innerHTML = (pMan && pMan.trim() !== "" && pMan !== "--") ? format(pMan) : `<b>${pAuto}</b>`;
+                document.getElementById('shabbat-name').innerHTML = (pMan && pMan.trim() !== "" && pMan !== "--") ? format(pMan) : `<span class="f-bold">${nomShabbatAuto}</span>`;
 
                 const keys = ['allumage_bougies','minha_vendredi','chaharit_shabbat','shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara','minha_shabbat','arvit_motsach','chaharit_semaine','minha_semaine'];
                 
