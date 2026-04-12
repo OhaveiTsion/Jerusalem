@@ -38,13 +38,13 @@
 
     <div class="main-container">
         <div class="grid grid-cols-2 gap-3 mb-6">
-            <div class="bg-white rounded-xl p-2 text-blue-900 text-center">
-                <p class="text-[10px] font-bold uppercase">Shabbat</p>
+            <div class="bg-white rounded-xl p-2 text-blue-900 text-center flex flex-col justify-center">
+                <p class="text-[10px] font-bold uppercase mb-1">Shabbat</p>
                 <div id="parasha_val" class="editable text-lg font-bold" contenteditable="true"></div>
-                <p id="auto-hint" class="text-[9px] italic opacity-50"></p>
+                <div id="auto-hint" class="text-[9.5px] mt-2 opacity-70 leading-tight"></div>
             </div>
-            <div class="bg-white rounded-xl p-2 text-blue-900 text-center">
-                <div id="allumage_bougies_label" class="editable text-[10px] font-bold text-red-500 uppercase" contenteditable="true">Allumage</div>
+            <div class="bg-white rounded-xl p-2 text-blue-900 text-center flex flex-col justify-center">
+                <div id="allumage_bougies_label" class="editable text-[10px] font-bold text-red-500 uppercase mb-1" contenteditable="true">Allumage</div>
                 <div id="allumage_bougies_val" class="editable text-2xl font-bold text-red-600" contenteditable="true">--:--</div>
             </div>
         </div>
@@ -95,7 +95,6 @@
         document.addEventListener('focusin', e => { if(e.target.classList.contains('editable')) document.getElementById('toolbar').style.display='flex'; });
         document.addEventListener('focusout', () => setTimeout(()=> { if(!document.activeElement.classList.contains('editable')) document.getElementById('toolbar').style.display='none'; }, 200));
 
-        // FIX DES ESPACES ICI (remplacement de &nbsp; par un vrai espace " ")
         function toTags(h) { 
             return h.replace(/<b>(.*?)<\/b>/gi, "**$1**")
                     .replace(/<font color="(.*?)">(.*?)<\/font>/gi, "{r}$2{/r}")
@@ -131,15 +130,27 @@
                 });
                 if(data.extra_sections) data.extra_sections.forEach(s => addZone(s.title, s.rows));
                 
-                // FIX HEBCAL ICI (Priorité absolue à la Parasha)
+                // HEBCAL EVENTS LOGIC
                 const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
-                const pItem = h.items.find(i => i.category === "parashat");
-                const hItem = h.items.find(i => i.category === "holiday");
-                const suggestedTitle = pItem ? pItem.title : (hItem ? hItem.title : null);
-                
-                if(suggestedTitle) {
-                    document.getElementById('auto-hint').innerText = "Hebcal suggère : " + suggestedTitle.replace("Parashat ","");
+                let events = [];
+                let parashaTrouvee = false;
+
+                h.items.forEach(i => {
+                    if (i.category === "parashat") {
+                        events.push(`<b>${i.title.replace("Parashat ", "")}</b>`);
+                        parashaTrouvee = true;
+                    } else if (i.category === "holiday" || i.category === "roshchodesh" || i.category === "mevarchim") {
+                        events.push(i.title);
+                    }
+                });
+
+                const divHint = document.getElementById('auto-hint');
+                if (events.length > 0) {
+                    divHint.innerHTML = events.join(" <br> ");
+                } else {
+                    divHint.innerHTML = "Aucun événement cette semaine";
                 }
+
             } catch(e) {}
         }
 
