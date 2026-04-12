@@ -95,8 +95,20 @@
         document.addEventListener('focusin', e => { if(e.target.classList.contains('editable')) document.getElementById('toolbar').style.display='flex'; });
         document.addEventListener('focusout', () => setTimeout(()=> { if(!document.activeElement.classList.contains('editable')) document.getElementById('toolbar').style.display='none'; }, 200));
 
-        function toTags(h) { return h.replace(/<b>(.*?)<\/b>/gi, "**$1**").replace(/<font color="(.*?)">(.*?)<\/font>/gi, "{r}$2{/r}").replace(/<br>|<div>/gi, "\n").replace(/<\/div>|&nbsp;/g, "").trim(); }
-        function toHtml(t) { return t.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>").replace(/\{r\}(.*?)\{\/r\}/g, '<font color="#ff4d4d">$1</font>').replace(/\n/g, "<br>"); }
+        // FIX DES ESPACES ICI (remplacement de &nbsp; par un vrai espace " ")
+        function toTags(h) { 
+            return h.replace(/<b>(.*?)<\/b>/gi, "**$1**")
+                    .replace(/<font color="(.*?)">(.*?)<\/font>/gi, "{r}$2{/r}")
+                    .replace(/<br>|<div>/gi, "\n")
+                    .replace(/<\/div>/g, "")
+                    .replace(/&nbsp;/g, " ")
+                    .trim(); 
+        }
+        function toHtml(t) { 
+            return t.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+                    .replace(/\{r\}(.*?)\{\/r\}/g, '<font color="#ff4d4d">$1</font>')
+                    .replace(/\n/g, "<br>"); 
+        }
 
         function addZone(title="TITRE ZONE", rows=[]) {
             const id = 'z'+Date.now();
@@ -118,9 +130,16 @@
                     if(lEl && data[k]) lEl.innerHTML=toHtml(data[k].intitule);
                 });
                 if(data.extra_sections) data.extra_sections.forEach(s => addZone(s.title, s.rows));
+                
+                // FIX HEBCAL ICI (Priorité absolue à la Parasha)
                 const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
-                const p = h.items.find(i => i.category === "parashat" || i.category === "holiday");
-                if(p) document.getElementById('auto-hint').innerText = "Hebcal suggère : " + p.title.replace("Parashat ","");
+                const pItem = h.items.find(i => i.category === "parashat");
+                const hItem = h.items.find(i => i.category === "holiday");
+                const suggestedTitle = pItem ? pItem.title : (hItem ? hItem.title : null);
+                
+                if(suggestedTitle) {
+                    document.getElementById('auto-hint').innerText = "Hebcal suggère : " + suggestedTitle.replace("Parashat ","");
+                }
             } catch(e) {}
         }
 
