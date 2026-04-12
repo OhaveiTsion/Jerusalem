@@ -14,9 +14,11 @@
         .admin-nav { position: sticky; top: 0; z-index: 2000; width: 100%; max-width: 500px; display: flex; gap: 10px; padding: 10px 0; background: var(--bg-deep-blue); }
         .main-container { border: 3px solid var(--gold-border); border-radius: 20px; padding: 15px; width: 100%; max-width: 500px; background: linear-gradient(to bottom, #0f34a1, #0a2472); min-height: 80vh; display: flex; flex-direction: column; }
         
-        .editable { background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); padding: 4px; border-radius: 6px; outline: none; }
+        /* Sécurité anti-surlignage au collage */
+        .editable { background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); padding: 4px; border-radius: 6px; outline: none; min-height: 1.2em; }
         .editable:focus { border: 1px solid var(--gold-border); background: rgba(255,255,255,0.1); }
-        
+        .editable * { background-color: transparent !important; background: transparent !important; color: inherit !important; }
+
         .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: var(--card-blue); margin-bottom: 10px; }
         .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; display: flex; flex-direction: column; align-items: center; }
         .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin-top: 4px; border-radius: 2px; }
@@ -50,8 +52,8 @@
         </div>
 
         <div class="section-card text-center">
-            <div id="annonce_titre_val" class="editable text-xs italic opacity-60" contenteditable="true" placeholder="Titre Annonce (Videz pour cacher)"></div>
-            <div id="annonce_texte_val" class="editable text-lg font-bold mt-2" contenteditable="true" placeholder="Texte Annonce (Videz pour cacher)"></div>
+            <div id="annonce_titre_val" class="editable text-xs italic opacity-60" contenteditable="true" placeholder="Titre Annonce"></div>
+            <div id="annonce_texte_val" class="editable text-lg font-bold mt-2" contenteditable="true" placeholder="Texte Annonce"></div>
         </div>
 
         <button onclick="addZone()" class="w-full bg-white/10 border border-dashed p-2 rounded-lg text-xs font-bold mb-4 uppercase hover:bg-white/20 transition">+ AJOUTER ZONE</button>
@@ -92,18 +94,29 @@
         const API_URL = "https://api-syna.gregyman.workers.dev/";
         const keys = ['allumage_bougies','minha_vendredi','chaharit_shabbat','shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara','minha_shabbat','arvit_motsach','chaharit_semaine','minha_semaine','annonce_titre','annonce_texte','parasha'];
         
+        // Nettoyage au collage pour éviter les fonds colorés
+        document.querySelectorAll('.editable').forEach(el => {
+            el.addEventListener('paste', e => {
+                e.preventDefault();
+                const text = e.clipboardData.getData('text/plain');
+                document.execCommand('insertText', false, text);
+            });
+        });
+
         document.addEventListener('focusin', e => { if(e.target.classList.contains('editable')) document.getElementById('toolbar').style.display='flex'; });
         document.addEventListener('focusout', () => setTimeout(()=> { if(!document.activeElement.classList.contains('editable')) document.getElementById('toolbar').style.display='none'; }, 200));
 
         function toTags(h) { 
-            return h.replace(/<b>(.*?)<\/b>/gi, "**$1**")
+            return h.replace(/<b>(.*?)<\/b>|<strong>(.*?)<\/strong>/gi, "**$1$2**")
                     .replace(/<font color="(.*?)">(.*?)<\/font>/gi, "{r}$2{/r}")
                     .replace(/<br>|<div>/gi, "\n")
                     .replace(/<\/div>/g, "")
                     .replace(/&nbsp;/g, " ")
+                    .replace(/style=".*?"/gi, "") // Nettoie les styles collés
                     .trim(); 
         }
         function toHtml(t) { 
+            if(!t) return "";
             return t.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
                     .replace(/\{r\}(.*?)\{\/r\}/g, '<font color="#ff4d4d">$1</font>')
                     .replace(/\n/g, "<br>"); 
@@ -130,34 +143,18 @@
                 });
                 if(data.extra_sections) data.extra_sections.forEach(s => addZone(s.title, s.rows));
                 
-                // HEBCAL EVENTS LOGIC (AVEC FILTRE DOUBLONS)
                 const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
-                let events = [];
-                let seenNames = new Set(); // Pour filtrer les doublons
-
+                let events = []; let seenNames = new Set();
                 h.items.forEach(i => {
                     let name = i.title;
                     if (i.category === "parashat") {
                         name = i.title.replace("Parashat ", "");
-                        if(!seenNames.has(name)){
-                            events.push(`<b>${name}</b>`);
-                            seenNames.add(name);
-                        }
+                        if(!seenNames.has(name)){ events.push(`<b>${name}</b>`); seenNames.add(name); }
                     } else if (i.category === "holiday" || i.category === "roshchodesh" || i.category === "mevarchim") {
-                        if(!seenNames.has(name)){
-                            events.push(name);
-                            seenNames.add(name);
-                        }
+                        if(!seenNames.has(name)){ events.push(name); seenNames.add(name); }
                     }
                 });
-
-                const divHint = document.getElementById('auto-hint');
-                if (events.length > 0) {
-                    divHint.innerHTML = "<b>Suggéré :</b><br>" + events.join(" <br> ");
-                } else {
-                    divHint.innerHTML = "Aucun événement cette semaine";
-                }
-
+                document.getElementById('auto-hint').innerHTML = events.length > 0 ? "<b>Suggéré :</b><br>" + events.join(" <br> ") : "Aucun événement";
             } catch(e) {}
         }
 
@@ -174,7 +171,7 @@
                 payload.extra_sections.push({title: z.querySelector('.section-title').innerText, rows});
             });
             const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ auth: pass, payload: payload }) });
-            alert((await r.text()).includes("Succès") ? "🚀 Sauvegardé avec succès !" : "Erreur lors de la sauvegarde.");
+            alert((await r.text()).includes("Succès") ? "🚀 Sauvegardé !" : "Erreur.");
         }
         window.onload = loadData;
     </script>
