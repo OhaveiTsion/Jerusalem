@@ -108,14 +108,18 @@
         function format(t) { 
     if(!t) return "";
     
-    let clean = t.replace(/&nbsp;/g, " ")  // Change les espaces spéciaux en espaces simples
-                 .replace(/[ ]{2,}/g, " ") // Force un seul espace si plusieurs se suivent
+    // Nettoyage des espaces fantômes et des styles collés
+    let clean = t.replace(/style=".*?"/gi, "")
+                 .replace(/&nbsp;/g, " ")
+                 .replace(/\u00A0/g, " ")
+                 .replace(/[ ]{2,}/g, " ") // Remplace 2 espaces ou plus par 1 seul
                  .trim();
 
+    // Application du gras et du rouge
     return clean.replace(/\*\*(.*?)\*\*/g, '<span class="f-bold">$1</span>')
                 .replace(/\{r\}(.*?)\{\/r\}/g, '<span class="f-red">$1</span>')
                 .replace(/\n/g, "<br>");
-                }
+        }
 
         async function loadAll() {
             try {
