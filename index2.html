@@ -106,14 +106,16 @@
         const API_URL = "https://api-syna.gregyman.workers.dev/";
 
         function format(t) { 
-            if(!t) return "";
-            // 1. Nettoyage des styles de background collés accidentellement
-            let clean = t.replace(/style=".*?"/gi, "");
-            // 2. Application du formatage personnalisé
-            return clean.replace(/\*\*(.*?)\*\*/g, '<span class="f-bold">$1</span>')
-                        .replace(/\{r\}(.*?)\{\/r\}/g, '<span class="f-red">$1</span>')
-                        .replace(/\n/g, "<br>");
-        }
+    if(!t) return "";
+    
+    let clean = t.replace(/&nbsp;/g, " ")  // Change les espaces spéciaux en espaces simples
+                 .replace(/[ ]{2,}/g, " ") // Force un seul espace si plusieurs se suivent
+                 .trim();
+
+    return clean.replace(/\*\*(.*?)\*\*/g, '<span class="f-bold">$1</span>')
+                .replace(/\{r\}(.*?)\{\/r\}/g, '<span class="f-red">$1</span>')
+                .replace(/\n/g, "<br>");
+                }
 
         async function loadAll() {
             try {
