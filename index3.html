@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ohavei Tsion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
+        :root { --bg-deep-blue: #0f34a1; --gold-border: #f1c40f; --card-blue: rgba(255, 255, 255, 0.08); }
+        body { font-family: 'Assistant', sans-serif; background-color: var(--bg-deep-blue); color: white; padding: 10px; display: flex; justify-content: center; margin: 0; }
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-deep-blue); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.6s ease-out; }
+        .loader-line { width: 150px; height: 3px; background: rgba(255,255,255,0.1); margin-top: 20px; overflow: hidden; position: relative; }
+        .loader-line::after { content: ''; position: absolute; left: -100%; height: 100%; width: 100%; background: var(--gold-border); animation: loading 1.5s infinite; }
+        @keyframes loading { 0% { left: -100%; } 100% { left: 100%; } }
+        body.loaded #splash-screen { opacity: 0; pointer-events: none; }
+        .main-container { width: 100%; max-width: 450px; }
+        .header-logo { text-align: center; margin-bottom: 10px; }
+        .annonce-card { background: var(--card-blue); border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 45px 15px 15px 15px; margin-bottom: 15px; display: none; position: relative; text-align: center; }
+        .annonce-titre-style { position: absolute; top: 12px; left: 15px; text-align: left; font-size: 0.75rem; font-style: italic; opacity: 0.6; line-height: 1.4; }
+        .shabbat-title-card { background: linear-gradient(135deg, #1a4cd3 0%, #0f34a1 100%); border: 2px solid var(--gold-border); border-radius: 20px; padding: 15px; text-align: center; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        .shabbat-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--gold-border); margin-bottom: 5px; font-weight: 700; }
+        .shabbat-name { font-size: 2.2rem; font-weight: 800; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); line-height: 1.1; }
+        .section-card { background: var(--card-blue); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 12px; margin-bottom: 12px; }
+        .section-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--gold-border); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+        .title-underline { height: 2px; background: var(--gold-border); flex-grow: 1; margin-left: 10px; opacity: 0.3; }
+        .row-major { display: flex; justify-content: space-between; align-items: baseline; padding: 2px 0; }
+        .f-bold { font-weight: 800; }
+        .f-red { color: #ff4d4d; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div id="splash-screen">
+        <div class="text-2xl font-bold tracking-widest text-white">OHAVEI TSION</div>
+        <div class="loader-line"></div>
+    </div>
+
+    <div class="main-container">
+        <div class="header-logo"><div class="text-lg font-bold tracking-tighter">KEHILAT OHAVEI TSION</div></div>
+
+        <div id="announcement-block" class="annonce-card">
+            <div id="sheet-annonce_titre" class="annonce-titre-style"></div>
+            <div id="sheet-annonce_texte" class="text-lg font-bold leading-tight"></div>
+        </div>
+
+        <div class="shabbat-title-card">
+            <div class="shabbat-label">Shabbat Kodesh</div>
+            <div id="shabbat-name" class="shabbat-name">--</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-3">
+            <div class="bg-white rounded-xl p-2 text-blue-900 text-center flex flex-col justify-center">
+                <div id="label-allumage_bougies" class="text-[10px] font-bold text-red-500 uppercase mb-0.5">Allumage</div>
+                <div id="sheet-allumage_bougies" class="text-2xl font-black text-red-600">--:--</div>
+            </div>
+            <div class="bg-blue-800/40 rounded-xl p-2 text-center flex flex-col justify-center border border-white/10">
+                <div id="label-minha_vendredi" class="text-[10px] font-bold text-blue-200 uppercase mb-0.5">Minha Vendredi</div>
+                <div id="sheet-minha_vendredi" class="text-2xl font-bold">--:--</div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">Horaires Shabbat<div class="title-underline"></div></div>
+            <div class="space-y-1">
+                <div class="row-major">
+                    <span id="label-chaharit_shabbat">Chaharit</span>
+                    <span id="sheet-chaharit_shabbat" class="text-xl font-bold">--:--</span>
+                </div>
+                <div id="box-dan" class="row-major border-t border-white/10 pt-1">
+                    <span id="label-shiour_dan">Shiour Rav Dan</span>
+                    <span id="sheet-shiour_dan" class="text-xl font-bold">--:--</span>
+                </div>
+                <div id="box-saadia" class="row-major border-t border-white/10 pt-1">
+                    <span id="label-shiour_saadia">Shiour Rav Saadia</span>
+                    <span id="sheet-shiour_saadia" class="text-xl font-bold">--:--</span>
+                </div>
+                <div id="box-haviv" class="row-major border-t border-white/10 pt-1">
+                    <span id="label-shiour_haviv">Shiour Rav Haviv</span>
+                    <span id="sheet-shiour_haviv" class="text-xl font-bold">--:--</span>
+                </div>
+                <div id="box-guemara" class="row-major border-t border-white/10 pt-1">
+                    <span id="label-shiour_guemara">Guemara</span>
+                    <span id="sheet-shiour_guemara" class="text-xl font-bold">--:--</span>
+                </div>
+                <div class="row-major border-t border-white/10 pt-1">
+                    <span id="label-minha_shabbat">Minha Shabbat</span>
+                    <span id="sheet-minha_shabbat" class="text-xl font-bold">--:--</span>
+                </div>
+                <div class="row-major border-t border-white/10 pt-1">
+                    <span id="label-arvit_motsach">Arvit Motsae</span>
+                    <span id="sheet-arvit_motsach" class="text-xl font-bold text-yellow-400">--:--</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">Semaine<div class="title-underline"></div></div>
+            <div class="row-major">
+                <span id="label-chaharit_semaine">Chaharit</span>
+                <span id="sheet-chaharit_semaine" class="text-xl font-bold">--:--</span>
+            </div>
+            <div class="row-major border-t border-white/10 pt-1">
+                <span id="label-minha_semaine">Minha & Arvit</span>
+                <span id="sheet-minha_semaine" class="text-xl font-bold">--:--</span>
+            </div>
+        </div>
+
+        <div id="extra-sections-container"></div>
+    </div>
+
+    <script src="zmanim.js"></script>
+    <script>
+        const API_URL = "https://api-syna.gregyman.workers.dev/";
+
+        function format(t) { 
+            if(!t) return "";
+            let clean = t.replace(/<[^>]*>/g, "").replace(/&nbsp;|\u00A0/g, " ").replace(/[ ]{2,}/g, " ").trim();
+            return clean.replace(/\*\*(.*?)\*\*/g, '<span class="f-bold">$1</span>')
+                        .replace(/\{r\}(.*?)\{\/r\}/g, '<span class="f-red">$1</span>')
+                        .replace(/\n/g, "<br>");
+        }
+
+        async function loadAll() {
+            try {
+                // 1. Hebcal (Nom Parasha)
+                const hRes = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s');
+                const hData = await hRes.json();
+                let nomShabbatAuto = "--";
+                const eventP = hData.items.find(i => i.category === "parashat");
+                if (eventP) nomShabbatAuto = eventP.title.replace("Parashat ", "");
+
+                // 2. Horaires auto via zmanim.js
+                const fKey = getNextFridayKey();
+                const zmanAuto = ZMANIM_TABLE[fKey] || { allumage: "--:--", arvit: "--:--" };
+
+                // 3. Données KV
+                const sheetRes = await fetch(API_URL);
+                const sData = await sheetRes.json();
+
+                // Parasha
+                const pMan = sData.parasha?.valeur;
+                document.getElementById('shabbat-name').innerHTML = (pMan && pMan.trim() !== "" && pMan !== "--") ? format(pMan) : `<span class="f-bold">${nomShabbatAuto}</span>`;
+
+                // Champs
+                const keys = ['allumage_bougies','minha_vendredi','chaharit_shabbat','shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara','minha_shabbat','arvit_motsach','chaharit_semaine','minha_semaine'];
+                keys.forEach(k => {
+                    const label = document.getElementById(`label-${k}`), val = document.getElementById(`sheet-${k}`);
+                    if(label && sData[k]) label.innerHTML = format(sData[k].intitule);
+                    if(val && sData[k]) {
+                        let fv = sData[k].valeur;
+                        // Auto Fallback
+                        if (k === 'allumage_bougies' && (fv.trim() === "" || fv === "--:--")) fv = zmanAuto.allumage;
+                        if (k === 'arvit_motsach' && (fv.trim() === "" || fv === "--:--")) fv = zmanAuto.arvit;
+
+                        val.innerHTML = format(fv);
+                        if (k.startsWith('shiour_')) {
+                            const box = document.getElementById(`box-${k.split('_')[1]}`);
+                            if (box) box.style.display = (fv.trim() === "" || fv === "--:--") ? 'none' : 'flex';
+                        }
+                    }
+                });
+
+                // Annonces
+                const aT = sData.annonce_titre?.valeur, aX = sData.annonce_texte?.valeur;
+                const b = document.getElementById('announcement-block');
+                if((aT && aT.trim() !== "") || (aX && aX.trim() !== "")) {
+                    b.style.display = 'block';
+                    document.getElementById('sheet-annonce_titre').innerHTML = format(aT);
+                    document.getElementById('sheet-annonce_texte').innerHTML = format(aX);
+                } else b.style.display = 'none';
+
+                // Extras
+                const container = document.getElementById('extra-sections-container');
+                container.innerHTML = '';
+                if(sData.extra_sections) {
+                    sData.extra_sections.forEach(sec => {
+                        const rows = sec.rows.map((r, i) => `<div class="row-major ${i>0?'border-t border-white/10 pt-1':''}"><span>${format(r.label)}</span><span class="text-xl font-bold">${format(r.val)}</span></div>`).join('');
+                        container.insertAdjacentHTML('beforeend', `<div class="section-card"><div class="section-title">${sec.title}<div class="title-underline"></div></div><div class="space-y-1">${rows}</div></div>`);
+                    });
+                }
+                document.body.classList.add('loaded');
+            } catch(e) { document.body.classList.add('loaded'); }
+        }
+        loadAll(); setInterval(loadAll, 30000);
+    </script>
+</body>
+</html>
