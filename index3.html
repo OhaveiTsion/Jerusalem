@@ -6,55 +6,55 @@
     <title>Ohavei Tsion</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
-    :root { --bg-deep-blue: #0f34a1; --gold-border: #f1c40f; --card-blue: rgba(255, 255, 255, 0.08); }
-    body { font-family: 'Assistant', sans-serif; background-color: var(--bg-deep-blue); color: white; padding: 10px; display: flex; justify-content: center; margin: 0; }
-    
-    #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-deep-blue); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.6s ease-out; }
-    .loader-line { width: 150px; height: 3px; background: rgba(255,255,255,0.1); margin-top: 20px; position: relative; overflow: hidden; border-radius: 2px; }
-    .loader-line::after { content: ""; position: absolute; left: -100%; width: 100%; height: 100%; background: var(--gold-border); animation: loadingBar 1.5s infinite ease-in-out; }
-    @keyframes loadingBar { 0% { left: -100%; } 50% { left: 0%; } 100% { left: 100%; } }
-    .loaded #splash-screen { opacity: 0; pointer-events: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
+        :root { --bg-deep-blue: #0f34a1; --gold-border: #f1c40f; --card-blue: rgba(255, 255, 255, 0.08); }
+        body { font-family: 'Assistant', sans-serif; background-color: var(--bg-deep-blue); color: white; padding: 10px; display: flex; justify-content: center; margin: 0; }
+        
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-deep-blue); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.6s ease-out; }
+        .loader-line { width: 150px; height: 3px; background: rgba(255,255,255,0.1); margin-top: 20px; position: relative; overflow: hidden; border-radius: 2px; }
+        .loader-line::after { content: ""; position: absolute; left: -100%; width: 100%; height: 100%; background: var(--gold-border); animation: loadingBar 1.5s infinite ease-in-out; }
+        @keyframes loadingBar { 0% { left: -100%; } 50% { left: 0%; } 100% { left: 100%; } }
+        .loaded #splash-screen { opacity: 0; pointer-events: none; }
 
-    .main-container { border: 3px solid var(--gold-border); border-radius: 20px; min-height: calc(100vh - 20px); padding: 15px; width: 100%; max-width: 500px; background: linear-gradient(to bottom, #0f34a1, #0a2472); opacity: 0; transform: scale(0.98); transition: opacity 0.8s ease, transform 0.8s ease; display: flex; flex-direction: column; }
-    .loaded .main-container { opacity: 1; transform: scale(1); }
+        .main-container { border: 3px solid var(--gold-border); border-radius: 20px; min-height: calc(100vh - 20px); padding: 15px; width: 100%; max-width: 500px; background: linear-gradient(to bottom, #0f34a1, #0a2472); opacity: 0; transform: scale(0.98); transition: opacity 0.8s ease, transform 0.8s ease; display: flex; flex-direction: column; }
+        .loaded .main-container { opacity: 1; transform: scale(1); }
 
-    .zman-box { background: white; border-radius: 12px; color: #0f34a1; padding: 10px 5px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-    .annonce-card { 
-    background: var(--card-blue); 
-    border: 1px solid rgba(255,255,255,0.15); 
-    border-radius: 15px; 
-    padding: 45px 15px 15px 15px;
-    margin-bottom: 15px; 
-    display: none; 
-    position: relative; 
-    text-align: center; 
-}
+        .zman-box { background: white; border-radius: 12px; color: #0f34a1; padding: 10px 5px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .annonce-card { 
+            background: var(--card-blue); 
+            border: 1px solid rgba(255,255,255,0.15); 
+            border-radius: 15px; 
+            padding: 45px 15px 15px 15px;
+            margin-bottom: 15px; 
+            display: none; 
+            position: relative; 
+            text-align: center; 
+        }
 
-.annonce-titre-style { 
-    position: absolute; 
-    top: 12px; 
-    left: 15px; 
-    text-align: left; 
-    font-size: 0.75rem; 
-    font-style: italic; 
-    opacity: 0.6; 
-    line-height: 1.4;
-}
-    
-    .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: var(--card-blue); margin-bottom: 8px; }
-    .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; margin-bottom: 12px; display: flex; flex-direction: column; align-items: center; }
-    .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin-top: 4px; border-radius: 2px; }
-    
-    .row-major { display: flex; justify-content: space-between; align-items: center; padding: 10px 8px; }
-    .row-major > span:first-child { flex: 1; padding-right: 10px; font-size: 0.95rem; line-height: 1.25; }
-    
-    .shiour-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 6px 0; display: flex; justify-content: space-between; font-size: 0.85rem; }
+        .annonce-titre-style { 
+            position: absolute; 
+            top: 12px; 
+            left: 15px; 
+            text-align: left;
+            font-size: 0.75rem; 
+            font-style: italic; 
+            opacity: 0.6; 
+            line-height: 1.4;
+        }
+        
+        .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: var(--card-blue); margin-bottom: 8px; }
+        .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; margin-bottom: 12px; display: flex; flex-direction: column; align-items: center; }
+        .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin-top: 4px; border-radius: 2px; }
+        
+        .row-major { display: flex; justify-content: space-between; align-items: center; padding: 10px 8px; }
+        .row-major > span:first-child { flex: 1; padding-right: 10px; font-size: 0.95rem; line-height: 1.25; }
+        
+        .shiour-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 6px 0; display: flex; justify-content: space-between; font-size: 0.85rem; }
 
-    .f-bold { font-weight: 800 !important; }
-    .f-red { color: #ff4d4d !important; }
-    
-    .row-major *, .shiour-item * { background-color: transparent !important; }
+        .f-bold { font-weight: 800 !important; }
+        .f-red { color: #ff4d4d !important; }
+        
+        .row-major *, .shiour-item * { background-color: transparent !important; }
     </style>
 </head>
 <body>
@@ -126,7 +126,11 @@
 
         function format(t) { 
             if(!t) return "";
-            let clean = t.replace(/<[^>]*>/g, "").replace(/&nbsp;|\u00A0/g, " ").replace(/[ ]{2,}/g, " ").trim();
+            let clean = t.replace(/<[^>]*>/g, "")
+                         .replace(/&nbsp;|\u00A0/g, " ")
+                         .replace(/[ ]{2,}/g, " ")
+                         .trim();
+
             return clean.replace(/\*\*(.*?)\*\*/g, '<span class="f-bold">$1</span>')
                         .replace(/\{r\}(.*?)\{\/r\}/g, '<span class="f-red">$1</span>')
                         .replace(/\n/g, "<br>");
@@ -142,44 +146,50 @@
                 if (eventP) nomShabbatAuto = eventP.title.replace("Parashat ", "");
                 else { const eventF = hData.items.find(i => i.category === "holiday"); if (eventF) nomShabbatAuto = eventF.title; }
 
-                // 2. Préparation du tableau Zmanim local
-                const fridayKey = getNextFridayKey(); 
-                const zmanAuto = (typeof ZMANIM_TABLE !== 'undefined') ? ZMANIM_TABLE[fridayKey] : null;
-
-                // 3. Récupération KV
+                // 2. Fetch données depuis KV
                 const sheetRes = await fetch(API_URL);
                 const sData = await sheetRes.json();
 
+                // Parasha
                 const pMan = sData.parasha?.valeur;
                 document.getElementById('shabbat-name').innerHTML = (pMan && pMan.trim() !== "" && pMan !== "--") ? format(pMan) : `<span class="f-bold">${nomShabbatAuto}</span>`;
 
+                // 3. Boucle sur les autres champs
                 const keys = ['allumage_bougies','minha_vendredi','chaharit_shabbat','shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara','minha_shabbat','arvit_motsach','chaharit_semaine','minha_semaine'];
+                
                 keys.forEach(k => {
-    const label = document.getElementById(`label-${k}`), val = document.getElementById(`sheet-${k}`);
-    if(label && sData[k]) label.innerHTML = format(sData[k].intitule);
-    
-    if(val && sData[k]) {
-        let finalVal = sData[k].valeur;
+                    const label = document.getElementById(`label-${k}`), val = document.getElementById(`sheet-${k}`);
+                    if(label && sData[k]) label.innerHTML = format(sData[k].intitule);
+                    
+                    if(val && sData[k]) {
+                        let finalVal = sData[k].valeur;
 
-        // --- FALLBACK AUTOMATIQUE SI VIDE ---
-        if(!finalVal || finalVal === "--:--" || finalVal === "--") {
-            const friKey = getZmanimDate(0);
-            const satKey = getZmanimDate(1);
-            if(k === 'allumage_bougies' && ZMANIM_TABLE[friKey]) finalVal = ZMANIM_TABLE[friKey].allumage;
-            if(k === 'arvit_motsach') {
-                if(ZMANIM_TABLE[satKey]) finalVal = ZMANIM_TABLE[satKey].arvit;
-                else if(ZMANIM_TABLE[friKey]) finalVal = ZMANIM_TABLE[friKey].arvit;
-            }
-        }
+                        // -- LOGIQUE DE RECOURS (FALLBACK) ZMANIM --
+                        if (!finalVal || finalVal.trim() === "" || finalVal === "--:--") {
+                            const friKey = getZmanimDate(0); // Vendredi
+                            const satKey = getZmanimDate(1); // Samedi
+                            
+                            if (k === 'allumage_bougies' && typeof ZMANIM_TABLE !== 'undefined' && ZMANIM_TABLE[friKey]) {
+                                finalVal = ZMANIM_TABLE[friKey].allumage;
+                            }
+                            if (k === 'arvit_motsach' && typeof ZMANIM_TABLE !== 'undefined') {
+                                if (ZMANIM_TABLE[satKey] && ZMANIM_TABLE[satKey].arvit) {
+                                    finalVal = ZMANIM_TABLE[satKey].arvit;
+                                } else if (ZMANIM_TABLE[friKey] && ZMANIM_TABLE[friKey].arvit) {
+                                    finalVal = ZMANIM_TABLE[friKey].arvit;
+                                }
+                            }
+                        }
 
-        val.innerHTML = format(finalVal);
-        
-        if (k.startsWith('shiour_')) {
-            const box = document.getElementById(`box-${k.split('_')[1]}`);
-            if (box) box.style.display = (finalVal.trim() === "" || finalVal === "--:--") ? 'none' : 'flex';
-        }
-    }
-});
+                        val.innerHTML = format(finalVal);
+                        
+                        // Gestion de l'affichage des shiourim
+                        if (k.startsWith('shiour_')) {
+                            const box = document.getElementById(`box-${k.split('_')[1]}`);
+                            if (box) box.style.display = (finalVal.trim() === "" || finalVal === "--:--") ? 'none' : 'flex';
+                        }
+                    }
+                });
 
                 const aT = sData.annonce_titre?.valeur, aX = sData.annonce_texte?.valeur;
                 const b = document.getElementById('announcement-block');
@@ -198,8 +208,9 @@
                     });
                 }
                 document.body.classList.add('loaded');
-            } catch(e) { document.body.classList.add('loaded'); }
+            } catch(e) { document.body.classList.add('loaded'); console.error(e); }
         }
+        
         loadAll(); setInterval(loadAll, 30000);
     </script>
 </body>
