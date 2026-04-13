@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin - Ohavei Tsion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
+        :root { --bg-deep-blue: #0f34a1; --gold-border: #f1c40f; --card-blue: rgba(255, 255, 255, 0.08); }
+        body { font-family: 'Assistant', sans-serif; background-color: var(--bg-deep-blue); color: white; padding: 10px; display: flex; flex-direction: column; align-items: center; margin: 0; }
+        .editable { cursor: pointer; border: 1px dashed rgba(255,255,255,0.2); padding: 2px 5px; border-radius: 4px; transition: all 0.2s; min-width: 30px; }
+        .editable:hover { background: rgba(255,255,255,0.1); border-color: var(--gold-border); }
+        .editable:focus { outline: none; background: white; color: black; border-color: var(--gold-border); }
+        #toolbar { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); display: none; background: #1a1a1a; padding: 10px; border-radius: 50px; border: 2px solid var(--gold-border); z-index: 9999; gap: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .btn { background: var(--gold-border); color: black; font-weight: 800; padding: 8px 16px; border-radius: 10px; cursor: pointer; text-transform: uppercase; transition: transform 0.1s; }
+        .btn:active { transform: scale(0.95); }
+        .hint-text { font-size: 10px; opacity: 0.6; margin-top: 2px; }
+    </style>
+</head>
+<body class="pb-24">
+    <div id="toolbar">
+        <button class="btn-tool" onclick="document.execCommand('bold', false, null)"><b>B</b></button>
+        <button class="btn-tool text-red-500" onclick="wrapTag('{r}', '{/r}')">Rouge</button>
+    </div>
+
+    <div class="w-full max-w-md">
+        <h1 class="text-xl font-bold text-center mb-6">ADMIN OHAVEI TSION</h1>
+
+        <div class="bg-blue-900/40 border border-white/20 rounded-xl p-3 mb-4">
+            <div id="annonce_titre_label" class="text-[10px] text-yellow-400 font-bold uppercase mb-1">Badge (Italique)</div>
+            <div id="annonce_titre_val" class="editable text-sm italic mb-3" contenteditable="true">Ex: Rosh Chodesh</div>
+            <div id="annonce_texte_label" class="text-[10px] text-yellow-400 font-bold uppercase mb-1">Message Principal</div>
+            <div id="annonce_texte_val" class="editable text-lg font-bold" contenteditable="true">Videz ce champ pour masquer l'annonce</div>
+        </div>
+
+        <div class="border-2 border-yellow-500 rounded-2xl p-4 mb-4 text-center">
+            <div class="text-[10px] uppercase font-bold text-yellow-500 mb-1">Nom du Shabbat / Parasha</div>
+            <div id="parasha_val" class="editable text-2xl font-black" contenteditable="true">--</div>
+            <div id="auto-hint" class="hint-text"></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="bg-white rounded-xl p-2 text-blue-900 text-center">
+                <div id="allumage_bougies_label" class="editable text-[10px] font-bold text-red-500 uppercase" contenteditable="true">Allumage</div>
+                <div id="allumage_bougies_val" class="editable text-2xl font-black text-red-600" contenteditable="true">--:--</div>
+                <div id="hint-allumage" class="hint-text text-red-500"></div>
+            </div>
+            <div class="bg-blue-800/40 border border-white/10 rounded-xl p-2 text-center">
+                <div id="minha_vendredi_label" class="editable text-[10px] font-bold text-blue-200 uppercase" contenteditable="true">Minha Ven.</div>
+                <div id="minha_vendredi_val" class="editable text-2xl font-bold" contenteditable="true">--:--</div>
+            </div>
+        </div>
+
+        <div class="bg-white/10 rounded-xl p-4 mb-4">
+            <div class="text-[10px] font-bold text-yellow-500 uppercase mb-3">Horaires Shabbat</div>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <div id="chaharit_shabbat_label" class="editable text-sm" contenteditable="true">Chaharit</div>
+                    <div id="chaharit_shabbat_val" class="editable text-xl font-bold" contenteditable="true">--:--</div>
+                </div>
+                <div class="flex justify-between items-center border-t border-white/10 pt-2">
+                    <div id="arvit_motsach_label" class="editable text-sm" contenteditable="true">Arvit Motsae</div>
+                    <div class="text-right">
+                        <div id="arvit_motsach_val" class="editable text-xl font-bold text-yellow-400" contenteditable="true">--:--</div>
+                        <div id="hint-arvit" class="hint-text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white/10 rounded-xl p-4 mb-4">
+            <div class="text-[10px] font-bold text-yellow-500 uppercase mb-2">Shiourim (Vider l'heure pour cacher)</div>
+            <div class="space-y-3">
+                <div class="flex justify-between"><div id="shiour_dan_label" class="editable" contenteditable="true">R. Dan</div><div id="shiour_dan_val" class="editable font-bold" contenteditable="true">--:--</div></div>
+                <div class="flex justify-between border-t border-white/5 pt-1"><div id="shiour_saadia_label" class="editable" contenteditable="true">R. Saadia</div><div id="shiour_saadia_val" class="editable font-bold" contenteditable="true">--:--</div></div>
+                <div class="flex justify-between border-t border-white/5 pt-1"><div id="shiour_haviv_label" class="editable" contenteditable="true">R. Haviv</div><div id="shiour_haviv_val" class="editable font-bold" contenteditable="true">--:--</div></div>
+                <div class="flex justify-between border-t border-white/5 pt-1"><div id="shiour_guemara_label" class="editable" contenteditable="true">Guemara</div><div id="shiour_guemara_val" class="editable font-bold" contenteditable="true">--:--</div></div>
+            </div>
+        </div>
+
+        <button onclick="sendData()" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-green-500 text-white font-black px-12 py-4 rounded-full shadow-2xl z-[9999] text-xl uppercase tracking-widest border-4 border-white">ENREGISTRER</button>
+    </div>
+
+    <script src="zmanim.js"></script>
+    <script>
+        const API_URL = "https://api-syna.gregyman.workers.dev/";
+        const keys = ['annonce_titre','annonce_texte','parasha','allumage_bougies','minha_vendredi','chaharit_shabbat','shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara','minha_shabbat','arvit_motsach','chaharit_semaine','minha_semaine'];
+
+        function toHtml(t) { return (t||"").replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\{r\}(.*?)\{\/r\}/g, '<span class="text-red-500">$1</span>').replace(/\n/g, '<br>'); }
+        function toTags(h) { return h.replace(/<b>(.*?)<\/b>/g, '**$1**').replace(/<strong>(.*?)<\/strong>/g, '**$1**').replace(/<span class="text-red-500">(.*?)<\/span>/g, '{r}$1{/r}').replace(/<br>/g, '\n').replace(/&nbsp;/g, ' ').trim(); }
+
+        async function loadData() {
+            try {
+                const r = await fetch(API_URL);
+                const data = await r.json();
+                keys.forEach(k => {
+                    if(data[k]) {
+                        const vE=document.getElementById(`${k}_val`), lE=document.getElementById(`${k}_label`);
+                        if(vE) vE.innerHTML = toHtml(data[k].valeur);
+                        if(lE) lE.innerHTML = toHtml(data[k].intitule);
+                    }
+                });
+
+                // Hints
+                const hRes = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s');
+                const h = await hRes.json();
+                const p = h.items.find(i => i.category === "parashat");
+                if(p) document.getElementById('auto-hint').innerHTML = "Auto: " + p.title.replace("Parashat ","");
+
+                const fKey = getNextFridayKey();
+                const z = ZMANIM_TABLE[fKey];
+                if(z) {
+                    document.getElementById('hint-allumage').innerHTML = "Tableau: " + z.allumage;
+                    document.getElementById('hint-arvit').innerHTML = "Tableau: " + z.arvit;
+                }
+            } catch(e) {}
+        }
+
+        async function sendData() {
+            const pass = prompt("Mot de passe :"); if(!pass) return;
+            const payload = {};
+            keys.forEach(k => {
+                const v=document.getElementById(`${k}_val`), l=document.getElementById(`${k}_label`);
+                payload[k] = { intitule: l ? toTags(l.innerHTML) : k, valeur: v ? toTags(v.innerHTML) : "" };
+            });
+            const r = await fetch(API_URL, { method:'POST', body: JSON.stringify({auth:pass, payload}) });
+            alert((await r.text()).includes("Succès") ? "Sauvegardé !" : "Erreur");
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
