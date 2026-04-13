@@ -14,7 +14,6 @@
         .admin-nav { position: sticky; top: 0; z-index: 2000; width: 100%; max-width: 500px; display: flex; gap: 10px; padding: 10px 0; background: var(--bg-deep-blue); }
         .main-container { border: 3px solid var(--gold-border); border-radius: 20px; padding: 15px; width: 100%; max-width: 500px; background: linear-gradient(to bottom, #0f34a1, #0a2472); min-height: 80vh; display: flex; flex-direction: column; }
         
-        /* Sécurité anti-surlignage au collage */
         .editable { background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); padding: 4px; border-radius: 6px; outline: none; min-height: 1.2em; }
         .editable:focus { border: 1px solid var(--gold-border); background: rgba(255,255,255,0.1); }
         .editable * { background-color: transparent !important; background: transparent !important; color: inherit !important; }
@@ -102,7 +101,6 @@
         const API_URL = "https://api-syna.gregyman.workers.dev/";
         const keys = ['allumage_bougies','minha_vendredi','chaharit_shabbat','shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara','minha_shabbat','arvit_motsach','chaharit_semaine','minha_semaine','annonce_titre','annonce_texte','parasha'];
         
-        // Nettoyage au collage pour éviter les fonds colorés
         document.querySelectorAll('.editable').forEach(el => {
             el.addEventListener('paste', e => {
                 e.preventDefault();
@@ -116,39 +114,21 @@
 
         function toTags(h) { 
             if(!h) return "";
-            
-            let temp = h;
-
-            // 1. On remplace les structures de bloc par des sauts de ligne
-            temp = temp.replace(/<(div|p|br|li)[^>]*>/gi, "\n")
-                       .replace(/<\/(div|p|li)>/gi, "");
-
-            // 2. On sauve UNIQUEMENT le gras et notre format couleur {r}
-            // On transforme les <b>, <strong> et les <font color>
+            let temp = h.replace(/<(div|p|br|li)[^>]*>/gi, "\n").replace(/<\/(div|p|li)>/gi, "");
             temp = temp.replace(/<(b|strong)[^>]*>(.*?)<\/\1>/gi, "**$2**");
             temp = temp.replace(/<font color="[^"]*">(.*?)<\/font>/gi, "{r}$1{/r}");
-
-            // 3. ON SUPPRIME TOUTES LES AUTRES BALISES (span, id, class, etc.)
             temp = temp.replace(/<[^>]*>/g, "");
-
-            // 4. NETTOYAGE DES ESPACES ET CARACTÈRES SPÉCIAUX
-            return temp.replace(/&nbsp;/g, " ")
-                       .replace(/\u00A0/g, " ")
-                       .replace(/[ ]{2,}/g, " ") // Pas plus d'un espace de suite
-                       .replace(/\n\s*\n/g, "\n") // Pas de lignes vides inutiles
-                       .trim(); 
+            return temp.replace(/&nbsp;/g, " ").replace(/\u00A0/g, " ").replace(/[ ]{2,}/g, " ").replace(/\n\s*\n/g, "\n").trim(); 
         }
 
         function toHtml(t) { 
             if(!t) return "";
-            return t.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-                    .replace(/\{r\}(.*?)\{\/r\}/g, '<font color="#ff4d4d">$1</font>')
-                    .replace(/\n/g, "<br>"); 
+            return t.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>").replace(/\{r\}(.*?)\{\/r\}/g, '<font color="#ff4d4d">$1</font>').replace(/\n/g, "<br>"); 
         }
 
         function addZone(title="TITRE ZONE", rows=[]) {
             const id = 'z'+Date.now();
-            const html = `<div class="section-card extra-z" id="${id}"><div class="flex justify-between items-center"><div class="section-title editable flex-1 text-center" contenteditable="true" style="letter-spacing: 0.2em;">${title}</div><button onclick="this.closest('.extra-z').remove()" class="text-red-500 font-bold ml-2">X</button></div><div class="title-underline mx-auto mb-4"></div><div class="rows-cont space-y-1"></div><button onclick="addRow('${id}')" class="w-full text-[10px] mt-2 opacity-50 bg-black/20 p-2 rounded hover:bg-black/40">+ AJOUTER LIGNE</button></div>`;
+            const html = `<div class="section-card extra-z" id="${id}"><div class="flex justify-between items-center"><div class="section-title editable flex-1 text-center" contenteditable="true">${title}</div><button onclick="this.closest('.extra-z').remove()" class="text-red-500 font-bold ml-2">X</button></div><div class="title-underline mx-auto mb-4"></div><div class="rows-cont space-y-1"></div><button onclick="addRow('${id}')" class="w-full text-[10px] mt-2 opacity-50 bg-black/20 p-2 rounded">+ AJOUTER LIGNE</button></div>`;
             document.getElementById('extra-sections').insertAdjacentHTML('beforeend', html);
             if(rows.length) rows.forEach(r => addRow(id, r.label, r.val)); else addRow(id);
         }
@@ -167,7 +147,7 @@
                 });
                 if(data.extra_sections) data.extra_sections.forEach(s => addZone(s.title, s.rows));
                 
-                // 1. Suggestion Parasha
+                // 1. Suggestion Parasha (Hebcal)
                 const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
                 let events = []; let seenNames = new Set();
                 h.items.forEach(i => {
@@ -181,21 +161,25 @@
                 });
                 document.getElementById('auto-hint').innerHTML = events.length > 0 ? "<b>Suggéré :</b><br>" + events.join(" <br> ") : "Aucun événement";
 
-                // 2. Suggestion Horaires Zmanim
-                const friKey = getZmanimDate(0); // Clé du vendredi
-                const satKey = getZmanimDate(1); // Clé du samedi (ou utilise friKey si pas trouvé)
+                // 2. Suggestion Zmanim depuis zmanim.js
+                const friKey = getZmanimDate(0); 
+                const satKey = getZmanimDate(1);
                 
-                const zFri = typeof ZMANIM_TABLE !== 'undefined' ? ZMANIM_TABLE[friKey] : null;
-                const zSat = typeof ZMANIM_TABLE !== 'undefined' ? ZMANIM_TABLE[satKey] : null;
+                if(typeof ZMANIM_TABLE !== 'undefined') {
+                    const zFri = ZMANIM_TABLE[friKey];
+                    const zSat = ZMANIM_TABLE[satKey];
 
-                if(zFri) {
-                    document.getElementById('hint-allumage').innerHTML = `<b>Suggéré :</b><br>${zFri.allumage}`;
-                }
-                
-                if(zSat && zSat.arvit) {
-                    document.getElementById('hint-arvit').innerHTML = `<b>Suggéré :</b> ${zSat.arvit}`;
-                } else if (zFri && zFri.arvit) {
-                    document.getElementById('hint-arvit').innerHTML = `<b>Suggéré :</b> ${zFri.arvit}`;
+                    // Affichage de la suggestion Allumage
+                    if(zFri && zFri.allumage) {
+                        document.getElementById('hint-allumage').innerHTML = `<b>Suggéré :</b><br>${zFri.allumage}`;
+                    }
+                    
+                    // Affichage de la suggestion Arvit
+                    if(zSat && zSat.arvit) {
+                        document.getElementById('hint-arvit').innerHTML = `<b>Suggéré :</b> ${zSat.arvit}`;
+                    } else if (zFri && zFri.arvit) {
+                        document.getElementById('hint-arvit').innerHTML = `<b>Suggéré :</b> ${zFri.arvit}`;
+                    }
                 }
 
             } catch(e) { console.error(e); }
