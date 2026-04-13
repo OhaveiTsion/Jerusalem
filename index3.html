@@ -155,24 +155,31 @@
 
                 const keys = ['allumage_bougies','minha_vendredi','chaharit_shabbat','shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara','minha_shabbat','arvit_motsach','chaharit_semaine','minha_semaine'];
                 keys.forEach(k => {
-                    const label = document.getElementById(`label-${k}`), val = document.getElementById(`sheet-${k}`);
-                    if(label && sData[k]) label.innerHTML = format(sData[k].intitule);
-                    if(val && sData[k]) {
-                        let finalVal = sData[k].valeur;
-                        
-                        // LOGIQUE TABLEAU LOCAL : si vide dans l'admin, on prend zmanim.js
-                        if (zmanAuto) {
-                            if (k === 'allumage_bougies' && (finalVal.trim() === "" || finalVal === "--:--")) finalVal = zmanAuto.allumage;
-                            if (k === 'arvit_motsach' && (finalVal.trim() === "" || finalVal === "--:--")) finalVal = zmanAuto.arvit;
-                        }
+    const label = document.getElementById(`label-${k}`), val = document.getElementById(`sheet-${k}`);
+    if(label && sData[k]) label.innerHTML = format(sData[k].intitule);
+    
+    if(val && sData[k]) {
+        let finalVal = sData[k].valeur;
 
-                        val.innerHTML = format(finalVal);
-                        if (k.startsWith('shiour_')) {
-                            const box = document.getElementById(`box-${k.split('_')[1]}`);
-                            if (box) box.style.display = (finalVal.trim() === "" || finalVal === "--:--") ? 'none' : 'flex';
-                        }
-                    }
-                });
+        // --- FALLBACK AUTOMATIQUE SI VIDE ---
+        if(!finalVal || finalVal === "--:--" || finalVal === "--") {
+            const friKey = getZmanimDate(0);
+            const satKey = getZmanimDate(1);
+            if(k === 'allumage_bougies' && ZMANIM_TABLE[friKey]) finalVal = ZMANIM_TABLE[friKey].allumage;
+            if(k === 'arvit_motsach') {
+                if(ZMANIM_TABLE[satKey]) finalVal = ZMANIM_TABLE[satKey].arvit;
+                else if(ZMANIM_TABLE[friKey]) finalVal = ZMANIM_TABLE[friKey].arvit;
+            }
+        }
+
+        val.innerHTML = format(finalVal);
+        
+        if (k.startsWith('shiour_')) {
+            const box = document.getElementById(`box-${k.split('_')[1]}`);
+            if (box) box.style.display = (finalVal.trim() === "" || finalVal === "--:--") ? 'none' : 'flex';
+        }
+    }
+});
 
                 const aT = sData.annonce_titre?.valeur, aX = sData.annonce_texte?.valeur;
                 const b = document.getElementById('announcement-block');
