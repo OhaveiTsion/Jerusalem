@@ -141,42 +141,46 @@
             cont.insertAdjacentHTML('beforeend', `<div class="row-major border-t border-white/10 pt-1 extra-r"><div class="editable text-sm flex-1" contenteditable="true">${toHtml(l)}</div><div class="editable text-xl font-bold text-right ml-2" contenteditable="true">${toHtml(v)}</div><button onclick="this.parentElement.remove()" class="ml-2 opacity-30 font-bold">X</button></div>`);
         }
 
-        async function loadData() {
-            try {
-                const res = await fetch(API_URL); const data = await res.json();
-                keys.forEach(k => { 
-                    const vEl=document.getElementById(`${k}_val`), lEl=document.getElementById(`${k}_label`); 
-                    if(vEl && data[k]) vEl.innerHTML=toHtml(data[k].valeur);
-                    if(lEl && data[k]) lEl.innerHTML=toHtml(data[k].intitule);
-                });
-                if(data.extra_sections) data.extra_sections.forEach(s => addZone(s.title, s.rows));
-                
-                // 1. Suggestion Hebcal
-                const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
-                let events = []; let seenNames = new Set();
-                h.items.forEach(i => {
-                    let name = i.title;
-                    if (i.category === "parashat") {
-                        name = i.title.replace("Parashat ", "");
-                        if(!seenNames.has(name)){ events.push(`<b>${name}</b>`); seenNames.add(name); }
-                    } else if (i.category === "holiday" || i.category === "roshchodesh" || i.category === "mevarchim") {
-                        if(!seenNames.has(name)){ events.push(name); seenNames.add(name); }
-                    }
-                });
-                document.getElementById('auto-hint').innerHTML = events.length > 0 ? "<b>Suggéré :</b><br>" + events.join(" <br> ") : "Aucun événement";
+        // Ajoutez cette fonction au début ou utilisez le fichier externe
+async function loadData() {
+    try {
+        const res = await fetch(API_URL); const data = await res.json();
+        keys.forEach(k => { 
+            const vEl=document.getElementById(`${k}_val`), lEl=document.getElementById(`${k}_label`); 
+            if(vEl && data[k]) vEl.innerHTML=toHtml(data[k].valeur);
+            if(lEl && data[k]) lEl.innerHTML=toHtml(data[k].intitule);
+        });
+        if(data.extra_sections) data.extra_sections.forEach(s => addZone(s.title, s.rows));
+        
+        // --- LOGIQUE DE SUGGESTION AMÉLIORÉE ---
+        const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
+        let events = []; 
+        let seenNames = new Set();
+        
+        // 1. Récupération Paracha / Fêtes
+        h.items.forEach(i => {
+            let name = i.title;
+            if (i.category === "parashat") {
+                name = i.title.replace("Parashat ", "");
+                if(!seenNames.has(name)){ events.push(`<b>${name}</b>`); seenNames.add(name); }
+            } else if (i.category === "holiday" || i.category === "roshchodesh" || i.category === "mevarchim") {
+                if(!seenNames.has(name)){ events.push(name); seenNames.add(name); }
+            }
+        });
 
-                // 2. Suggestion Tableau Local (zmanim.js)
-                if (typeof getNextFridayKey !== 'undefined' && typeof ZMANIM_TABLE !== 'undefined') {
-                    const fKey = getNextFridayKey();
-                    const z = ZMANIM_TABLE[fKey];
-                    if(z) {
-                        document.getElementById('hint-allumage').innerHTML = "Tableau: " + z.allumage;
-                        document.getElementById('hint-arvit').innerHTML = "Tableau: " + z.arvit;
-                    }
-                }
+        // 2. Récupération des Zmanim depuis le tableau zmanim.js
+        const friKey = getZmanimDate(0); // Vendredi
+        const satKey = getZmanimDate(1); // Samedi
+        const zFri = ZMANIM_TABLE[friKey];
+        const zSat = ZMANIM_TABLE[satKey];
 
-            } catch(e) {}
-        }
+        if(zFri) events.push(`🕯️ Allumage : <span class="f-bold">${zFri.allumage}</span>`);
+        if(zSat) events.push(`🌙 Arvit Motsae : <span class="f-bold">${zSat.arvit}</span>`);
+        else if(zFri) events.push(`🌙 Arvit Motsae : <span class="f-bold">${zFri.arvit}</span>`); // Secours si une seule clé
+
+        document.getElementById('auto-hint').innerHTML = events.length > 0 ? "<b>Suggéré :</b><br>" + events.join(" <br> ") : "Aucun événement";
+    } catch(e) { console.error(e); }
+}
 
         async function sendData() {
             const pass = prompt("Mot de passe :"); if(!pass) return;
