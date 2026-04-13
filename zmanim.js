@@ -30,10 +30,10 @@ const ZMANIM_TABLE = {
   "13/09/26": { "allumage": "---", "arvit": "19:25" }
 };
 
-// Fonction utilitaire pour trouver le prochain vendredi
+// Fonction pour récupérer la date au format du tableau (ex: "18/04/26")
 function getZmanimDate(offset = 0) {
     let d = new Date();
-    // Trouve le vendredi le plus proche (aujourd'hui si on est vendredi, sinon le prochain)
+    // On se place sur le prochain vendredi
     let diff = (5 - d.getDay() + 7) % 7;
     d.setDate(d.getDate() + diff + offset);
     return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'2-digit'});
