@@ -31,9 +31,10 @@ const ZMANIM_TABLE = {
 };
 
 // Fonction utilitaire pour trouver le prochain vendredi
-function getNextFridayKey() {
+function getZmanimDate(offset = 0) {
     let d = new Date();
-    // Trouve le vendredi de la semaine en cours (ou le suivant si on est déjà samedi)
-    d.setDate(d.getDate() + (5 - d.getDay() + 7) % 7);
-    return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit'});
+    // Trouve le vendredi le plus proche (aujourd'hui si on est vendredi, sinon le prochain)
+    let diff = (5 - d.getDay() + 7) % 7;
+    d.setDate(d.getDate() + diff + offset);
+    return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'2-digit'});
 }
