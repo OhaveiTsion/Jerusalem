@@ -101,6 +101,13 @@
         const API_URL = "https://api-syna.gregyman.workers.dev/";
         const keys = ['allumage_bougies','minha_vendredi','chaharit_shabbat','shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara','minha_shabbat','arvit_motsach','chaharit_semaine','minha_semaine','annonce_titre','annonce_texte','parasha'];
         
+        // Utilitaire pour formater la date au format DD/MM/YY
+        function getZmanimDate(daysToAdd) {
+            const d = new Date();
+            d.setDate(d.getDate() + (daysToAdd));
+            return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
+        }
+
         document.querySelectorAll('.editable').forEach(el => {
             el.addEventListener('paste', e => {
                 e.preventDefault();
@@ -108,9 +115,6 @@
                 document.execCommand('insertText', false, text);
             });
         });
-
-        document.addEventListener('focusin', e => { if(e.target.classList.contains('editable')) document.getElementById('toolbar').style.display='flex'; });
-        document.addEventListener('focusout', () => setTimeout(()=> { if(!document.activeElement.classList.contains('editable')) document.getElementById('toolbar').style.display='none'; }, 200));
 
         function toTags(h) { 
             if(!h) return "";
@@ -126,67 +130,48 @@
             return t.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>").replace(/\{r\}(.*?)\{\/r\}/g, '<font color="#ff4d4d">$1</font>').replace(/\n/g, "<br>"); 
         }
 
-        function addZone(title="TITRE ZONE", rows=[]) {
-            const id = 'z'+Date.now();
-            const html = `<div class="section-card extra-z" id="${id}"><div class="flex justify-between items-center"><div class="section-title editable flex-1 text-center" contenteditable="true">${title}</div><button onclick="this.closest('.extra-z').remove()" class="text-red-500 font-bold ml-2">X</button></div><div class="title-underline mx-auto mb-4"></div><div class="rows-cont space-y-1"></div><button onclick="addRow('${id}')" class="w-full text-[10px] mt-2 opacity-50 bg-black/20 p-2 rounded">+ AJOUTER LIGNE</button></div>`;
-            document.getElementById('extra-sections').insertAdjacentHTML('beforeend', html);
-            if(rows.length) rows.forEach(r => addRow(id, r.label, r.val)); else addRow(id);
-        }
-        function addRow(zid, l="Libellé", v="--:--") {
-            const cont = document.querySelector(`#${zid} .rows-cont`);
-            cont.insertAdjacentHTML('beforeend', `<div class="row-major border-t border-white/10 pt-1 extra-r"><div class="editable text-sm flex-1" contenteditable="true">${toHtml(l)}</div><div class="editable text-xl font-bold text-right ml-2" contenteditable="true">${toHtml(v)}</div><button onclick="this.parentElement.remove()" class="ml-2 opacity-30 font-bold">X</button></div>`);
-        }
-
         async function loadData() {
-    try {
-        const res = await fetch(API_URL); 
-        const data = await res.json();
+            try {
+                const res = await fetch(API_URL); 
+                const data = await res.json();
+                
+                // Remplissage des champs depuis la base KV
+                keys.forEach(k => { 
+                    const vEl=document.getElementById(`${k}_val`), lEl=document.getElementById(`${k}_label`); 
+                    if(vEl && data[k]) vEl.innerHTML=toHtml(data[k].valeur || "");
+                    if(lEl && data[k]) lEl.innerHTML=toHtml(data[k].intitule || "");
+                });
 
-        // 1. ON CHARGE UNIQUEMENT LES DONNÉES DE LA BASE (KV)
-        keys.forEach(k => { 
-            const vEl = document.getElementById(`${k}_val`);
-            const lEl = document.getElementById(`${k}_label`); 
-            
-            // On affiche le contenu de la base. Si c'est vide (""), la case restera vide.
-            // On n'ajoute PAS de "|| ZMANIM_TABLE" ici pour l'ADMIN.
-            if (vEl && data[k]) {
-                vEl.innerHTML = toHtml(data[k].valeur || ""); 
-            }
-            if (lEl && data[k]) {
-                lEl.innerHTML = toHtml(data[k].intitule || "");
-            }
-        });
+                if(data.extra_sections) data.extra_sections.forEach(s => addZone(s.title, s.rows));
+                
+                // --- SUGGESTION PARASHA ---
+                const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
+                let events = [];
+                h.items.forEach(i => {
+                    if (i.category === "parashat") events.push(`<b>${i.title.replace("Parashat ", "")}</b>`);
+                });
+                document.getElementById('auto-hint').innerHTML = events.length > 0 ? "<b>Suggéré :</b> " + events[0] : "";
 
-        // 2. ON CHARGE LES SUGGESTIONS (SANS REMPLIR LES CASES)
-        
-        // --- Suggestion Paracha (Hebcal) ---
-        const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
-        let events = [];
-        h.items.forEach(i => {
-            if (i.category === "parashat") events.push(`<b>${i.title.replace("Parashat ", "")}</b>`);
-            else if (["holiday", "roshchodesh", "mevarchim"].includes(i.category)) events.push(i.title);
-        });
-        document.getElementById('auto-hint').innerHTML = events.length > 0 ? "<b>Suggéré :</b><br>" + events.join("<br>") : "";
+                // --- SUGGESTION HORAIRES (ZMANIM.JS) ---
+                // On cherche l'allumage pour vendredi (aujourd'hui ou prochain)
+                const today = new Date().getDay();
+                const daysUntilFriday = (5 - today + 7) % 7;
+                const friKey = getZmanimDate(daysUntilFriday); 
+                const satKey = getZmanimDate((6 - today + 7) % 7);
 
-        // --- Suggestion Horaires (Zmanim.js) ---
-        // On suppose que vous avez les fonctions getZmanimDate(0) et (1) définies
-        const friKey = getZmanimDate(0); 
-        const satKey = getZmanimDate(1);
-        
-        if (typeof ZMANIM_TABLE !== 'undefined') {
-            const zFri = ZMANIM_TABLE[friKey];
-            const zSat = ZMANIM_TABLE[satKey];
-            
-            // On met à jour uniquement les div de "HINT" (les petites écritures en dessous)
-            if (zFri && zFri.allumage) {
-                document.getElementById('hint-allumage').innerHTML = `<b>Suggéré :</b> ${zFri.allumage}`;
-            }
-            if (zSat && zSat.arvit) {
-                document.getElementById('hint-arvit').innerHTML = `<b>Suggéré :</b> ${zSat.arvit}`;
-            }
+                if(typeof ZMANIM_TABLE !== 'undefined') {
+                    const zFri = ZMANIM_TABLE[friKey];
+                    const zSat = ZMANIM_TABLE[satKey];
+                    
+                    if(zFri && zFri.allumage) {
+                        document.getElementById('hint-allumage').innerHTML = `<b>Suggéré :</b> ${zFri.allumage}`;
+                    }
+                    if(zSat && zSat.arvit) {
+                        document.getElementById('hint-arvit').innerHTML = `<b>Suggéré :</b> ${zSat.arvit}`;
+                    }
+                }
+            } catch(e) { console.error(e); }
         }
-    } catch(e) { console.error("Erreur chargement:", e); }
-}
 
         async function sendData() {
             const pass = prompt("Mot de passe :"); if(!pass) return;
@@ -194,11 +179,6 @@
             keys.forEach(k => { 
                 const vEl=document.getElementById(`${k}_val`), lEl=document.getElementById(`${k}_label`); 
                 payload[k] = { intitule: lEl ? toTags(lEl.innerHTML) : k, valeur: vEl ? toTags(vEl.innerHTML) : "" }; 
-            });
-            payload.extra_sections = [];
-            document.querySelectorAll('.extra-z').forEach(z => {
-                const rows = []; z.querySelectorAll('.extra-r').forEach(r => { const eds = r.querySelectorAll('.editable'); rows.push({label: toTags(eds[0].innerHTML), val: toTags(eds[1].innerHTML)}); });
-                payload.extra_sections.push({title: z.querySelector('.section-title').innerText, rows});
             });
             const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ auth: pass, payload: payload }) });
             alert((await r.text()).includes("Succès") ? "🚀 Sauvegardé !" : "Erreur.");
