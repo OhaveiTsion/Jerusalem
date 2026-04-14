@@ -156,8 +156,8 @@
                 const nextSatKey = d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'2-digit'});
                 const backup = ZMANIM_TABLE[nextSatKey] || { allumage: "--:--", arvit: "--:--" };
                 
-                document.getElementById('hint-allumage').innerText = "Auto: " + backup.allumage;
-                document.getElementById('hint-arvit').innerText = "Auto: " + backup.arvit;
+                document.getElementById('hint-allumage').innerText = "Suggéré : " + backup.allumage;
+                document.getElementById('hint-arvit').innerText = "Suggéré : " + backup.arvit;
 
                 const res = await fetch(API_URL); const data = await res.json();
                 keys.forEach(k => { 
