@@ -15,16 +15,24 @@
         .admin-nav { position: sticky; top: 0; z-index: 2000; width: 100%; max-width: 500px; display: flex; gap: 10px; padding: 10px 0; background: var(--bg-deep-blue); }
         .main-container { border: 3px solid var(--gold-border); border-radius: 20px; padding: 15px; width: 100%; max-width: 500px; background: linear-gradient(to bottom, #0f34a1, #0a2472); min-height: 80vh; display: flex; flex-direction: column; }
         
-        .editable { background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); padding: 4px; border-radius: 6px; outline: none; min-height: 1.2em; }
+        .editable { background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); padding: 4px; border-radius: 6px; outline: none; min-height: 1.2em; display: inline-block; }
         .editable:focus { border: 1px solid var(--gold-border); background: rgba(255,255,255,0.1); }
-        .editable * { background-color: transparent !important; background: transparent !important; color: inherit !important; }
+        
+        /* Fixe la largeur des champs de valeurs pour éviter le rétrécissement */
+        [id$="_val"] { min-width: 85px; text-align: center; }
+        #parasha_val { min-width: 120px; }
 
         .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: var(--card-blue); margin-bottom: 10px; }
         .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; display: flex; flex-direction: column; align-items: center; }
         .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin-top: 4px; border-radius: 2px; }
         .row-major { display: flex; justify-content: space-between; align-items: center; padding: 8px; }
+        
+        /* Style des suggestions Auto */
+        .hint-text { font-size: 12px; font-weight: 700; color: #fbbf24; margin-top: 2px; }
+        /* Version foncée pour le bloc blanc de l'allumage */
+        .hint-text-dark { color: #1e40af; opacity: 0.7; font-size: 11px; font-weight: 700; }
+
         .f-btn { font-size: 10px; font-weight: bold; padding: 5px 12px; border-radius: 20px; background: #333; color: white; }
-        .hint-text { font-size: 9px; font-style: italic; color: #f1c40f; opacity: 0.8; margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -41,21 +49,21 @@
 
     <div class="main-container">
         <div class="grid grid-cols-2 gap-3 mb-6">
-            <div class="bg-white rounded-xl p-2 text-blue-900 text-center flex flex-col justify-center">
+            <div class="bg-white rounded-xl p-2 text-blue-900 text-center flex flex-col justify-center items-center">
                 <p class="text-[10px] font-bold uppercase mb-1">Shabbat</p>
                 <div id="parasha_val" class="editable text-lg font-bold" contenteditable="true"></div>
-                <div id="auto-hint" class="text-[9.5px] mt-2 opacity-70 leading-tight"></div>
+                <div id="auto-hint" class="text-[10px] mt-2 opacity-70 leading-tight"></div>
             </div>
-            <div class="bg-white rounded-xl p-2 text-blue-900 text-center flex flex-col justify-center">
+            <div class="bg-white rounded-xl p-2 text-blue-900 text-center flex flex-col justify-center items-center">
                 <div id="allumage_bougies_label" class="editable text-[10px] font-bold text-red-500 uppercase mb-1" contenteditable="true">Allumage</div>
                 <div id="allumage_bougies_val" class="editable text-2xl font-bold text-red-600" contenteditable="true"></div>
-                <div id="hint-allumage" class="hint-text"></div>
+                <div id="hint-allumage" class="hint-text-dark"></div>
             </div>
         </div>
 
         <div class="section-card text-center">
-            <div id="annonce_titre_val" class="editable text-xs italic opacity-60" contenteditable="true" placeholder="Titre Annonce"></div>
-            <div id="annonce_texte_val" class="editable text-lg font-bold mt-2" contenteditable="true" placeholder="Texte Annonce"></div>
+            <div id="annonce_titre_val" class="editable text-xs italic opacity-60 w-full" contenteditable="true" placeholder="Titre Annonce"></div>
+            <div id="annonce_texte_val" class="editable text-lg font-bold mt-2 w-full" contenteditable="true" placeholder="Texte Annonce"></div>
         </div>
 
         <button onclick="addZone()" class="w-full bg-white/10 border border-dashed p-2 rounded-lg text-xs font-bold mb-4 uppercase hover:bg-white/20 transition">+ AJOUTER ZONE</button>
@@ -75,12 +83,13 @@
                 </div>
                 
                 <div class="row-major border-t border-white/10 pt-1"><div id="minha_shabbat_label" class="editable text-sm flex-1" contenteditable="true">Minha / Seouda</div><div id="minha_shabbat_val" class="editable text-xl font-bold ml-2" contenteditable="true"></div></div>
+                
                 <div class="row-major border-t border-white/10 pt-1">
-                    <div class="flex flex-col flex-1">
-                        <div id="arvit_motsach_label" class="editable text-sm" contenteditable="true">Arvit Motsae</div>
-                        <div id="hint-arvit" class="hint-text text-left"></div>
+                    <div id="arvit_motsach_label" class="editable text-sm flex-1" contenteditable="true">Arvit Motsae</div>
+                    <div class="flex flex-col items-end">
+                        <div id="arvit_motsach_val" class="editable text-xl font-bold ml-2" contenteditable="true"></div>
+                        <div id="hint-arvit" class="hint-text"></div>
                     </div>
-                    <div id="arvit_motsach_val" class="editable text-xl font-bold ml-2" contenteditable="true"></div>
                 </div>
             </div>
         </div>
@@ -141,7 +150,6 @@
 
         async function loadData() {
             try {
-                // 1. Calcul du samedi suivant pour suggestions
                 let d = new Date();
                 let diff = (6 - d.getDay() + 7) % 7;
                 d.setDate(d.getDate() + diff);
@@ -151,7 +159,6 @@
                 document.getElementById('hint-allumage').innerText = "Auto: " + backup.allumage;
                 document.getElementById('hint-arvit').innerText = "Auto: " + backup.arvit;
 
-                // 2. Chargement Worker
                 const res = await fetch(API_URL); const data = await res.json();
                 keys.forEach(k => { 
                     const vEl=document.getElementById(`${k}_val`), lEl=document.getElementById(`${k}_label`); 
@@ -163,7 +170,6 @@
                 });
                 if(data.extra_sections) data.extra_sections.forEach(s => addZone(s.title, s.rows));
                 
-                // 3. Hebcal
                 const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
                 let events = []; let seenNames = new Set();
                 h.items.forEach(i => {
