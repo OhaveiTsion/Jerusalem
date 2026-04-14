@@ -27,11 +27,9 @@
     .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; margin-bottom: 12px; display: flex; flex-direction: column; align-items: center; }
     .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin-top: 4px; border-radius: 2px; }
     .row-major { display: flex; justify-content: space-between; align-items: center; padding: 10px 8px; }
-    .row-major > span:first-child { flex: 1; padding-right: 10px; font-size: 0.95rem; line-height: 1.25; }
     .shiour-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding: 6px 0; display: flex; justify-content: space-between; font-size: 0.85rem; }
     .f-bold { font-weight: 800 !important; }
     .f-red { color: #ff4d4d !important; }
-    .row-major *, .shiour-item * { background-color: transparent !important; }
     </style>
 </head>
 <body>
@@ -108,23 +106,18 @@
 
         async function loadAll() {
             try {
-                // 1. Calcul du samedi suivant pour piocher dans zmanim.js si besoin
-                // Dans ton zmanim.js, la date est le samedi (ex: 04/04/26)
                 let d = new Date();
                 let diff = (6 - d.getDay() + 7) % 7;
                 d.setDate(d.getDate() + diff);
                 const nextSatKey = d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'2-digit'});
                 const backup = ZMANIM_TABLE[nextSatKey] || { allumage: "--:--", arvit: "--:--" };
 
-                // 2. Hebcal
                 const hRes = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s');
                 const hData = await hRes.json();
                 let nomShabbatAuto = "--";
                 const eventP = hData.items.find(i => i.category === "parashat");
                 if (eventP) nomShabbatAuto = eventP.title.replace("Parashat ", "");
-                else { const eventF = hData.items.find(i => i.category === "holiday"); if (eventF) nomShabbatAuto = eventF.title; }
 
-                // 3. Worker Data
                 const sheetRes = await fetch(API_URL);
                 const sData = await sheetRes.json();
 
@@ -137,13 +130,10 @@
                     if(label && sData[k]) label.innerHTML = format(sData[k].intitule);
                     if(val && sData[k]) {
                         let finalVal = sData[k].valeur.trim();
-                        
-                        // LOGIQUE FALLBACK : si vide ou --:--, on prend la suggestion
                         if(finalVal === "" || finalVal === "--:--") {
                             if(k === 'allumage_bougies') finalVal = backup.allumage;
                             if(k === 'arvit_motsach') finalVal = backup.arvit;
                         }
-
                         val.innerHTML = format(finalVal);
                         if (k.startsWith('shiour_')) {
                             const box = document.getElementById(`box-${k.split('_')[1]}`);
