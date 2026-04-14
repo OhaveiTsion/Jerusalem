@@ -31,10 +31,13 @@ const ZMANIM_TABLE = {
 };
 
 // Fonction pour récupérer la date au format du tableau (ex: "18/04/26")
-function getZmanimDate(offset = 0) {
+function getNextShabbatDate() {
     let d = new Date();
-    // On se place sur le prochain vendredi
-    let diff = (5 - d.getDay() + 7) % 7;
-    d.setDate(d.getDate() + diff + offset);
+    let day = d.getDay(); // 0 (Dim) à 6 (Sam)
+    // On cherche le samedi (6). 
+    // Si on est déjà samedi soir (>20h), on pourrait vouloir le suivant, 
+    // mais restons simple : on prend le samedi de la semaine en cours.
+    let diff = (6 - day + 7) % 7;
+    d.setDate(d.getDate() + diff);
     return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'2-digit'});
 }
