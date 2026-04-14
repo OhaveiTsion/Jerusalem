@@ -138,52 +138,55 @@
         }
 
         async function loadData() {
-            try {
-                const res = await fetch(API_URL); const data = await res.json();
-                keys.forEach(k => { 
-                    const vEl=document.getElementById(`${k}_val`), lEl=document.getElementById(`${k}_label`); 
-                    if(vEl && data[k]) vEl.innerHTML=toHtml(data[k].valeur);
-                    if(lEl && data[k]) lEl.innerHTML=toHtml(data[k].intitule);
-                });
-                if(data.extra_sections) data.extra_sections.forEach(s => addZone(s.title, s.rows));
-                
-                // 1. Suggestion Parasha (Hebcal)
-                const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
-                let events = []; let seenNames = new Set();
-                h.items.forEach(i => {
-                    let name = i.title;
-                    if (i.category === "parashat") {
-                        name = i.title.replace("Parashat ", "");
-                        if(!seenNames.has(name)){ events.push(`<b>${name}</b>`); seenNames.add(name); }
-                    } else if (i.category === "holiday" || i.category === "roshchodesh" || i.category === "mevarchim") {
-                        if(!seenNames.has(name)){ events.push(name); seenNames.add(name); }
-                    }
-                });
-                document.getElementById('auto-hint').innerHTML = events.length > 0 ? "<b>Suggéré :</b><br>" + events.join(" <br> ") : "Aucun événement";
+    try {
+        const res = await fetch(API_URL); 
+        const data = await res.json();
 
-                // 2. Suggestion Zmanim depuis zmanim.js
-                const friKey = getZmanimDate(0); 
-                const satKey = getZmanimDate(1);
-                
-                if(typeof ZMANIM_TABLE !== 'undefined') {
-                    const zFri = ZMANIM_TABLE[friKey];
-                    const zSat = ZMANIM_TABLE[satKey];
+        // 1. ON CHARGE UNIQUEMENT LES DONNÉES DE LA BASE (KV)
+        keys.forEach(k => { 
+            const vEl = document.getElementById(`${k}_val`);
+            const lEl = document.getElementById(`${k}_label`); 
+            
+            // On affiche le contenu de la base. Si c'est vide (""), la case restera vide.
+            // On n'ajoute PAS de "|| ZMANIM_TABLE" ici pour l'ADMIN.
+            if (vEl && data[k]) {
+                vEl.innerHTML = toHtml(data[k].valeur || ""); 
+            }
+            if (lEl && data[k]) {
+                lEl.innerHTML = toHtml(data[k].intitule || "");
+            }
+        });
 
-                    // Affichage de la suggestion Allumage
-                    if(zFri && zFri.allumage) {
-                        document.getElementById('hint-allumage').innerHTML = `<b>Suggéré :</b><br>${zFri.allumage}`;
-                    }
-                    
-                    // Affichage de la suggestion Arvit
-                    if(zSat && zSat.arvit) {
-                        document.getElementById('hint-arvit').innerHTML = `<b>Suggéré :</b> ${zSat.arvit}`;
-                    } else if (zFri && zFri.arvit) {
-                        document.getElementById('hint-arvit').innerHTML = `<b>Suggéré :</b> ${zFri.arvit}`;
-                    }
-                }
+        // 2. ON CHARGE LES SUGGESTIONS (SANS REMPLIR LES CASES)
+        
+        // --- Suggestion Paracha (Hebcal) ---
+        const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
+        let events = [];
+        h.items.forEach(i => {
+            if (i.category === "parashat") events.push(`<b>${i.title.replace("Parashat ", "")}</b>`);
+            else if (["holiday", "roshchodesh", "mevarchim"].includes(i.category)) events.push(i.title);
+        });
+        document.getElementById('auto-hint').innerHTML = events.length > 0 ? "<b>Suggéré :</b><br>" + events.join("<br>") : "";
 
-            } catch(e) { console.error(e); }
+        // --- Suggestion Horaires (Zmanim.js) ---
+        // On suppose que vous avez les fonctions getZmanimDate(0) et (1) définies
+        const friKey = getZmanimDate(0); 
+        const satKey = getZmanimDate(1);
+        
+        if (typeof ZMANIM_TABLE !== 'undefined') {
+            const zFri = ZMANIM_TABLE[friKey];
+            const zSat = ZMANIM_TABLE[satKey];
+            
+            // On met à jour uniquement les div de "HINT" (les petites écritures en dessous)
+            if (zFri && zFri.allumage) {
+                document.getElementById('hint-allumage').innerHTML = `<b>Suggéré :</b> ${zFri.allumage}`;
+            }
+            if (zSat && zSat.arvit) {
+                document.getElementById('hint-arvit').innerHTML = `<b>Suggéré :</b> ${zSat.arvit}`;
+            }
         }
+    } catch(e) { console.error("Erreur chargement:", e); }
+}
 
         async function sendData() {
             const pass = prompt("Mot de passe :"); if(!pass) return;
