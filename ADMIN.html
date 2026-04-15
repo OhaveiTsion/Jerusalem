@@ -172,7 +172,15 @@
                 
                 const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
                 let events = []; let seenNames = new Set();
+                
+                // On prépare la date du jour au format AAAA-MM-JJ (ex: "2026-04-15")
+                let d = new Date();
+                let todayStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
                 h.items.forEach(i => {
+                    // Si la date de l'événement est strictement avant aujourd'hui, on passe au suivant
+                    if (i.date && i.date.substring(0, 10) < todayStr) return;
+
                     let name = i.title;
                     if (i.category === "parashat") {
                         name = i.title.replace("Parashat ", "");
