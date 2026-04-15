@@ -22,7 +22,7 @@
 
     .zman-box { background: white; border-radius: 12px; color: #0f34a1; padding: 10px 5px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     
-    /* Bloc Annonce corrigé pour le centrage dynamique */
+    /* Bloc Annonce : Flexbox gère le retrait d'espace automatiquement */
     .annonce-card { 
         background: var(--card-blue); 
         border: 2px solid var(--gold-border); 
@@ -30,7 +30,7 @@
         padding: 10px; 
         margin-bottom: 15px; 
         min-height: 100px;
-        display: none; 
+        display: none; /* Activé en JS si contenu présent */
         flex-direction: column;
         justify-content: center;
         align-items: center;
@@ -152,7 +152,7 @@
                     }
                 });
 
-                // GESTION ANNONCE CENTRÉE
+                // LOGIQUE ANNONCE CORRIGÉE : On ne génère le HTML que si le texte existe
                 const aT = sData.annonce_titre?.valeur, aX = sData.annonce_texte?.valeur;
                 const b = document.getElementById('announcement-block');
                 
@@ -162,7 +162,9 @@
                 if(hasTitre || hasTexte) {
                     b.style.display = 'flex';
                     let html = '';
+                    // Si pas de titre, l'espace est totalement retiré ici
                     if(hasTitre) html += `<div class="text-[#f1c40f] text-sm font-extrabold uppercase italic mb-1">${format(aT)}</div>`;
+                    // Si pas de texte, l'espace est totalement retiré ici
                     if(hasTexte) html += `<div class="text-2xl font-black leading-tight">${format(aX)}</div>`;
                     b.innerHTML = html;
                 } else {
