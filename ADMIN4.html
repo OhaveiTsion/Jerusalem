@@ -121,48 +121,53 @@
         }
         const keys = ['allumage_bougies','minha_vendredi','chaharit_shabbat','shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara','minha_shabbat','arvit_motsach','chaharit_semaine','minha_semaine','annonce_titre','annonce_texte','parasha'];
         
-        document.querySelectorAll('.editable').forEach(el => {
-            el.addEventListener('paste', e => {
-                e.preventDefault();
-                const text = e.clipboardData.getData('text/plain');
-                document.execCommand('insertText', false, text);
-            });
+        let isDeleting = false;
+
+        // Détection de la touche retour pour autoriser l'effacement
+        document.addEventListener('keydown', (e) => {
+            isDeleting = e.key === 'Backspace';
         });
 
-        // 1. Intelligence de saisie en temps réel (V3.1)
         document.addEventListener('input', (e) => {
-            // On ne cible que les champs de valeur (pas les intitulés, pas les annonces)
             if (e.target.id.endsWith('_val') && !e.target.id.includes('annonce')) {
-                let val = e.target.innerText.replace(/[^0-9:]/g, ''); // Chiffres et : uniquement
+                let val = e.target.innerText.replace(/[^0-9:]/g, '');
                 
-                // SI ON TAPE 3, 4, 5, 6, 7, 8 ou 9 en premier chiffre
+                // Si on est en train d'effacer, on ne fait rien
+                if (isDeleting) return;
+
+                // Bloquer à 5 caractères maximum (ex: 12:30)
+                if (val.length > 5) {
+                    e.target.innerText = val.substring(0, 5);
+                    setCursor(e.target, 5);
+                    return;
+                }
+
+                // CAS 1 : Chiffre entre 3 et 9 -> on met ":" direct (ex: 7:)
                 if (val.length === 1 && val >= '3' && val <= '9') {
-                    e.target.innerText = '0' + val + ':';
-                    setCursor(e.target, 3); // Place le curseur après le ":"
+                    e.target.innerText = val + ':';
+                    setCursor(e.target, 2);
                 }
                 
-                // SI ON A TAPE 2 CHIFFRES (ex: 12, 18, 22)
+                // CAS 2 : On a tapé deux chiffres (ex: 12 ou 20) -> on met ":"
                 if (val.length === 2 && !val.includes(':')) {
                     e.target.innerText = val + ':';
-                    setCursor(e.target, 3); // Place le curseur après le ":"
+                    setCursor(e.target, 3);
                 }
             }
         });
 
-        // 2. Gestion du Toolbar (ton code existant optimisé)
         document.addEventListener('focusin', e => { 
             if(e.target.classList.contains('editable')) document.getElementById('toolbar').style.display='flex'; 
         });
 
         document.addEventListener('focusout', (e) => {
             if (e.target.classList.contains('editable')) {
-                // Cache le toolbar avec un léger délai
                 setTimeout(() => { 
                     if (!document.activeElement.classList.contains('editable')) 
                         document.getElementById('toolbar').style.display = 'none'; 
                 }, 200);
 
-                // SÉCURITÉ : Si on sort du champ alors qu'il n'y a que "18:", on ajoute "00"
+                // Sécurité sortie : "18:" devient "18:00" / "7:" devient "7:00"
                 if (e.target.id.endsWith('_val') && !e.target.id.includes('annonce')) {
                     let content = e.target.innerText.trim();
                     if (content.length > 0 && content.endsWith(':')) {
