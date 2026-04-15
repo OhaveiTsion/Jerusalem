@@ -123,7 +123,20 @@
         
         let isDeleting = false;
 
-        // Détection de la touche retour pour autoriser l'effacement
+        function setCursor(el, pos) {
+            const range = document.createRange();
+            const sel = window.getSelection();
+            if (el.childNodes && el.childNodes.length > 0) {
+                // On s'assure de pointer sur le nœud texte
+                const textNode = el.childNodes[0];
+                const finalPos = Math.min(pos, textNode.length);
+                range.setStart(textNode, finalPos);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+        }
+
         document.addEventListener('keydown', (e) => {
             isDeleting = e.key === 'Backspace';
         });
@@ -132,24 +145,29 @@
             if (e.target.id.endsWith('_val') && !e.target.id.includes('annonce')) {
                 let val = e.target.innerText.replace(/[^0-9:]/g, '');
                 
-                // Si on est en train d'effacer, on ne fait rien
                 if (isDeleting) return;
 
-                // Bloquer à 5 caractères maximum (ex: 12:30)
                 if (val.length > 5) {
                     e.target.innerText = val.substring(0, 5);
                     setCursor(e.target, 5);
                     return;
                 }
 
-                // CAS 1 : Chiffre entre 3 et 9 -> on met ":" direct (ex: 7:)
+                // CAS 1 : On tape 00 -> on met 00:
+                if (val === '00' && !val.includes(':')) {
+                    e.target.innerText = '00:';
+                    setCursor(e.target, 3);
+                    return;
+                }
+
+                // CAS 2 : Chiffre entre 3 et 9 -> 7:
                 if (val.length === 1 && val >= '3' && val <= '9') {
                     e.target.innerText = val + ':';
                     setCursor(e.target, 2);
                 }
                 
-                // CAS 2 : On a tapé deux chiffres (ex: 12 ou 20) -> on met ":"
-                if (val.length === 2 && !val.includes(':')) {
+                // CAS 3 : Deux chiffres (ex: 12, 18) -> 12:
+                if (val.length === 2 && !val.includes(':') && val !== '00') {
                     e.target.innerText = val + ':';
                     setCursor(e.target, 3);
                 }
