@@ -194,20 +194,37 @@
         }
 
         async function sendData() {
-            const pass = prompt("Mot de passe :"); if(!pass) return;
-            const payload = {};
-            keys.forEach(k => { 
-                const vEl=document.getElementById(`${k}_val`), lEl=document.getElementById(`${k}_label`); 
-                payload[k] = { intitule: lEl ? toTags(lEl.innerHTML) : k, valeur: vEl ? toTags(vEl.innerHTML) : "" }; 
-            });
-            payload.extra_sections = [];
-            document.querySelectorAll('.extra-z').forEach(z => {
-                const rows = []; z.querySelectorAll('.extra-r').forEach(r => { const eds = r.querySelectorAll('.editable'); rows.push({label: toTags(eds[0].innerHTML), val: toTags(eds[1].innerHTML)}); });
-                payload.extra_sections.push({title: z.querySelector('.section-title').innerText, rows});
-            });
-            const r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ auth: pass, payload: payload }) });
-            alert((await r.text()).includes("Succès") ? "🚀 Sauvegardé !" : "Erreur.");
+    const pass = prompt("Mot de passe :"); 
+    if(!pass) return;
+    
+    const payload = {};
+    keys.forEach(k => { 
+        const vEl=document.getElementById(`${k}_val`), lEl=document.getElementById(`${k}_label`); 
+        payload[k] = { intitule: lEl ? toTags(lEl.innerHTML) : k, valeur: vEl ? toTags(vEl.innerHTML) : "" }; 
+    });
+
+    try {
+        const r = await fetch(API_URL, { 
+            method: 'POST', 
+            // J'ai ajouté cette ligne qui est souvent obligatoire pour les serveurs !
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ auth: pass, payload: payload }) 
+        });
+        
+        const texteReponse = await r.text();
+        
+        if (texteReponse.includes("Succès") || texteReponse.includes("success")) {
+            alert("🚀 Sauvegardé !");
+        } else {
+            // Ça va nous afficher le vrai message du serveur
+            alert("Erreur du serveur : " + texteReponse); 
         }
+    } catch(e) { 
+        alert("Erreur de connexion (problème réseau ou blocage) : " + e.message); 
+        console.error(e);
+    }
+}
+
         window.onload = loadData;
     </script>
 </body>
