@@ -31,13 +31,22 @@ const ZMANIM_TABLE = {
 };
 
 // Fonction pour récupérer la date au format du tableau (ex: "18/04/26")
-function getNextShabbatDate() {
-    let d = new Date();
-    let day = d.getDay(); // 0 (Dim) à 6 (Sam)
-    // On cherche le samedi (6). 
-    // Si on est déjà samedi soir (>20h), on pourrait vouloir le suivant, 
-    // mais restons simple : on prend le samedi de la semaine en cours.
+function getZmanimForDate(dateObj = new Date()) {
+    let d = new Date(dateObj);
+    let day = d.getDay();
+    // On cherche le samedi
     let diff = (6 - day + 7) % 7;
     d.setDate(d.getDate() + diff);
-    return d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'2-digit'});
+    
+    // On formate la clé exactement comme dans ton tableau : JJ/MM/AA
+    const day_s = String(d.getDate()).padStart(2, '0');
+    const month_s = String(d.getMonth() + 1).padStart(2, '0');
+    const year_s = String(d.getFullYear()).slice(-2);
+    const key = `${day_s}/${month_s}/${year_s}`;
+    
+    // On renvoie l'objet du tableau ou des tirets si pas trouvé
+    return ZMANIM_TABLE[key] || { "allumage": "--:--", "arvit": "--:--" };
 }
+
+// Optionnel : si ton ADMIN utilise l'ancien nom de variable
+const zmanimData = ZMANIM_TABLE;
