@@ -23,7 +23,8 @@
         audio { width: 100%; }
         .hidden { display: none; }
         .welcome-msg { text-align: center; color: #7f8c8d; padding: 40px; direction: ltr; }
-        h2 { direction: ltr; text-align: right; color: var(--accent); border-bottom: 1px solid #eee; }
+        h2 { direction: ltr; text-align: right; color: var(--accent); border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .error-msg { color: #e74c3c; font-weight: bold; text-align: center; direction: ltr; }
     </style>
 </head>
 <body>
@@ -58,7 +59,7 @@
         <p>Sélectionnez une Parasha pour charger automatiquement les textes de Sefaria et l'audio correspondant.</p>
     </div>
 
-    <div id="loader" class="hidden" style="text-align:center; padding: 20px;">
+    <div id="loader" class="hidden" style="text-align:center; padding: 20px; direction: ltr;">
         <p>Chargement des API (Hebcal & Sefaria)...</p>
     </div>
     
@@ -132,6 +133,11 @@
         document.getElementById('display-title').innerText = "Révision Maftir";
     }
 
+    // Fonction utilitaire pour comparer les noms de parasha en ignorant la casse et les tirets
+    function normalizeString(str) {
+        return str ? str.replace(/[^a-zA-Z]/g, '').toLowerCase() : "";
+    }
+
     async function loadData(enName) {
         currentEnName = enName;
         const frName = nameMap[enName] || enName;
@@ -139,23 +145,32 @@
         
         document.getElementById('display-title').innerText = "Parashat " + frName;
         document.getElementById('loader').classList.remove('hidden');
+        document.getElementById('loader').innerHTML = "<p>Chargement des API (Hebcal & Sefaria)...</p>";
         document.getElementById('content').classList.add('hidden');
         document.getElementById('audio-zone').classList.remove('hidden');
 
         try {
-            // 1. Appel API Hebcal pour trouver la Haftara exacte associée à ce nom de Parasha
-            // On utilise l'endpoint shabbat qui contient les correspondances Maftir/Haftara
-            const hebcalRes = await fetch(`https://www.hebcal.com/hebcal?v=1&cfg=json&israel=${isIsrael?'on':'off'}&maj=on&year=now`);
+            // CORRECTION ICI : s=on est obligatoire pour récupérer les Parashiot (Sedrot).
+            const hebcalRes = await fetch(`https://www.hebcal.com/hebcal?v=1&cfg=json&israel=${isIsrael?'on':'off'}&s=on&year=now`);
             const hebcalData = await hebcalRes.json();
             
-            // On cherche l'item de type 'parashat' qui correspond à notre sélection
-            // Note: Hebcal utilise parfois "Achrei Mot" ou "Ahrei Mot", on gère les deux.
+            const searchName = normalizeString(enName);
+            
+            // Recherche robuste dans les données Hebcal
             const pMatch = hebcalData.items.find(i => 
                 i.category === "parashat" && 
-                (i.title.includes(enName) || (enName === "Achrei Mot" && i.title.includes("Ahrei")))
+                (normalizeString(i.title).includes(searchName) || 
+                 normalizeString(i.title_orig).includes(searchName))
             );
 
-            let haftaraRef = pMatch?.haftara; // Récupère la réf type "Ezekiel 44:1-31"
+            let haftaraRef = null;
+            if (pMatch && pMatch.leyning) {
+                // Priorité au rite sépharade si disponible, sinon standard
+                haftaraRef = pMatch.leyning.haftara_sephardic || pMatch.leyning.haftara;
+            } else if (pMatch && pMatch.haftara) {
+                haftaraRef = pMatch.haftara;
+            }
+
             const maftirRef = maftirRefs[enName];
 
             // 2. Récupération des textes sur Sefaria
@@ -170,7 +185,7 @@
             
         } catch (e) { 
             console.error("API Error:", e);
-            document.getElementById('loader').innerText = "Erreur de connexion aux API.";
+            document.getElementById('loader').innerHTML = '<p class="error-msg">Erreur de connexion aux API.</p>';
         }
     }
 
@@ -182,7 +197,7 @@
             return txt;
         };
         document.getElementById('maftir-text').innerHTML = clean(m);
-        document.getElementById('haftara-text').innerHTML = h ? clean(h) : "Haftara non disponible via API pour cette sélection.";
+        document.getElementById('haftara-text').innerHTML = h ? clean(h) : '<span class="error-msg" style="font-size:18px;">Haftara non disponible via API pour cette sélection.</span>';
         document.getElementById('loader').classList.add('hidden');
         document.getElementById('content').classList.remove('hidden');
     }
