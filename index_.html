@@ -4,14 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ohavei Tsion</title>
+
+    <!-- PWA Meta Tags -->
     <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f34a1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ohavei Tsion">
+
+    <!-- Apple Touch Icons (iOS ne lit pas le manifest, il faut ces balises) -->
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="icons/icon-167.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="zmanim.js"></script>
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
     :root { --bg-deep-blue: #0f34a1; --gold-border: #f1c40f; --card-blue: rgba(255, 255, 255, 0.08); }
     body { font-family: 'Assistant', sans-serif; background-color: var(--bg-deep-blue); color: white; padding: 10px; display: flex; justify-content: center; margin: 0; }
-    
+
     #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-deep-blue); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.6s ease-out; }
     .loader-line { width: 150px; height: 3px; background: rgba(255,255,255,0.1); margin-top: 20px; position: relative; overflow: hidden; border-radius: 2px; }
     .loader-line::after { content: ""; position: absolute; left: -100%; width: 100%; height: 100%; background: var(--gold-border); animation: loadingBar 1.5s infinite ease-in-out; }
@@ -21,11 +35,10 @@
     .main-container { border: 3px solid var(--gold-border); border-radius: 20px; min-height: calc(100vh - 20px); padding: 15px; width: 100%; max-width: 500px; background: linear-gradient(to bottom, #0f34a1, #0a2472); opacity: 0; transform: scale(0.98); transition: opacity 0.8s ease, transform 0.8s ease; display: flex; flex-direction: column; }
     .loaded .main-container { opacity: 1; transform: scale(1); }
 
-    /* Liens du haut */
     .link-bar { display: flex; justify-content: center; gap: 15px; margin-bottom: 15px; }
     .mini-link { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.05); padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); text-decoration: none; color: white; font-size: 0.8rem; font-weight: 600; }
 
-    /* BOUTON INSTALLATION DÉDIÉ */
+    /* Bouton installation */
     .install-banner {
         background: linear-gradient(90deg, #f1c40f, #d4ac0d);
         color: #0f34a1;
@@ -40,9 +53,40 @@
         margin-bottom: 20px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         cursor: pointer;
-        transition: transform 0.2s;
+        transition: transform 0.2s, opacity 0.3s;
     }
     .install-banner:active { transform: scale(0.97); }
+    .install-banner.hidden { display: none; }
+
+    /* Toast iOS */
+    #ios-toast {
+        display: none;
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1a3cb8;
+        border: 2px solid var(--gold-border);
+        border-radius: 16px;
+        padding: 16px 20px;
+        max-width: 320px;
+        width: 90%;
+        z-index: 9998;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        animation: slideUp 0.3s ease;
+        text-align: center;
+    }
+    #ios-toast .toast-arrow {
+        position: absolute;
+        bottom: -14px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0; height: 0;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 14px solid var(--gold-border);
+    }
+    @keyframes slideUp { from { transform: translateX(-50%) translateY(20px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
 
     .zman-box { background: white; border-radius: 12px; color: #0f34a1; padding: 10px 5px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     .annonce-card { background: var(--card-blue); border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 45px 15px 15px 15px; margin-bottom: 15px; display: none; position: relative; text-align: center; }
@@ -59,6 +103,18 @@
     <div id="splash-screen">
         <img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" class="h-20 w-auto rounded bg-white p-2">
         <div class="loader-line"></div>
+    </div>
+
+    <!-- Toast iOS -->
+    <div id="ios-toast">
+        <p style="font-weight:800; font-size:1rem; margin-bottom:8px;">Installer l'application</p>
+        <p style="font-size:0.85rem; opacity:0.85; line-height:1.4;">
+            Appuyez sur
+            <svg style="display:inline;vertical-align:middle;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f1c40f" stroke-width="2.5"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            <strong style="color:#f1c40f;"> Partager</strong> puis
+            <strong style="color:#f1c40f;">"Sur l'écran d'accueil"</strong>
+        </p>
+        <div class="toast-arrow"></div>
     </div>
 
     <div class="main-container shadow-2xl">
@@ -125,61 +181,82 @@
 
     <script>
         const API_URL = "https://api-syna.gregyman.workers.dev/";
-
-        // LOGIQUE D'INSTALLATION
-        let deferredPrompt;
         const installBtn = document.getElementById('install-banner');
+        const iosToast = document.getElementById('ios-toast');
+
+        // --- DÉTECTION ---
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                          || window.navigator.standalone === true;
+
+        // Si déjà installé en mode standalone → cacher le bouton
+        if (isStandalone) {
+            installBtn.classList.add('hidden');
+        }
+
+        // --- ANDROID / Chrome : prompt natif ---
+        let deferredPrompt = null;
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Sur Android, on peut faire clignoter le bouton pour attirer l'attention
+            // Le bouton est déjà visible, on ajoute juste un contour pour signaler
             installBtn.style.border = "2px solid white";
         });
 
         installBtn.addEventListener('click', async () => {
             if (deferredPrompt) {
+                // Android : prompt natif du navigateur
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
                     deferredPrompt = null;
-                    installBtn.style.display = 'none';
+                    installBtn.classList.add('hidden');
                 }
+            } else if (isIOS) {
+                // iOS Safari : afficher le toast d'instruction
+                iosToast.style.display = 'block';
+                // Fermer le toast en cliquant ailleurs
+                document.addEventListener('click', function closeToast(ev) {
+                    if (!iosToast.contains(ev.target) && ev.target !== installBtn) {
+                        iosToast.style.display = 'none';
+                        document.removeEventListener('click', closeToast);
+                    }
+                }, { capture: true });
             } else {
-                // Détection iOS ou Navigateur sans prompt
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                if (isIOS) {
-                    alert("INSTALLATION IPHONE :\n\n1. Cliquez sur l'icône 'Partager' (le carré avec une flèche) en bas de Safari.\n2. Faites défiler et cliquez sur 'Sur l'écran d'accueil'.");
-                } else {
-                    alert("Pour installer cette application sur votre écran d'accueil, utilisez le menu de votre navigateur (les 3 points en haut à droite) et sélectionnez 'Installer l'application'.");
-                }
+                // Autres navigateurs desktop
+                alert("Pour installer cette application, utilisez le menu de votre navigateur (⋮) et choisissez \"Installer l'application\".");
             }
         });
 
+        // --- SERVICE WORKER ---
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('SW enregistré', reg.scope))
+                .catch(err => console.warn('SW erreur', err));
         }
 
-        // CHARGEMENT DES DONNÉES
-        function format(t) { 
-            if(!t) return "";
-            return t.replace(/<[^>]*>/g, "").replace(/\*\*(.*?)\*\*/g, '<span class="f-bold">$1</span>').replace(/\n/g, "<br>");
+        // --- CHARGEMENT DES DONNÉES ---
+        function format(t) {
+            if (!t) return "";
+            return t.replace(/<[^>]*>/g, "")
+                    .replace(/\*\*(.*?)\*\*/g, '<span class="f-bold">$1</span>')
+                    .replace(/\n/g, "<br>");
         }
 
         async function loadAll() {
             try {
                 const sheetRes = await fetch(API_URL);
                 const sData = await sheetRes.json();
-                
-                // Remplissage simplifié pour l'exemple
+
                 document.getElementById('shabbat-name').innerText = sData.parasha?.valeur || "Chargement...";
                 document.getElementById('sheet-allumage_bougies').innerText = sData.allumage_bougies?.valeur || "--:--";
-                
-                // (Ajouter ici le reste de ta logique de boucle pour les autres IDs)
-                
+
+                // (Ajouter ici le reste de ta logique pour les autres IDs)
+
                 document.body.classList.add('loaded');
-            } catch(e) { 
-                document.body.classList.add('loaded'); 
+            } catch(e) {
+                document.body.classList.add('loaded');
             }
         }
         loadAll();
