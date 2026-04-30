@@ -5,16 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232c3e50'/%3E%3Cpath d='M30 20v60M70 20v60' stroke='%23d4af37' stroke-width='8' stroke-linecap='round'/%3E%3Cpath d='M30 30h40M30 70h40' stroke='%23d4af37' stroke-width='12'/%3E%3C/svg%3E">
     <title>Maftir & Haftara</title>
+    
     <!-- Balises Meta pour l'aperçu WhatsApp / Réseaux Sociaux -->
     <meta property="og:title" content="Maftir & Haftara">
     <meta property="og:description" content="Étude du Maftir et de la Haftara avec texte (Torah ou Stam) et enregistrements audio.">
     <meta property="og:image" content="https://ohaveitsion.github.io/Jerusalem/preview-image.jpg">
     <meta property="og:url" content="https://ohaveitsion.github.io/Jerusalem/Maftir.html">
     <meta property="og:type" content="website">
+    <meta name="theme-color" content="#2c3e50">
 
-<!-- Optionnel : Couleur de la barre d'adresse sur mobile -->
-<meta name="theme-color" content="#2c3e50">
     <style>
+        /* Importation de la police Ktav Vellish (Style Stam) */
+        @font-face {
+            font-family: 'KtavVellish';
+            src: url('https://fonts.gstatic.com/s/f/t/1/6666708b98b04964.woff2') format('woff2');
+            font-display: swap;
+        }
+
         :root { --primary: #2c3e50; --accent: #d4af37; --light: #f8f9fa; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: #eaeff2; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; color: #333; }
         
@@ -49,7 +56,26 @@
         .audio-player { background: var(--light); border: 1px solid #e9ecef; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 30px; }
         audio { width: 100%; height: 45px; }
 
-        .hebrew-text { font-size: 34px; line-height: 2.3; margin-top: 20px; text-align: right; font-family: "SBL Hebrew", "Times New Roman", serif; white-space: pre-wrap; direction: rtl; padding: 0 10px; }
+        .hebrew-text { 
+            font-size: 34px; 
+            line-height: 2.3; 
+            margin-top: 20px; 
+            text-align: right; 
+            font-family: "SBL Hebrew", "Times New Roman", serif; 
+            white-space: pre-wrap; 
+            direction: rtl; 
+            padding: 0 10px; 
+            transition: all 0.3s ease;
+        }
+
+        /* Classe spécifique pour la police Ktav Vellish sans voyelles */
+        .stam-mode {
+            font-family: 'KtavVellish', serif !important;
+            font-size: 42px;
+            line-height: 1.8;
+            letter-spacing: 1px;
+        }
+
         .hidden { display: none; }
         h2.section-title { text-align: right; color: var(--accent); border-bottom: 2px solid var(--light); padding-bottom: 10px; margin-top: 40px; font-size: 1.6rem; direction: ltr; }
         
@@ -196,7 +222,6 @@
         loader.innerText = t.loading; loader.classList.remove('hidden'); content.classList.add('hidden');
 
         try {
-            // Utilisation forcée du calendrier Israël (israel=1)
             const calUrl = `https://www.sefaria.org/api/calendars?parasha=${pName}&israel=1`;
             const calRes = await fetch(calUrl).then(r => r.json());
             const hItem = calRes.calendar_items.find(i => i.title.en.includes("Haftara"));
@@ -266,7 +291,13 @@
 
     function toggleStam() {
         isStam = !isStam;
-        document.getElementById('mode-btn').classList.toggle('active');
+        const btn = document.getElementById('mode-btn');
+        btn.classList.toggle('active');
+        
+        // Bascule de la classe visuelle pour la police KtavVellish
+        document.getElementById('maftir-text').classList.toggle('stam-mode', isStam);
+        document.getElementById('haftara-text').classList.toggle('stam-mode', isStam);
+        
         if (currentParasha) loadTexts(currentParasha);
     }
 
