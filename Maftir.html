@@ -133,7 +133,6 @@
         document.getElementById('display-title').innerText = "Révision Maftir";
     }
 
-    // Fonction utilitaire pour comparer les noms de parasha en ignorant la casse et les tirets
     function normalizeString(str) {
         return str ? str.replace(/[^a-zA-Z]/g, '').toLowerCase() : "";
     }
@@ -150,13 +149,12 @@
         document.getElementById('audio-zone').classList.remove('hidden');
 
         try {
-            // CORRECTION ICI : s=on est obligatoire pour récupérer les Parashiot (Sedrot).
-            const hebcalRes = await fetch(`https://www.hebcal.com/hebcal?v=1&cfg=json&israel=${isIsrael?'on':'off'}&s=on&year=now`);
+            // CORRECTION MAJEURE : Ajout de '&leyning=on' indispensable pour obtenir les infos de lecture
+            const hebcalRes = await fetch(`https://www.hebcal.com/hebcal?v=1&cfg=json&israel=${isIsrael?'on':'off'}&s=on&leyning=on&year=now`);
             const hebcalData = await hebcalRes.json();
             
             const searchName = normalizeString(enName);
             
-            // Recherche robuste dans les données Hebcal
             const pMatch = hebcalData.items.find(i => 
                 i.category === "parashat" && 
                 (normalizeString(i.title).includes(searchName) || 
@@ -165,22 +163,32 @@
 
             let haftaraRef = null;
             if (pMatch && pMatch.leyning) {
-                // Priorité au rite sépharade si disponible, sinon standard
+                // Priorité au rite sépharade si disponible
                 haftaraRef = pMatch.leyning.haftara_sephardic || pMatch.leyning.haftara;
-            } else if (pMatch && pMatch.haftara) {
-                haftaraRef = pMatch.haftara;
+            }
+
+            // Nettoyage de la référence pour éviter que Sefaria ne plante sur des doubles lectures (ex: "Isa 42; Isa 43")
+            if (haftaraRef) {
+                haftaraRef = haftaraRef.split(';')[0].trim();
             }
 
             const maftirRef = maftirRefs[enName];
 
-            // 2. Récupération des textes sur Sefaria
             const [mRes, hRes] = await Promise.all([
                 fetch(`https://www.sefaria.org/api/texts/${maftirRef}?context=0`).then(r => r.json()),
                 haftaraRef ? fetch(`https://www.sefaria.org/api/texts/${haftaraRef}?context=0`).then(r => r.json()) : Promise.resolve(null)
             ]);
 
             document.getElementById('haftara-title').innerText = haftaraRef ? `Haftara (${haftaraRef})` : "Haftara";
-            display(mRes.he, hRes ? hRes.he : null);
+            
+            // Si hRes.error existe, c'est que Sefaria n'a pas compris la référence
+            if (hRes && hRes.error) {
+                console.error("Sefaria error:", hRes.error);
+                display(mRes.he, null);
+            } else {
+                display(mRes.he, hRes ? hRes.he : null);
+            }
+            
             checkAudio(frName);
             
         } catch (e) { 
@@ -192,7 +200,9 @@
     function display(m, h) {
         const clean = (t) => {
             if (!t) return "";
-            let txt = Array.isArray(t) ? t.join(' ') : t;
+            // CORRECTION MINEURE : Aplatir le tableau si la Haftara s'étale sur plusieurs chapitres (Sefaria renvoie un tableau 2D)
+            let flatT = Array.isArray(t) ? t.flat(Infinity) : [t];
+            let txt = flatT.join(' ');
             if(isStam) txt = txt.replace(/[\u0591-\u05C7]/g, ""); 
             return txt;
         };
