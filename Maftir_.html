@@ -1,110 +1,277 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lecteur de Paracha - Mode Stam</title>
-    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232c3e50'/%3E%3Cpath d='M30 20v60M70 20v60' stroke='%23d4af37' stroke-width='8' stroke-linecap='round'/%3E%3Cpath d='M30 30h40M30 70h40' stroke='%23d4af37' stroke-width='12'/%3E%3C/svg%3E">
+    <title>Maftir & Haftara</title>
+    <!-- Balises Meta pour l'aperçu WhatsApp / Réseaux Sociaux -->
+    <meta property="og:title" content="Maftir & Haftara">
+    <meta property="og:description" content="Étude du Maftir et de la Haftara avec texte (Torah ou Stam) et enregistrements audio.">
+    <meta property="og:image" content="https://ohaveitsion.github.io/Jerusalem/preview-image.jpg">
+    <meta property="og:url" content="https://ohaveitsion.github.io/Jerusalem/Maftir.html">
+    <meta property="og:type" content="website">
+
+    <!-- Optionnel : Couleur de la barre d'adresse sur mobile -->
+    <meta name="theme-color" content="#2c3e50">
     <style>
-        /* 1. Définition de la police en Base64 */
-        @font-face {
-            font-family: 'MaPoliceTorah';
-            src: url('data:font/ttf;base64,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');
-            font-weight: normal;
-            font-style: normal;
+        :root { --primary: #2c3e50; --accent: #d4af37; --light: #f8f9fa; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #eaeff2; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; color: #333; }
+        
+        /* Header */
+        .header { background: var(--primary); color: white; padding: 20px; text-align: center; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .header h1 { margin: 10px 0 0 0; font-size: 1.6rem; letter-spacing: 1px; }
+        
+        .lang-switch { display: flex; justify-content: center; gap: 8px; margin-bottom: 5px; }
+        @media (min-width: 768px) {
+            .lang-switch { position: absolute; right: 25px; top: 50%; transform: translateY(-50%); margin-bottom: 0; }
+            .header h1 { margin: 0; font-size: 2rem; }
         }
 
-        /* 2. Styles de la page */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        .lang-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.4); color: white; padding: 6px 14px; cursor: pointer; border-radius: 20px; font-size: 13px; transition: 0.3s; }
+        .lang-btn.active { background: var(--accent); border-color: var(--accent); font-weight: bold; color: var(--primary); }
 
-        .container {
-            max-width: 800px;
-            width: 100%;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
+        /* Container */
+        .container { max-width: 950px; width: 92%; margin: 25px auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); flex-grow: 1; display: flex; flex-direction: column; }
+        
+        .controls-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 20px; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+        select { padding: 12px 15px; border-radius: 8px; border: 1px solid #ced4da; font-size: 16px; min-width: 280px; cursor: pointer; outline: none; background: #fff; transition: 0.3s; }
+        
+        .btn { padding: 12px 24px; border-radius: 8px; border: 1px solid #ced4da; font-size: 15px; cursor: pointer; background: white; transition: 0.3s; font-weight: 600; color: var(--primary); }
+        .btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-        }
+        /* Écran d'accueil */
+        #welcome-screen { text-align: center; padding: 80px 20px; }
+        .welcome-icon { font-size: 60px; color: var(--accent); margin-bottom: 20px; display: block; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+        #welcome-screen h2 { color: var(--primary); margin-bottom: 10px; }
+        #welcome-screen p { color: #7f8c8d; font-size: 1.1rem; }
 
-        .controls {
-            margin-bottom: 20px;
-            text-align: center;
-        }
+        .audio-player { background: var(--light); border: 1px solid #e9ecef; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 30px; }
+        audio { width: 100%; height: 45px; }
 
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background-color: #2980b9;
-        }
-
-        .content {
-            font-size: 24px;
-            line-height: 1.8;
-            padding: 20px;
-            border: 1px dashed #ddd;
-            min-height: 200px;
-            text-align: justify;
-        }
-
-        /* 3. Classe qui active la police spécifique */
-        .stam {
-            font-family: 'MaPoliceTorah', serif !important;
-            font-size: 32px; /* Un peu plus grand pour la lisibilité */
-        }
+        .hebrew-text { font-size: 34px; line-height: 2.3; margin-top: 20px; text-align: right; font-family: "SBL Hebrew", "Times New Roman", serif; white-space: pre-wrap; direction: rtl; padding: 0 10px; }
+        .hidden { display: none; }
+        h2.section-title { text-align: right; color: var(--accent); border-bottom: 2px solid var(--light); padding-bottom: 10px; margin-top: 40px; font-size: 1.6rem; direction: ltr; }
+        
+        footer { text-align: center; padding: 25px; color: #999; font-size: 13px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Lecteur de texte hébreu</h1>
+<div class="header">
+    <div class="lang-switch">
+        <button class="lang-btn active" onclick="setLanguage('fr')">FR</button>
+        <button class="lang-btn" onclick="setLanguage('he')">עב</button>
+    </div>
+    <h1 id="ui-title">Maftir & Haftara</h1>
+</div>
 
-        <div class="controls">
-            <button onclick="toggleStam()">Basculer Mode Torah (Stam)</button>
-        </div>
-
-        <div id="hebrew-display" class="content">
-            בראשית ברא אלהים את השמים ואת הארץ. והארץ היתה תהו ובהו וחשך על פני תהום ורוח אלהים מרחפת על פני המים. ויאמר אלהים יהי אור ויהי אור.
-        </div>
+<div class="container">
+    <div class="controls-row">
+        <select id="parasha-select" onchange="manualSelect()"></select>
+        <button id="mode-btn" class="btn" onclick="toggleStam()">Mode Torah</button>
     </div>
 
-    <script>
-        /**
-         * Fonction pour basculer la classe .stam sur l'élément d'affichage
-         */
-        function toggleStam() {
-            const element = document.getElementById('hebrew-display');
-            element.classList.toggle('stam');
-            
-            // Petit message console pour déboguer
-            if (element.classList.contains('stam')) {
-                console.log("Mode Torah activé");
-            } else {
-                console.log("Mode Classique activé");
+    <div id="welcome-screen">
+        <span class="welcome-icon">📜</span>
+        <h2 id="ui-welcome-title">Bienvenue</h2>
+        <p id="ui-welcome-text">Veuillez sélectionner une Parasha pour commencer.</p>
+    </div>
+
+    <div id="audio-zone" class="audio-player hidden">
+        <audio id="audio-ctrl" controls controlsList="nodownload"></audio>
+        <div id="audio-status"></div>
+    </div>
+
+    <div id="loader" class="loader-spinner hidden" style="text-align: center; padding: 40px; font-style: italic; color: #666;"></div>
+
+    <div id="content" class="hidden">
+        <div id="maftir-section">
+            <h2 id="maftir-ref-title" class="section-title"></h2>
+            <div id="maftir-text" class="hebrew-text"></div>
+        </div>
+        <div id="haftara-section">
+            <h2 id="haftara-ref-title" class="section-title"></h2>
+            <div id="haftara-text" class="hebrew-text"></div>
+        </div>
+    </div>
+</div>
+
+<footer>© Greg u.</footer>
+
+<script>
+    const audioBase = "https://ohaveitsion.github.io/Jerusalem/Audios/";
+    let isStam = false;
+    let currentParasha = "";
+    let currentLang = 'fr';
+
+    const translations = {
+        fr: {
+            title: "Maftir & Haftara", placeholder: "-- Sélectionner une Parasha --",
+            modeTorah: "Mode Torah", welcomeTitle: "Bienvenue", 
+            welcomeText: "Veuillez sélectionner une Parasha pour commencer.",
+            loading: "Chargement du texte...", searching: "Recherche de l'enregistrement...",
+            coming: "Audio à venir...", error: "Erreur de connexion.", audioErr: "Erreur audio.",
+            maftir: "Maftir", haftara: "Haftara",
+            // Modification des noms des livres ici :
+            books: ["Béréchit", "Chémot", "Vaykra", "Bamidbar", "Déverïm"],
+            pNames: {
+                "Bereshit": "Bereshit", "Noach": "Noach", "Lech-Lecha": "Lech-Lecha", "Vayera": "Vayera", "Chayei Sara": "Chayei Sara", "Toldot": "Toldot", "Vayetzei": "Vayetzei", "Vayishlach": "Vayishlach", "Vayeshev": "Vayeshev", "Miketz": "Miketz", "Vayigash": "Vayigash", "Vayechi": "Vayechi",
+                "Shemot": "Shemot", "Vaera": "Vaera", "Bo": "Bo", "Beshalach": "Beshalach", "Yitro": "Yitro", "Mishpatim": "Mishpatim", "Terumah": "Terumah", "Tetzaveh": "Tetzaveh", "Ki Tissa": "Ki Tissa", "Vayakhel": "Vayakhel", "Pekudei": "Pekudei",
+                "Vayikra": "Vayikra", "Tzav": "Tzav", "Shmini": "Shmini", "Tazria": "Tazria", "Metzora": "Metzora", "Achrei Mot": "Achrei Mot", "Kedoshim": "Kedoshim", "Emor": "Emor", "Behar": "Behar", "Bechukotai": "Bechukotai",
+                "Bemidbar": "Bemidbar", "Nasso": "Nasso", "Beha'alotcha": "Beha'alotcha", "Shelach": "Shelach", "Korach": "Korach", "Chukat": "Chukat", "Balak": "Balak", "Pinchas": "Pinchas", "Matot": "Matot", "Masei": "Masei",
+                "Devarim": "Devarim", "Vaetchanan": "Vaetchanan", "Eikev": "Eikev", "Re'eh": "Re'eh", "Shoftim": "Shoftim", "Ki Teitzei": "Ki Teitzei", "Ki Tavo": "Ki Tavo", "Nitzavim": "Nitzavim", "Vayeilech": "Vayeilech", "Ha'Azinu": "Ha'Azinu", "V'Zot HaBerachah": "V'Zot HaBerachah"
+            }
+        },
+        he: {
+            title: "מפטיר והפטרה", placeholder: "-- בחר פרשה --",
+            modeTorah: "מצב ספר תורה", welcomeTitle: "ברוכים הבאים", 
+            welcomeText: "אנא בחר פרשה כדי להתחיל בלימוד.",
+            loading: "טוען טקסט...", searching: "מחפש הקלטה...",
+            coming: "אודיו בקרוב...", error: "שגיאת התחברות.", audioErr: "שגיאת אודיו.",
+            maftir: "מפטיר", haftara: "הפטרה",
+            books: ["בראשית", "שמות", "ויקרא", "במדבר", "דברים"],
+            pNames: {
+                "Bereshit": "בראשית", "Noach": "נח", "Lech-Lecha": "לך-לך", "Vayera": "וירא", "Chayei Sara": "חיי שרה", "Toldot": "תולדות", "Vayetzei": "ויצא", "Vayishlach": "וישלח", "Vayeshev": "וישב", "Miketz": "מקץ", "Vayigash": "ויגש", "Vayechi": "ויחי",
+                "Shemot": "שמות", "Vaera": "וארא", "Bo": "בא", "Beshalach": "בשלח", "Yitro": "יתרו", "Mishpatim": "משפטים", "Terumah": "תרומה", "Tetzaveh": "תצוה", "Ki Tissa": "כי תשא", "Vayakhel": "ויקהל", "Pekudei": "פקודי",
+                "Vayikra": "ויקרא", "Tzav": "צו", "Shmini": "שמיני", "Tazria": "תזריע", "Metzora": "מצורע", "Achrei Mot": "אחרי מות", "Kedoshim": "קדושים", "Emor": "אמור", "Behar": "בהר", "Bechukotai": "בחקתי",
+                "Bemidbar": "במדבר", "Nasso": "נשא", "Beha'alotcha": "בהעלתך", "Shelach": "שלח לך", "Korach": "קרח", "Chukat": "חקת", "Balak": "בלק", "Pinchas": "פינחס", "Matot": "מטות", "Masei": "מסעי",
+                "Devarim": "דברים", "Vaetchanan": "ואתחנן", "Eikev": "עקב", "Re'eh": "ראה", "Shoftim": "שופטים", "Ki Teitzei": "כי תצא", "Ki Tavo": "כי תבוא", "Nitzavim": "נצבים", "Vayeilech": "וילך", "Ha'Azinu": "האזינו", "V'Zot HaBerachah": "וזאת הברכה"
             }
         }
-    </script>
+    };
 
+    const torahData = {
+        "Bereshit": ["Bereshit", "Noach", "Lech-Lecha", "Vayera", "Chayei Sara", "Toldot", "Vayetzei", "Vayishlach", "Vayeshev", "Miketz", "Vayigash", "Vayechi"],
+        "Shemot": ["Shemot", "Vaera", "Bo", "Beshalach", "Yitro", "Mishpatim", "Terumah", "Tetzaveh", "Ki Tissa", "Vayakhel", "Pekudei"],
+        "Vayikra": ["Vayikra", "Tzav", "Shmini", "Tazria", "Metzora", "Achrei Mot", "Kedoshim", "Emor", "Behar", "Bechukotai"],
+        "Bemidbar": ["Bemidbar", "Nasso", "Beha'alotcha", "Shelach", "Korach", "Chukat", "Balak", "Pinchas", "Matot", "Masei"],
+        "Devarim": ["Devarim", "Vaetchanan", "Eikev", "Re'eh", "Shoftim", "Ki Teitzei", "Ki Tavo", "Nitzavim", "Vayeilech", "Ha'Azinu", "V'Zot HaBerachah"]
+    };
+
+const maftirRefs = {
+    "Bereshit": "2:1-2:3", "Noach": "11:29-11:32", "Lech-Lecha": "17:24-17:27", "Vayera": "22:20-22:24", "Chayei Sara": "25:16-25:18", "Toldot": "28:7-28:9", "Vayetzei": "32:1-32:3", "Vayishlach": "36:40-36:43", "Vayeshev": "40:20-40:23", "Miketz": "44:14-44:17", "Vayigash": "47:24-47:27", "Vayechi": "50:23-50:26",
+    "Shemot": "5:22-6:1", "Vaera": "9:30-9:35", "Bo": "13:14-13:16", "Beshalach": "17:14-17:16", "Yitro": "20:19-20:23", "Mishpatim": "24:15-24:18", "Terumah": "27:17-27:19", "Tetzaveh": "30:8-30:10", "Ki Tissa": "34:33-34:35", "Vayakhel": "38:18-38:20", "Pekudei": "40:34-40:38",
+    "Vayikra": "5:24-5:26", "Tzav": "8:33-8:36", "Shmini": "11:44-11:47", "Tazria": "13:57-13:59", "Metzora": "15:31-15:33", "Achrei Mot": "18:24-18:30", "Kedoshim": "20:25-20:27", "Emor": "24:21-24:23", "Behar": "25:53-26:2", "Bechukotai": "27:32-27:34",
+    "Bemidbar": "4:17-4:20", "Nasso": "7:87-7:89", "Beha'alotcha": "12:14-12:16", "Shelach": "15:37-15:41", "Korach": "18:30-18:32", "Chukat": "21:34-22:1", "Balak": "25:7-25:9", "Pinchas": "29:35-30:1", "Matot": "32:39-32:42", "Masei": "36:10-36:13",
+    "Devarim": "3:18-3:22", "Vaetchanan": "7:7-7:11", "Eikev": "11:22-11:25", "Re'eh": "16:13-16:17", "Shoftim": "21:7-21:9", "Ki Teitzei": "25:17-25:19", "Ki Tavo": "29:6-29:8", "Nitzavim": "30:15-30:20", "Vayeilech": "31:28-31:30", "Ha'Azinu": "32:48-32:52", "V'Zot HaBerachah": "34:10-34:12"
+};
+
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.lang-btn[onclick*="'${lang}'"]`).classList.add('active');
+        const t = translations[lang];
+        document.getElementById('ui-title').innerText = t.title;
+        document.getElementById('mode-btn').innerText = t.modeTorah;
+        document.getElementById('ui-welcome-title').innerText = t.welcomeTitle;
+        document.getElementById('ui-welcome-text').innerText = t.welcomeText;
+        initSelect();
+        if (currentParasha) loadTexts(currentParasha);
+    }
+
+    function initSelect() {
+        const sel = document.getElementById('parasha-select');
+        const savedVal = sel.value;
+        const t = translations[currentLang];
+        sel.innerHTML = `<option value="">${t.placeholder}</option>`;
+        Object.keys(torahData).forEach((key, idx) => {
+            const group = document.createElement('optgroup');
+            group.label = t.books[idx];
+            torahData[key].forEach(p => {
+                let opt = document.createElement('option');
+                opt.value = p; opt.text = t.pNames[p];
+                group.appendChild(opt);
+            });
+            sel.appendChild(group);
+        });
+        sel.value = savedVal;
+    }
+
+    async function loadTexts(pName) {
+        currentParasha = pName;
+        document.getElementById('welcome-screen').classList.add('hidden');
+        const loader = document.getElementById('loader');
+        const content = document.getElementById('content');
+        const t = translations[currentLang];
+        loader.innerText = t.loading; loader.classList.remove('hidden'); content.classList.add('hidden');
+
+        try {
+            const calUrl = `https://www.sefaria.org/api/calendars?parasha=${pName}&israel=1`;
+            const calRes = await fetch(calUrl).then(r => r.json());
+            const hItem = calRes.calendar_items.find(i => i.title.en.includes("Haftara"));
+            
+            let mRef = maftirRefs[pName] || "?";
+            let rawHaftaraRef = hItem ? hItem.ref : "?";
+            let cleanHaftaraRef = rawHaftaraRef.replace(/[A-Za-z\s]+/, '').trim();
+
+            const [mRes, hRes] = await Promise.all([
+                fetch(`https://www.sefaria.org/api/texts/${getSefariaMaftirFullRef(pName)}?context=0`).then(r => r.json()),
+                rawHaftaraRef !== "?" ? fetch(`https://www.sefaria.org/api/texts/${rawHaftaraRef}?context=0`).then(r => r.json()) : {he: "Indisponible"}
+            ]);
+
+            document.getElementById('maftir-ref-title').innerText = `${t.maftir} (${mRef})`;
+            document.getElementById('haftara-ref-title').innerText = `${t.haftara} (${cleanHaftaraRef})`;
+            render(mRes.he, hRes.he);
+            handleAudio(pName);
+        } catch (err) { loader.innerText = t.error; }
+    }
+
+    function getSefariaMaftirFullRef(pName) {
+        const bookMap = {
+            "Bereshit": "Genesis", "Noach": "Genesis", "Lech-Lecha": "Genesis", "Vayera": "Genesis", "Chayei Sara": "Genesis", "Toldot": "Genesis", "Vayetzei": "Genesis", "Vayishlach": "Genesis", "Vayeshev": "Genesis", "Miketz": "Genesis", "Vayigash": "Genesis", "Vayechi": "Genesis",
+            "Shemot": "Exodus", "Vaera": "Exodus", "Bo": "Exodus", "Beshalach": "Exodus", "Yitro": "Exodus", "Mishpatim": "Exodus", "Terumah": "Exodus", "Tetzaveh": "Exodus", "Ki Tissa": "Exodus", "Vayakhel": "Exodus", "Pekudei": "Exodus",
+            "Vayikra": "Leviticus", "Tzav": "Leviticus", "Shmini": "Leviticus", "Tazria": "Leviticus", "Metzora": "Leviticus", "Achrei Mot": "Leviticus", "Kedoshim": "Leviticus", "Emor": "Leviticus", "Behar": "Leviticus", "Bechukotai": "Leviticus",
+            "Bemidbar": "Numbers", "Nasso": "Numbers", "Beha'alotcha": "Numbers", "Shelach": "Numbers", "Korach": "Numbers", "Chukat": "Numbers", "Balak": "Numbers", "Pinchas": "Numbers", "Matot": "Numbers", "Masei": "Numbers",
+            "Devarim": "Deuteronomy", "Vaetchanan": "Deuteronomy", "Eikev": "Deuteronomy", "Re'eh": "Deuteronomy", "Shoftim": "Deuteronomy", "Ki Teitzei": "Deuteronomy", "Ki Tavo": "Deuteronomy", "Nitzavim": "Deuteronomy", "Vayeilech": "Deuteronomy", "Ha'Azinu": "Deuteronomy", "V'Zot HaBerachah": "Deuteronomy"
+        };
+        return `${bookMap[pName]} ${maftirRefs[pName]}`;
+    }
+
+    function render(mHe, hHe) {
+        const clean = (input) => {
+            if (!input) return "";
+            let txt = Array.isArray(input) ? input.flat(Infinity).join(' ') : input;
+            if (isStam) txt = txt.replace(/[\u0591-\u05C7]/g, "");
+            return txt;
+        };
+        document.getElementById('maftir-text').innerHTML = clean(mHe);
+        document.getElementById('haftara-text').innerHTML = clean(hHe);
+        document.getElementById('loader').classList.add('hidden');
+        document.getElementById('content').classList.remove('hidden');
+    }
+
+    function handleAudio(name) {
+        const zone = document.getElementById('audio-zone');
+        const ctrl = document.getElementById('audio-ctrl');
+        const status = document.getElementById('audio-status');
+        const t = translations[currentLang];
+        const url = `${audioBase}${encodeURIComponent(name)}.mp3`;
+        zone.classList.remove('hidden'); status.innerText = t.searching; ctrl.classList.add('hidden');
+        fetch(url, { method: 'HEAD' }).then(res => {
+            if (res.ok) { ctrl.src = url; ctrl.classList.remove('hidden'); status.innerText = ""; }
+            else { status.innerText = t.coming; }
+        }).catch(() => { status.innerText = t.audioErr; });
+    }
+
+    function manualSelect() {
+        const val = document.getElementById('parasha-select').value;
+        if (val) loadTexts(val);
+        else {
+            document.getElementById('welcome-screen').classList.remove('hidden');
+            document.getElementById('content').classList.add('hidden');
+            document.getElementById('audio-zone').classList.add('hidden');
+        }
+    }
+
+    function toggleStam() {
+        isStam = !isStam;
+        document.getElementById('mode-btn').classList.toggle('active');
+        if (currentParasha) loadTexts(currentParasha);
+    }
+
+    window.onload = () => setLanguage('fr');
+</script>
 </body>
 </html>
