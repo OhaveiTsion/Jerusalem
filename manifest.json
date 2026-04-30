@@ -1,8 +1,8 @@
 {
-  "name": "Ohavei Tsion Jerusalem",
+  "name": "Ohavei Tsion",
   "short_name": "OhaveiTsion",
   "description": "Horaires et annonces de la synagogue Ohavei Tsion",
-  "start_url": "./index.html",
+  "start_url": "./index_.html",
   "display": "standalone",
   "background_color": "#0f34a1",
   "theme_color": "#0f34a1",
