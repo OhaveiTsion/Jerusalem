@@ -71,11 +71,11 @@
 
         /* Classe spécifique pour la police Ktav Vellish sans voyelles */
         .stam-mode {
-            font-family: 'KtavVellish', serif !important;
-            font-size: 42px;
-            line-height: 1.8;
-            letter-spacing: 1px;
-        }
+    font-family: 'KtavVellish', serif !important;
+    font-size: 42px !important;
+    line-height: 1.6 !important;
+    direction: rtl;
+}
 
         .hidden { display: none; }
         h2.section-title { text-align: right; color: var(--accent); border-bottom: 2px solid var(--light); padding-bottom: 10px; margin-top: 40px; font-size: 1.6rem; direction: ltr; }
@@ -292,6 +292,7 @@
 
     function toggleStam() {
         isStam = !isStam;
+        console.log("Mode Stam activé :", isStam); // Debug
         const btn = document.getElementById('mode-btn');
         btn.classList.toggle('active');
         
