@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Révision Maftir - Jérusalem</title>
+    <title>Révision Maftir & Haftara - Jérusalem</title>
     <style>
         :root { --primary: #2c3e50; --accent: #d4af37; }
         body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; padding: 0; direction: rtl; }
@@ -23,6 +23,7 @@
         audio { width: 100%; }
         .hidden { display: none; }
         .welcome-msg { text-align: center; color: #7f8c8d; padding: 40px; direction: ltr; }
+        h2 { direction: ltr; text-align: right; color: var(--accent); border-bottom: 1px solid #eee; }
     </style>
 </head>
 <body>
@@ -53,19 +54,21 @@
     </div>
 
     <div id="welcome-screen" class="welcome-msg">
-        <h3>Bienvenue</h3>
-        <p>Veuillez sélectionner une Parasha dans la liste pour afficher le Maftir et la Haftara.</p>
+        <h3>Prêt pour la révision</h3>
+        <p>Sélectionnez une Parasha pour charger automatiquement les textes de Sefaria et l'audio correspondant.</p>
     </div>
 
-    <div id="loader" class="hidden" style="text-align:center; padding: 20px;">Synchronisation Sefaria...</div>
+    <div id="loader" class="hidden" style="text-align:center; padding: 20px;">
+        <p>Chargement des API (Hebcal & Sefaria)...</p>
+    </div>
     
     <div id="content" class="hidden">
         <div id="maftir-section">
-            <h2 style="direction: ltr; text-align: right; color: var(--accent);">Maftir</h2>
+            <h2>Maftir</h2>
             <div id="maftir-text" class="hebrew-text"></div>
         </div>
         <div id="haftara-section" style="margin-top:40px;">
-            <h2 style="direction: ltr; text-align: right; color: var(--accent);">Haftara</h2>
+            <h2 id="haftara-title">Haftara</h2>
             <div id="haftara-text" class="hebrew-text"></div>
         </div>
     </div>
@@ -81,11 +84,11 @@
     };
 
     const torahBooks = {
-        "Bereshit (Genèse)": ["Bereshit", "Noach", "Lech-Lecha", "Vayera", "Chayei Sara", "Toldot", "Vayetzei", "Vayishlach", "Vayeshev", "Miketz", "Vayigash", "Vayechi"],
-        "Shemot (Exode)": ["Shemot", "Vaera", "Bo", "Beshalach", "Yitro", "Mishpatim", "Terumah", "Tetzaveh", "Ki Tissa", "Vayakhel", "Pekudei"],
-        "Vayikra (Lévitique)": ["Vayikra", "Tzav", "Shmini", "Tazria", "Metzora", "Achrei Mot", "Kedoshim", "Emor", "Behar", "Bechukotai"],
-        "Bemidbar (Nombres)": ["Bemidbar", "Nasso", "Beha'alotcha", "Shelach", "Korach", "Chukat", "Balak", "Pinchas", "Matot", "Masei"],
-        "Devarim (Deutéronome)": ["Devarim", "Vaetchanan", "Eikev", "Re'eh", "Shoftim", "Ki Teitzei", "Ki Tavo", "Nitzavim", "Vayeilech", "Ha'Azinu", "V'Zot HaBerachah"]
+        "Bereshit": ["Bereshit", "Noach", "Lech-Lecha", "Vayera", "Chayei Sara", "Toldot", "Vayetzei", "Vayishlach", "Vayeshev", "Miketz", "Vayigash", "Vayechi"],
+        "Shemot": ["Shemot", "Vaera", "Bo", "Beshalach", "Yitro", "Mishpatim", "Terumah", "Tetzaveh", "Ki Tissa", "Vayakhel", "Pekudei"],
+        "Vayikra": ["Vayikra", "Tzav", "Shmini", "Tazria", "Metzora", "Achrei Mot", "Kedoshim", "Emor", "Behar", "Bechukotai"],
+        "Bemidbar": ["Bemidbar", "Nasso", "Beha'alotcha", "Shelach", "Korach", "Chukat", "Balak", "Pinchas", "Matot", "Masei"],
+        "Devarim": ["Devarim", "Vaetchanan", "Eikev", "Re'eh", "Shoftim", "Ki Teitzei", "Ki Tavo", "Nitzavim", "Vayeilech", "Ha'Azinu", "V'Zot HaBerachah"]
     };
 
     const nameMap = {
@@ -132,6 +135,7 @@
     async function loadData(enName) {
         currentEnName = enName;
         const frName = nameMap[enName] || enName;
+        const isIsrael = document.getElementById('israel-toggle').checked;
         
         document.getElementById('display-title').innerText = "Parashat " + frName;
         document.getElementById('loader').classList.remove('hidden');
@@ -139,26 +143,34 @@
         document.getElementById('audio-zone').classList.remove('hidden');
 
         try {
-            const cal = await fetch(`https://www.sefaria.org/api/calendars?timezone=Asia/Jerusalem`).then(r => r.json());
+            // 1. Appel API Hebcal pour trouver la Haftara exacte associée à ce nom de Parasha
+            // On utilise l'endpoint shabbat qui contient les correspondances Maftir/Haftara
+            const hebcalRes = await fetch(`https://www.hebcal.com/hebcal?v=1&cfg=json&israel=${isIsrael?'on':'off'}&maj=on&year=now`);
+            const hebcalData = await hebcalRes.json();
             
-            const parashaObj = cal.calendar_items.find(i => 
-                i.title.en.includes(enName) || 
-                (enName === "Achrei Mot" && i.title.en.includes("Ahrei"))
+            // On cherche l'item de type 'parashat' qui correspond à notre sélection
+            // Note: Hebcal utilise parfois "Achrei Mot" ou "Ahrei Mot", on gère les deux.
+            const pMatch = hebcalData.items.find(i => 
+                i.category === "parashat" && 
+                (i.title.includes(enName) || (enName === "Achrei Mot" && i.title.includes("Ahrei")))
             );
-            
-            const maftirRef = maftirRefs[enName];
-            const haftaraRef = parashaObj ? parashaObj.subs[0] : null;
 
+            let haftaraRef = pMatch?.haftara; // Récupère la réf type "Ezekiel 44:1-31"
+            const maftirRef = maftirRefs[enName];
+
+            // 2. Récupération des textes sur Sefaria
             const [mRes, hRes] = await Promise.all([
                 fetch(`https://www.sefaria.org/api/texts/${maftirRef}?context=0`).then(r => r.json()),
                 haftaraRef ? fetch(`https://www.sefaria.org/api/texts/${haftaraRef}?context=0`).then(r => r.json()) : Promise.resolve(null)
             ]);
 
+            document.getElementById('haftara-title').innerText = haftaraRef ? `Haftara (${haftaraRef})` : "Haftara";
             display(mRes.he, hRes ? hRes.he : null);
             checkAudio(frName);
+            
         } catch (e) { 
-            console.error(e);
-            document.getElementById('loader').innerText = "Erreur de chargement.";
+            console.error("API Error:", e);
+            document.getElementById('loader').innerText = "Erreur de connexion aux API.";
         }
     }
 
@@ -170,7 +182,7 @@
             return txt;
         };
         document.getElementById('maftir-text').innerHTML = clean(m);
-        document.getElementById('haftara-text').innerHTML = h ? clean(h) : "Haftara non disponible.";
+        document.getElementById('haftara-text').innerHTML = h ? clean(h) : "Haftara non disponible via API pour cette sélection.";
         document.getElementById('loader').classList.add('hidden');
         document.getElementById('content').classList.remove('hidden');
     }
@@ -190,7 +202,7 @@
                 ctrl.classList.remove('hidden');
                 status.classList.add('hidden');
             } else {
-                status.innerText = "Audio non disponible pour cette parasha.";
+                status.innerText = "Audio non disponible.";
             }
         }).catch(() => { status.innerText = "Erreur audio."; });
     }
