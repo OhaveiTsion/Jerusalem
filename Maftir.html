@@ -74,82 +74,144 @@
         "Devarim": "Deuteronomy 3:18-3:22", "Vaetchanan": "Deuteronomy 7:7-7:11", "Eikev": "Deuteronomy 11:22-11:25", "Re'eh": "Deuteronomy 16:13-16:17", "Shoftim": "Deuteronomy 21:7-21:9", "Ki Teitzei": "Deuteronomy 25:17-25:19", "Ki Tavo": "Deuteronomy 29:6-29:8", "Nitzavim": "Deuteronomy 30:15-30:20", "Vayeilech": "Deuteronomy 31:28-31:30", "Ha'Azinu": "Deuteronomy 32:48-32:52", "V'Zot HaBerachah": "Deuteronomy 34:10-34:12"
     };
 
-    const torahOrder = [
-        { label: "Bereshit (Genèse)", list: ["Bereshit", "Noach", "Lech-Lecha", "Vayera", "Chayei Sara", "Toldot", "Vayetzei", "Vayishlach", "Vayeshev", "Miketz", "Vayigash", "Vayechi"] },
-        { label: "Shemot (Exode)", list: ["Shemot", "Vaera", "Bo", "Beshalach", "Yitro", "Mishpatim", "Terumah", "Tetzaveh", "Ki Tissa", "Vayakhel", "Pekudei"] },
-        { label: "Vayikra (Lévitique)", list: ["Vayikra", "Tzav", "Shmini", "Tazria", "Metzora", "Achrei Mot", "Kedoshim", "Emor", "Behar", "Bechukotai"] },
-        { label: "Bemidbar (Nombres)", list: ["Bemidbar", "Nasso", "Beha'alotcha", "Shelach", "Korach", "Chukat", "Balak", "Pinchas", "Matot", "Masei"] },
-        { label: "Devarim (Deutéronome)", list: ["Devarim", "Vaetchanan", "Eikev", "Re'eh", "Shoftim", "Ki Teitzei", "Ki Tavo", "Nitzavim", "Vayeilech", "Ha'Azinu", "V'Zot HaBerachah"] }
-    ];
+    const torahBooks = {
+        "Bereshit (Genèse)": ["Bereshit", "Noach", "Lech-Lecha", "Vayera", "Chayei Sara", "Toldot", "Vayetzei", "Vayishlach", "Vayeshev", "Miketz", "Vayigash", "Vayechi"],
+        "Shemot (Exode)": ["Shemot", "Vaera", "Bo", "Beshalach", "Yitro", "Mishpatim", "Terumah", "Tetzaveh", "Ki Tissa", "Vayakhel", "Pekudei"],
+        "Vayikra (Lévitique)": ["Vayikra", "Tzav", "Shmini", "Tazria", "Metzora", "Achrei Mot", "Kedoshim", "Emor", "Behar", "Bechukotai"],
+        "Bemidbar (Nombres)": ["Bemidbar", "Nasso", "Beha'alotcha", "Shelach", "Korach", "Chukat", "Balak", "Pinchas", "Matot", "Masei"],
+        "Devarim (Deutéronome)": ["Devarim", "Vaetchanan", "Eikev", "Re'eh", "Shoftim", "Ki Teitzei", "Ki Tavo", "Nitzavim", "Vayeilech", "Ha'Azinu", "V'Zot HaBerachah"]
+    };
 
-    const nameMap = { "Achrei Mot": "Ahrei Mot", "Bechukotai": "Behoukotai", "Pinchas": "Pinhas" }; // Juste les exceptions pour l'affichage
+    const nameMap = {
+        "Bereshit": "Bereshit", "Noach": "Noah", "Lech-Lecha": "Leh-Leha", "Vayera": "Vayera", "Chayei Sara": "Hayei Sara", "Toldot": "Toldot", "Vayetzei": "Vayetzei", "Vayishlach": "Vayishlah", "Vayeshev": "Vayeshev", "Miketz": "Miketz", "Vayigash": "Vayigash", "Vayechi": "Vayehi", "Shemot": "Shemot", "Vaera": "Vaera", "Bo": "Bo", "Beshalach": "Beshalah", "Yitro": "Yitro", "Mishpatim": "Mishpatim", "Terumah": "Terumah", "Tetzaveh": "Tetzaveh", "Ki Tissa": "Ki Tissa", "Vayakhel": "Vayakhel", "Pekudei": "Pekudei", "Vayikra": "Vayikra", "Tzav": "Tzav", "Shmini": "Shmini", "Tazria": "Tazria", "Metzora": "Metzora", "Achrei Mot": "Ahrei Mot", "Kedoshim": "Kedoshim", "Emor": "Emor", "Behar": "Behar", "Bechukotai": "Behoukotai", "Bemidbar": "Bemidbar", "Nasso": "Nasso", "Beha'alotcha": "Behaalotha", "Shelach": "Shelah", "Korach": "Korah", "Chukat": "Houkat", "Balak": "Balak", "Pinchas": "Pinhas", "Matot": "Matot", "Masei": "Masei", "Devarim": "Devarim", "Vaetchanan": "Vaethanan", "Eikev": "Eikev", "Re'eh": "Reeh", "Shoftim": "Shoftim", "Ki Teitzei": "Ki-Teitzei", "Ki Tavo": "Ki-Tavo", "Nitzavim": "Nitzavim", "Vayeilech": "Vayeilech", "Ha'Azinu": "Haazinou", "V'Zot HaBerachah": "Vezot-Haberaha"
+    };
 
     let isStam = false;
+    let currentEnName = "";
+    const audioPath = "https://ohaveitsion.github.io/Jerusalem/Audios/";
 
     function buildMenu() {
         const select = document.getElementById('parasha-select');
         select.innerHTML = "";
-        torahOrder.forEach(book => {
+        for (const [book, parashiot] of Object.entries(torahBooks)) {
             let group = document.createElement('optgroup');
-            group.label = book.label;
-            book.list.forEach(en => {
+            group.label = book;
+            parashiot.forEach(en => {
                 let opt = document.createElement('option');
                 opt.value = en;
-                opt.text = nameMap[en] || en;
+                opt.text = nameMap[en];
                 group.appendChild(opt);
             });
             select.add(group);
-        });
+        }
     }
 
-    async function detectWeek() {
+    async function initWeek() {
         const isIsrael = document.getElementById('israel-toggle').checked;
+        buildMenu();
+        
         try {
             const res = await fetch(`https://www.hebcal.com/hebcal?v=1&cfg=json&israel=${isIsrael?'on':'off'}&maj=on&year=now&month=now`);
             const data = await res.json();
-            const todayStr = new Date().toISOString().split('T')[0];
-            const p = data.items.find(i => i.category === "parashat" && i.date >= todayStr);
+            const p = data.items.find(i => i.category === "parashat");
+            
             if(p) {
-                let name = p.title.replace("Parashat ", "").split('-')[0].trim();
-                if(name === "Ahrei Mot") name = "Achrei Mot";
-                document.getElementById('parasha-select').value = name;
+                let rawName = p.title.replace("Parashat ", "");
+                currentEnName = rawName.split('-')[0].trim();
+                const select = document.getElementById('parasha-select');
+                select.value = currentEnName;
+                await loadData(currentEnName);
+            } else {
+                await loadData(document.getElementById('parasha-select').value);
             }
-        } catch (e) { console.error(e); }
-        loadData();
+        } catch (e) {
+            console.error("Hebcal error:", e);
+            await loadData(document.getElementById('parasha-select').value);
+        }
     }
 
-    async function loadData() {
-        const enName = document.getElementById('parasha-select').value;
+    function manualSelect() {
+        loadData(document.getElementById('parasha-select').value);
+    }
+
+    async function loadData(enName) {
+        if(!enName) return;
+        currentEnName = enName;
         const frName = nameMap[enName] || enName;
+        
         document.getElementById('display-title').innerText = "Parashat " + frName;
+        document.getElementById('loader').classList.remove('hidden');
+        document.getElementById('content').classList.add('hidden');
 
         try {
-            const ref = maftirRefs[enName];
-            const mRes = await fetch(`https://www.sefaria.org/api/texts/${ref}?context=0`).then(r => r.json());
+            const cal = await fetch(`https://www.sefaria.org/api/calendars?timezone=Asia/Jerusalem`).then(r => r.json());
+            const parashaObj = cal.calendar_items.find(i => i.title.en.includes(enName));
             
-            let txt = Array.isArray(mRes.he) ? mRes.he.join(' ') : mRes.he;
-            if(isStam) txt = txt.replace(/[\u0591-\u05C7]/g, ""); 
-            
-            document.getElementById('maftir-text').innerHTML = txt;
+            const maftirRef = maftirRefs[enName];
+            const haftaraRef = parashaObj ? parashaObj.subs[0] : null;
+
+            const [mRes, hRes] = await Promise.all([
+                fetch(`https://www.sefaria.org/api/texts/${maftirRef}?context=0`).then(r => r.json()),
+                haftaraRef ? fetch(`https://www.sefaria.org/api/texts/${haftaraRef}?context=0`).then(r => r.json()) : null
+            ]);
+
+            display(mRes.he, hRes ? hRes.he : null);
             checkAudio(frName);
-        } catch (e) { console.error(e); }
+        } catch (e) { 
+            console.error("Sefaria error:", e);
+            document.getElementById('loader').innerText = "Erreur de chargement des textes.";
+        }
+    }
+
+    function display(m, h) {
+        const clean = (t) => {
+            if (!t) return "";
+            let txt = Array.isArray(t) ? t.join(' ') : t;
+            if(isStam) txt = txt.replace(/[\u0591-\u05C7]/g, ""); 
+            return txt;
+        };
+        document.getElementById('maftir-text').innerHTML = clean(m);
+        if (h) {
+            document.getElementById('haftara-section').classList.remove('hidden');
+            document.getElementById('haftara-text').innerHTML = clean(h);
+        } else {
+            document.getElementById('haftara-section').classList.add('hidden');
+        }
+        document.getElementById('loader').classList.add('hidden');
+        document.getElementById('content').classList.remove('hidden');
     }
 
     function checkAudio(name) {
         const ctrl = document.getElementById('audio-ctrl');
-        const urlMp3 = `https://ohaveitsion.github.io/Jerusalem/Audios/${encodeURIComponent(name)}.mp3`;
-        fetch(urlMp3, { method: 'HEAD' }).then(res => {
-            ctrl.style.display = res.ok ? "block" : "none";
-            if(res.ok) ctrl.src = urlMp3;
-        });
+        const status = document.getElementById('audio-status');
+        const urlMp3 = `${audioPath}${encodeURIComponent(name)}.mp3`;
+        
+        ctrl.classList.add('hidden');
+        status.classList.remove('hidden');
+        status.innerText = "Recherche audio...";
+
+        fetch(urlMp3, { method: 'HEAD' })
+            .then(res => {
+                if (res.ok) {
+                    ctrl.src = urlMp3;
+                    ctrl.classList.remove('hidden');
+                    status.classList.add('hidden');
+                } else {
+                    status.innerText = "Audio a venir ...";
+                }
+            })
+            .catch(() => {
+                status.innerText = "Audio a venir ...";
+            });
     }
 
     function toggleStam() {
         isStam = !isStam;
-        loadData();
+        document.getElementById('mode-btn').classList.toggle('active');
+        loadData(currentEnName);
     }
 
-    window.onload = () => { buildMenu(); detectWeek(); };
+    window.onload = initWeek;
 </script>
 </body>
 </html>
