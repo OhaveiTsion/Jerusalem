@@ -34,9 +34,7 @@
 
 <div class="container">
     <div class="controls-row">
-        <!-- Suppression de l'option vide -->
         <select id="parasha-select" onchange="manualSelect()"></select>
-        
         <div style="display:flex; align-items:center; gap:8px;">
             <span>H'oul</span>
             <label class="switch">
@@ -92,7 +90,6 @@
     let currentEnName = "";
     const audioPath = "https://ohaveitsion.github.io/Jerusalem/Audios/";
 
-    // Construction initiale du menu
     function buildMenu() {
         const select = document.getElementById('parasha-select');
         select.innerHTML = "";
@@ -114,7 +111,6 @@
         buildMenu();
         
         try {
-            // Récupère la parasha du prochain Chabbat
             const res = await fetch(`https://www.hebcal.com/hebcal?v=1&cfg=json&israel=${isIsrael?'on':'off'}&maj=on&year=now&month=now`);
             const data = await res.json();
             const p = data.items.find(i => i.category === "parashat");
@@ -122,17 +118,15 @@
             if(p) {
                 let rawName = p.title.replace("Parashat ", "");
                 currentEnName = rawName.split('-')[0].trim();
-                
                 const select = document.getElementById('parasha-select');
-                select.value = currentEnName; // Sélectionne visuellement
-                loadData(currentEnName); // Charge les données
+                select.value = currentEnName;
+                await loadData(currentEnName);
             } else {
-                // Si rien n'est trouvé pour ce mois, on prend la première de la liste
-                loadData(select.value);
+                await loadData(document.getElementById('parasha-select').value);
             }
         } catch (e) {
-            console.error(e);
-            loadData(select.value); // Fallback
+            console.error("Hebcal error:", e);
+            await loadData(document.getElementById('parasha-select').value);
         }
     }
 
@@ -164,7 +158,8 @@
             display(mRes.he, hRes ? hRes.he : null);
             checkAudio(frName);
         } catch (e) { 
-            document.getElementById('loader').innerText = "Erreur de chargement.";
+            console.error("Sefaria error:", e);
+            document.getElementById('loader').innerText = "Erreur de chargement des textes.";
         }
     }
 
@@ -195,7 +190,6 @@
         status.classList.remove('hidden');
         status.innerText = "Recherche audio...";
 
-        // Utilisation de fetch HEAD pour vérifier l'existence sans charger le fichier
         fetch(urlMp3, { method: 'HEAD' })
             .then(res => {
                 if (res.ok) {
@@ -217,8 +211,7 @@
         loadData(currentEnName);
     }
 
-    // Démarrage immédiat
-    initWeek();
+    window.onload = initWeek;
 </script>
 </body>
 </html>
