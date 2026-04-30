@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Favicon SVG -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232c3e50'/%3E%3Cpath d='M30 20v60M70 20v60' stroke='%23d4af37' stroke-width='8' stroke-linecap='round'/%3E%3Cpath d='M30 30h40M30 70h40' stroke='%23d4af37' stroke-width='12'/%3E%3C/svg%3E">
     <title>Maftir & Haftara</title>
     <style>
         :root { --primary: #2c3e50; --accent: #d4af37; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; padding: 0; direction: rtl; }
-        .header { background: var(--primary); color: white; padding: 15px; text-align: center; direction: ltr; }
-        .container { max-width: 900px; margin: 20px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; }
+        .header { background: var(--primary); color: white; padding: 15px; text-align: center; position: relative; }
+        
+        /* Sélecteur de langue */
+        .lang-switch { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); display: flex; gap: 5px; }
+        .lang-btn { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-size: 14px; }
+        .lang-btn.active { background: white; color: var(--primary); font-weight: bold; }
+
+        .container { max-width: 900px; margin: 20px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); flex-grow: 1; }
         
         .controls-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 25px; margin-bottom: 30px; direction: ltr; }
         select { padding: 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 16px; min-width: 250px; cursor: pointer; background: #fff; }
@@ -31,31 +36,37 @@
         audio { width: 100%; height: 50px; }
         #audio-status { margin-top: 10px; font-size: 14px; font-weight: 500; color: #666; }
 
-        .hebrew-text { font-size: 32px; line-height: 2.2; margin-top: 20px; text-align: right; font-family: "Times New Roman", serif; white-space: pre-wrap; }
+        .hebrew-text { font-size: 32px; line-height: 2.2; margin-top: 20px; text-align: right; font-family: "Times New Roman", serif; white-space: pre-wrap; direction: rtl; }
         .hidden { display: none; }
-        h2 { direction: ltr; text-align: right; color: var(--accent); border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-top: 40px; }
-        .loader-spinner { text-align: center; color: #7f8c8d; font-style: italic; direction: ltr; padding: 20px; }
+        h2 { text-align: right; color: var(--accent); border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin-top: 40px; direction: ltr; }
+        .loader-spinner { text-align: center; color: #7f8c8d; font-style: italic; padding: 20px; }
+
+        footer { text-align: center; padding: 20px; color: #7f8c8d; font-size: 14px; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1 id="display-title">Maftir & Haftara</h1>
+    <div class="lang-switch">
+        <button class="lang-btn active" onclick="setLanguage('fr')">FR</button>
+        <button class="lang-btn" onclick="setLanguage('he')">עב</button>
+    </div>
+    <h1 id="ui-title">Maftir & Haftara</h1>
 </div>
 
 <div class="container">
     <div class="controls-row">
         <select id="parasha-select" onchange="manualSelect()">
-            <option value="">-- Sélectionner une Parasha --</option>
+            <option value="" id="ui-select-placeholder">-- Sélectionner une Parasha --</option>
         </select>
 
         <div class="switch-container">
-            <span>H'oul</span>
+            <span id="ui-houl">H'oul</span>
             <label class="switch">
                 <input type="checkbox" id="israel-toggle" checked onchange="manualSelect()">
                 <span class="slider"></span>
             </label>
-            <span>Israël</span>
+            <span id="ui-israel">Israël</span>
         </div>
 
         <button id="mode-btn" class="btn" onclick="toggleStam()">Mode Torah</button>
@@ -66,7 +77,7 @@
         <div id="audio-status"></div>
     </div>
 
-    <div id="loader" class="loader-spinner hidden">Chargement du texte ...</div>
+    <div id="loader" class="loader-spinner hidden"></div>
 
     <div id="content" class="hidden">
         <div id="maftir-section">
@@ -80,17 +91,51 @@
     </div>
 </div>
 
+<footer>
+    © Greg u.
+</footer>
+
 <script>
     const audioBase = "https://ohaveitsion.github.io/Jerusalem/Audios/";
     let isStam = false;
     let currentParasha = "";
+    let currentLang = 'fr';
 
-    const torahBooks = {
-        "Bereshit (Genèse)": ["Bereshit", "Noach", "Lech-Lecha", "Vayera", "Chayei Sara", "Toldot", "Vayetzei", "Vayishlach", "Vayeshev", "Miketz", "Vayigash", "Vayechi"],
-        "Shemot (Exode)": ["Shemot", "Vaera", "Bo", "Beshalach", "Yitro", "Mishpatim", "Terumah", "Tetzaveh", "Ki Tissa", "Vayakhel", "Pekudei"],
-        "Vayikra (Lévitique)": ["Vayikra", "Tzav", "Shmini", "Tazria", "Metzora", "Achrei Mot", "Kedoshim", "Emor", "Behar", "Bechukotai"],
-        "Bemidbar (Nombres)": ["Bemidbar", "Nasso", "Beha'alotcha", "Shelach", "Korach", "Chukat", "Balak", "Pinchas", "Matot", "Masei"],
-        "Devarim (Deutéronome)": ["Devarim", "Vaetchanan", "Eikev", "Re'eh", "Shoftim", "Ki Teitzei", "Ki Tavo", "Nitzavim", "Vayeilech", "Ha'Azinu", "V'Zot HaBerachah"]
+    const translations = {
+        fr: {
+            title: "Maftir & Haftara",
+            placeholder: "-- Sélectionner une Parasha --",
+            houl: "H'oul",
+            israel: "Israël",
+            modeTorah: "Mode Torah",
+            loading: "Chargement du texte ...",
+            searching: "Recherche de l'enregistrement...",
+            coming: "Audio à venir ...",
+            error: "Erreur de connexion.",
+            audioErr: "Erreur audio.",
+            books: ["Genèse", "Exode", "Lévitique", "Nombres", "Deutéronome"]
+        },
+        he: {
+            title: "מפטir והפטרה",
+            placeholder: "-- בחר פרשה --",
+            houl: "חו''ל",
+            israel: "ישראל",
+            modeTorah: "מצב תורה",
+            loading: "טוען טקסט...",
+            searching: "מחפש הקלטה...",
+            coming: "אודיו בקרוב...",
+            error: "שגיאת התחברות.",
+            audioErr: "שגיאת אודיו.",
+            books: ["בראשית", "שמות", "ויקרא", "במדבר", "דברים"]
+        }
+    };
+
+    const torahBooksData = {
+        "Bereshit": ["Bereshit", "Noach", "Lech-Lecha", "Vayera", "Chayei Sara", "Toldot", "Vayetzei", "Vayishlach", "Vayeshev", "Miketz", "Vayigash", "Vayechi"],
+        "Shemot": ["Shemot", "Vaera", "Bo", "Beshalach", "Yitro", "Mishpatim", "Terumah", "Tetzaveh", "Ki Tissa", "Vayakhel", "Pekudei"],
+        "Vayikra": ["Vayikra", "Tzav", "Shmini", "Tazria", "Metzora", "Achrei Mot", "Kedoshim", "Emor", "Behar", "Bechukotai"],
+        "Bemidbar": ["Bemidbar", "Nasso", "Beha'alotcha", "Shelach", "Korach", "Chukat", "Balak", "Pinchas", "Matot", "Masei"],
+        "Devarim": ["Devarim", "Vaetchanan", "Eikev", "Re'eh", "Shoftim", "Ki Teitzei", "Ki Tavo", "Nitzavim", "Vayeilech", "Ha'Azinu", "V'Zot HaBerachah"]
     };
 
     const maftirRefs = {
@@ -101,19 +146,40 @@
         "Devarim": "Deuteronomy 3:18-3:22", "Vaetchanan": "Deuteronomy 7:7-7:11", "Eikev": "Deuteronomy 11:22-11:25", "Re'eh": "Deuteronomy 16:13-16:17", "Shoftim": "Deuteronomy 21:7-21:9", "Ki Teitzei": "Deuteronomy 25:17-25:19", "Ki Tavo": "Deuteronomy 29:6-29:8", "Nitzavim": "Deuteronomy 30:15-30:20", "Vayeilech": "Deuteronomy 31:28-31:30", "Ha'Azinu": "Deuteronomy 32:48-32:52", "V'Zot HaBerachah": "Deuteronomy 34:10-34:12"
     };
 
-    function init() {
+    function setLanguage(lang) {
+        currentLang = lang;
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.lang-btn[onclick="setLanguage('${lang}')"]`).classList.add('active');
+        
+        const t = translations[lang];
+        document.getElementById('ui-title').innerText = t.title;
+        document.getElementById('ui-select-placeholder').innerText = t.placeholder;
+        document.getElementById('ui-houl').innerText = t.houl;
+        document.getElementById('ui-israel').innerText = t.israel;
+        document.getElementById('mode-btn').innerText = t.modeTorah;
+        
+        initSelect();
+        if (currentParasha) loadTexts(currentParasha);
+    }
+
+    function initSelect() {
         const sel = document.getElementById('parasha-select');
-        for (const [bookName, parashiot] of Object.entries(torahBooks)) {
+        const savedVal = sel.value;
+        sel.innerHTML = `<option value="">${translations[currentLang].placeholder}</option>`;
+        
+        const bookKeys = Object.keys(torahBooksData);
+        bookKeys.forEach((key, index) => {
             const group = document.createElement('optgroup');
-            group.label = bookName;
-            parashiot.forEach(p => {
+            group.label = translations[currentLang].books[index];
+            torahBooksData[key].forEach(p => {
                 let opt = document.createElement('option');
                 opt.value = p;
                 opt.text = p;
                 group.appendChild(opt);
             });
             sel.appendChild(group);
-        }
+        });
+        sel.value = savedVal;
     }
 
     async function loadTexts(pName) {
@@ -121,7 +187,9 @@
         const isIsrael = document.getElementById('israel-toggle').checked ? 1 : 0;
         const loader = document.getElementById('loader');
         const content = document.getElementById('content');
+        const t = translations[currentLang];
         
+        loader.innerText = t.loading;
         loader.classList.remove('hidden');
         content.classList.add('hidden');
 
@@ -145,8 +213,7 @@
             handleAudio(pName);
 
         } catch (err) {
-            console.error(err);
-            loader.innerText = "Erreur de connexion aux textes sacrés.";
+            loader.innerText = t.error;
         }
     }
 
@@ -157,7 +224,6 @@
             if (isStam) txt = txt.replace(/[\u0591-\u05C7]/g, "");
             return txt;
         };
-
         document.getElementById('maftir-text').innerHTML = clean(mHe);
         document.getElementById('haftara-text').innerHTML = clean(hHe);
         document.getElementById('loader').classList.add('hidden');
@@ -168,21 +234,22 @@
         const zone = document.getElementById('audio-zone');
         const ctrl = document.getElementById('audio-ctrl');
         const status = document.getElementById('audio-status');
+        const t = translations[currentLang];
         const url = `${audioBase}${encodeURIComponent(name)}.mp3`;
 
         zone.classList.remove('hidden');
-        status.innerText = "Recherche de l'enregistrement...";
+        status.innerText = t.searching;
         ctrl.classList.add('hidden');
 
         fetch(url, { method: 'HEAD' }).then(res => {
             if (res.ok) {
                 ctrl.src = url;
                 ctrl.classList.remove('hidden');
-                status.innerText = ""; // Message retiré ici
+                status.innerText = "";
             } else {
-                status.innerText = "Audio à venir ...";
+                status.innerText = t.coming;
             }
-        }).catch(() => { status.innerText = "Erreur audio."; });
+        }).catch(() => { status.innerText = t.audioErr; });
     }
 
     function manualSelect() {
@@ -196,7 +263,7 @@
         if (currentParasha) loadTexts(currentParasha);
     }
 
-    window.onload = init;
+    window.onload = () => setLanguage('fr');
 </script>
 </body>
 </html>
