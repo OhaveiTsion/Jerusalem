@@ -16,12 +16,11 @@
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(26px); }
-        select, .btn { padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; cursor: pointer; }
-        /* Style pour la surbrillance de l'option sélectionnée */
+        select, .btn { padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; cursor: pointer; background: white; }
         select option:checked { background-color: var(--accent) !important; color: white; }
         .btn.active { background: var(--primary); color: white; }
         .hebrew-text { font-size: 28px; line-height: 2; margin-top: 15px; text-align: right; font-family: "Times New Roman", serif; }
-        .audio-player { background: #f9f9f9; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; direction: ltr; min-height: 50px; }
+        .audio-player { background: #f9f9f9; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; direction: ltr; min-height: 60px; display: flex; align-items: center; justify-content: center; }
         audio { width: 100%; }
         .hidden { display: none; }
         h2 { color: var(--accent); border-bottom: 2px solid #eee; padding-bottom: 5px; direction: ltr; text-align: right; }
@@ -35,9 +34,9 @@
 
 <div class="container">
     <div class="controls-row">
-        <select id="parasha-select" onchange="manualSelect()">
-            <option value="">-- Sélectionner --</option>
-        </select>
+        <!-- Suppression de l'option vide -->
+        <select id="parasha-select" onchange="manualSelect()"></select>
+        
         <div style="display:flex; align-items:center; gap:8px;">
             <span>H'oul</span>
             <label class="switch">
@@ -69,7 +68,6 @@
 </div>
 
 <script>
-    // Dictionnaire précis des versets Maftir
     const maftirRefs = {
         "Bereshit": "Genesis 6:5-6:8", "Noach": "Genesis 11:29-11:32", "Lech-Lecha": "Genesis 17:24-17:27", "Vayera": "Genesis 22:20-22:24", "Chayei Sara": "Genesis 25:16-25:18", "Toldot": "Genesis 28:5-28:9", "Vayetzei": "Genesis 31:55-32:3", "Vayishlach": "Genesis 36:40-36:43", "Vayeshev": "Genesis 40:20-40:23", "Miketz": "Genesis 44:14-44:17", "Vayigash": "Genesis 47:24-47:27", "Vayechi": "Genesis 50:23-50:26",
         "Shemot": "Exodus 5:22-6:1", "Vaera": "Exodus 9:30-9:35", "Bo": "Exodus 13:14-13:16", "Beshalach": "Exodus 17:14-17:16", "Yitro": "Exodus 20:19-20:23", "Mishpatim": "Exodus 24:15-24:18", "Terumah": "Exodus 27:17-27:19", "Tetzaveh": "Exodus 30:8-30:10", "Ki Tissa": "Exodus 34:30-34:35", "Vayakhel": "Exodus 38:18-38:20", "Pekudei": "Exodus 40:34-40:38",
@@ -87,69 +85,66 @@
     };
 
     const nameMap = {
-        "Bereshit": "Bereshit", "Noach": "Noah", "Lech-Lecha": "Leh-Leha", "Vayera": "Vayera",
-        "Chayei Sara": "Hayei Sara", "Toldot": "Toldot", "Vayetzei": "Vayetzei", "Vayishlach": "Vayishlah",
-        "Vayeshev": "Vayeshev", "Miketz": "Miketz", "Vayigash": "Vayigash", "Vayechi": "Vayehi",
-        "Shemot": "Shemot", "Vaera": "Vaera", "Bo": "Bo", "Beshalach": "Beshalah", "Yitro": "Yitro",
-        "Mishpatim": "Mishpatim", "Terumah": "Terumah", "Tetzaveh": "Tetzaveh", "Ki Tissa": "Ki Tissa",
-        "Vayakhel": "Vayakhel", "Pekudei": "Pekudei", "Vayikra": "Vayikra", "Tzav": "Tzav",
-        "Shmini": "Shmini", "Tazria": "Tazria", "Metzora": "Metzora", "Achrei Mot": "Ahrei Mot",
-        "Kedoshim": "Kedoshim", "Emor": "Emor", "Behar": "Behar", "Bechukotai": "Behoukotai",
-        "Bemidbar": "Bemidbar", "Nasso": "Nasso", "Beha'alotcha": "Behaalotha", "Shelach": "Shelah",
-        "Korach": "Korah", "Chukat": "Houkat", "Balak": "Balak", "Pinchas": "Pinhas", "Matot": "Matot",
-        "Masei": "Masei", "Devarim": "Devarim", "Vaetchanan": "Vaethanan", "Eikev": "Eikev",
-        "Re'eh": "Reeh", "Shoftim": "Shoftim", "Ki Teitzei": "Ki-Teitzei", "Ki Tavo": "Ki-Tavo",
-        "Nitzavim": "Nitzavim", "Vayeilech": "Vayeilech", "Ha'Azinu": "Haazinou", "V'Zot HaBerachah": "Vezot-Haberaha"
+        "Bereshit": "Bereshit", "Noach": "Noah", "Lech-Lecha": "Leh-Leha", "Vayera": "Vayera", "Chayei Sara": "Hayei Sara", "Toldot": "Toldot", "Vayetzei": "Vayetzei", "Vayishlach": "Vayishlah", "Vayeshev": "Vayeshev", "Miketz": "Miketz", "Vayigash": "Vayigash", "Vayechi": "Vayehi", "Shemot": "Shemot", "Vaera": "Vaera", "Bo": "Bo", "Beshalach": "Beshalah", "Yitro": "Yitro", "Mishpatim": "Mishpatim", "Terumah": "Terumah", "Tetzaveh": "Tetzaveh", "Ki Tissa": "Ki Tissa", "Vayakhel": "Vayakhel", "Pekudei": "Pekudei", "Vayikra": "Vayikra", "Tzav": "Tzav", "Shmini": "Shmini", "Tazria": "Tazria", "Metzora": "Metzora", "Achrei Mot": "Ahrei Mot", "Kedoshim": "Kedoshim", "Emor": "Emor", "Behar": "Behar", "Bechukotai": "Behoukotai", "Bemidbar": "Bemidbar", "Nasso": "Nasso", "Beha'alotcha": "Behaalotha", "Shelach": "Shelah", "Korach": "Korah", "Chukat": "Houkat", "Balak": "Balak", "Pinchas": "Pinhas", "Matot": "Matot", "Masei": "Masei", "Devarim": "Devarim", "Vaetchanan": "Vaethanan", "Eikev": "Eikev", "Re'eh": "Reeh", "Shoftim": "Shoftim", "Ki Teitzei": "Ki-Teitzei", "Ki Tavo": "Ki-Tavo", "Nitzavim": "Nitzavim", "Vayeilech": "Vayeilech", "Ha'Azinu": "Haazinou", "V'Zot HaBerachah": "Vezot-Haberaha"
     };
 
     let isStam = false;
     let currentEnName = "";
     const audioPath = "https://ohaveitsion.github.io/Jerusalem/Audios/";
 
-    const select = document.getElementById('parasha-select');
-    for (const [book, parashiot] of Object.entries(torahBooks)) {
-        let group = document.createElement('optgroup');
-        group.label = book;
-        parashiot.forEach(en => {
-            let opt = document.createElement('option');
-            opt.value = en;
-            opt.text = nameMap[en];
-            group.appendChild(opt);
-        });
-        select.add(group);
+    // Construction initiale du menu
+    function buildMenu() {
+        const select = document.getElementById('parasha-select');
+        select.innerHTML = "";
+        for (const [book, parashiot] of Object.entries(torahBooks)) {
+            let group = document.createElement('optgroup');
+            group.label = book;
+            parashiot.forEach(en => {
+                let opt = document.createElement('option');
+                opt.value = en;
+                opt.text = nameMap[en];
+                group.appendChild(opt);
+            });
+            select.add(group);
+        }
     }
 
     async function initWeek() {
         const isIsrael = document.getElementById('israel-toggle').checked;
+        buildMenu();
+        
         try {
+            // Récupère la parasha du prochain Chabbat
             const res = await fetch(`https://www.hebcal.com/hebcal?v=1&cfg=json&israel=${isIsrael?'on':'off'}&maj=on&year=now&month=now`);
             const data = await res.json();
-            const items = data.items || [];
-            const p = items.find(i => i.category === "parashat");
+            const p = data.items.find(i => i.category === "parashat");
+            
             if(p) {
-                // Hebcal peut renvoyer "Parashat Emor" ou "Parashat Behar-Bechukotai"
                 let rawName = p.title.replace("Parashat ", "");
-                // On gère les doubles parashiot en prenant la première pour la recherche dans notre dictionnaire
                 currentEnName = rawName.split('-')[0].trim();
                 
                 const select = document.getElementById('parasha-select');
-                select.value = currentEnName;
-                loadData(currentEnName);
+                select.value = currentEnName; // Sélectionne visuellement
+                loadData(currentEnName); // Charge les données
+            } else {
+                // Si rien n'est trouvé pour ce mois, on prend la première de la liste
+                loadData(select.value);
             }
-        } catch (e) { 
-            console.error("Hebcal Error:", e);
-            document.getElementById('display-title').innerText = "Sélectionnez une Parasha";
+        } catch (e) {
+            console.error(e);
+            loadData(select.value); // Fallback
         }
     }
 
     function manualSelect() {
-        const sel = document.getElementById('parasha-select').value;
-        if(sel) loadData(sel);
+        loadData(document.getElementById('parasha-select').value);
     }
 
     async function loadData(enName) {
+        if(!enName) return;
         currentEnName = enName;
         const frName = nameMap[enName] || enName;
+        
         document.getElementById('display-title').innerText = "Parashat " + frName;
         document.getElementById('loader').classList.remove('hidden');
         document.getElementById('content').classList.add('hidden');
@@ -158,7 +153,6 @@
             const cal = await fetch(`https://www.sefaria.org/api/calendars?timezone=Asia/Jerusalem`).then(r => r.json());
             const parashaObj = cal.calendar_items.find(i => i.title.en.includes(enName));
             
-            // On utilise impérativement le dictionnaire maftirRefs fourni
             const maftirRef = maftirRefs[enName];
             const haftaraRef = parashaObj ? parashaObj.subs[0] : null;
 
@@ -170,7 +164,7 @@
             display(mRes.he, hRes ? hRes.he : null);
             checkAudio(frName);
         } catch (e) { 
-            document.getElementById('loader').innerText = "Erreur de chargement des textes.";
+            document.getElementById('loader').innerText = "Erreur de chargement.";
         }
     }
 
@@ -201,7 +195,7 @@
         status.classList.remove('hidden');
         status.innerText = "Recherche audio...";
 
-        const img = new Image(); // Astuce pour vérifier l'existence sans charger tout le MP3 immédiatement
+        // Utilisation de fetch HEAD pour vérifier l'existence sans charger le fichier
         fetch(urlMp3, { method: 'HEAD' })
             .then(res => {
                 if (res.ok) {
@@ -220,11 +214,11 @@
     function toggleStam() {
         isStam = !isStam;
         document.getElementById('mode-btn').classList.toggle('active');
-        if(currentEnName) loadData(currentEnName);
+        loadData(currentEnName);
     }
 
-    // Lancement
-    document.addEventListener("DOMContentLoaded", initWeek);
+    // Démarrage immédiat
+    initWeek();
 </script>
 </body>
 </html>
