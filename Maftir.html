@@ -6,29 +6,23 @@
     <title>Révision Maftir - Jérusalem</title>
     <style>
         :root { --primary: #2c3e50; --accent: #d4af37; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; direction: rtl; }
-        .container { max-width: 800px; margin: 20px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; padding: 0; direction: rtl; }
         .header { background: var(--primary); color: white; padding: 15px; text-align: center; direction: ltr; }
-        
+        .container { max-width: 800px; margin: 20px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .controls-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 20px; margin: 20px 0; direction: ltr; }
-        
-        /* Toggle Switch */
         .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; }
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(26px); }
-
-        select, .btn { padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
-        .btn { cursor: pointer; background: #eee; }
+        select, .btn { padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; cursor: pointer; }
         .btn.active { background: var(--primary); color: white; }
-        
-        .hebrew-text { font-size: 28px; line-height: 2; margin-top: 15px; text-align: right; font-family: "Times New Roman", serif; font-weight: 500; }
+        .hebrew-text { font-size: 28px; line-height: 2; margin-top: 15px; text-align: right; font-family: "Times New Roman", serif; }
         .audio-player { background: #f9f9f9; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; direction: ltr; }
         audio { width: 100%; }
         .hidden { display: none; }
-        h2 { color: var(--accent); border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        h2 { color: var(--accent); border-bottom: 2px solid #eee; padding-bottom: 5px; direction: ltr; text-align: right; }
     </style>
 </head>
 <body>
@@ -39,12 +33,9 @@
 
 <div class="container">
     <div class="controls-row">
-        <!-- Menu de sélection -->
         <select id="parasha-select" onchange="manualSelect()">
             <option value="">-- Choisir une Parasha --</option>
         </select>
-
-        <!-- Mode Israël/Houl -->
         <div style="display:flex; align-items:center; gap:8px;">
             <span>H'oul</span>
             <label class="switch">
@@ -53,7 +44,6 @@
             </label>
             <span>Israël</span>
         </div>
-
         <button id="mode-btn" class="btn" onclick="toggleStam()">Mode Torah</button>
     </div>
 
@@ -62,7 +52,7 @@
         <audio id="audio-ctrl" controls class="hidden"></audio>
     </div>
 
-    <div id="loader" style="text-align:center;">Synchronisation Sefaria...</div>
+    <div id="loader" style="text-align:center; padding: 20px;">Synchronisation Sefaria...</div>
     
     <div id="content" class="hidden">
         <h2>Maftir</h2>
@@ -73,7 +63,6 @@
 </div>
 
 <script>
-    // Mapping complet basé sur ton image
     const nameMap = {
         "Bereshit": "Bereshit", "Noach": "Noah", "Lech-Lecha": "Leh-Leha", "Vayera": "Vayera",
         "Chayei Sara": "Hayei Sara", "Toldot": "Toldot", "Vayetzei": "Vayetzei", "Vayishlach": "Vayishlah",
@@ -94,9 +83,9 @@
     let currentEnName = "";
     const audioPath = "https://ohaveitsion.github.io/Jerusalem/Audios/";
 
-    // Remplir le menu déroulant au démarrage
+    // Init menu
     const select = document.getElementById('parasha-select');
-    Object.keys(nameMap).forEach(en => {
+    Object.keys(nameMap).sort().forEach(en => {
         let opt = document.createElement('option');
         opt.value = en;
         opt.text = nameMap[en];
@@ -129,30 +118,32 @@
         document.getElementById('content').classList.add('hidden');
 
         try {
-            // Récupération des références via l'API Calendars de Sefaria
-            const cal = await fetch(`https://www.sefaria.org/api/calendars`).then(r => r.json());
-            const item = cal.calendar_items.find(i => i.title.en.includes(enName)) || cal.calendar_items[0];
+            // Étape 1 : Obtenir les références (Maftir & Haftara)
+            const cal = await fetch(`https://www.sefaria.org/api/calendars?timezone=Asia/Jerusalem`).then(r => r.json());
+            const parashaObj = cal.calendar_items.find(i => i.title.en.includes(enName));
             
-            // On cible uniquement le Maftir (dernière Aliyah)
-            const maftirRef = item.extraDetails.aliyah[6]; 
-            const haftaraRef = item.subs[0];
+            // Étape 2 : Si on ne trouve pas via le calendrier, on construit la requête texte directe
+            // On récupère le texte complet de la parasha pour en extraire le Maftir
+            const maftirRef = parashaObj ? parashaObj.extraDetails.aliyah[6] : enName;
+            const haftaraRef = parashaObj ? parashaObj.subs[0] : null;
 
-            const [mTxt, hTxt] = await Promise.all([
+            const [mRes, hRes] = await Promise.all([
                 fetch(`https://www.sefaria.org/api/texts/${maftirRef}?context=0`).then(r => r.json()),
-                fetch(`https://www.sefaria.org/api/texts/${haftaraRef}?context=0`).then(r => r.json())
+                haftaraRef ? fetch(`https://www.sefaria.org/api/texts/${haftaraRef}?context=0`).then(r => r.json()) : {he: "Haftara non disponible via API"}
             ]);
 
-            display(mTxt.he, hTxt.he);
+            display(mRes.he, hRes.he);
             checkAudio(frName);
         } catch (e) { 
-            document.getElementById('loader').innerText = "Erreur de chargement des textes.";
+            console.error(e);
+            document.getElementById('loader').innerText = "Erreur Sefaria (Vérifiez le nom de la Parasha).";
         }
     }
 
     function display(m, h) {
         const clean = (t) => {
             let txt = Array.isArray(t) ? t.join(' ') : t;
-            if(isStam) txt = txt.replace(/[\u0591-\u05C7]/g, ""); // Supprime voyelles et taamim
+            if(isStam) txt = txt.replace(/[\u0591-\u05C7]/g, "");
             return txt;
         };
         document.getElementById('maftir-text').innerHTML = clean(m);
@@ -164,33 +155,22 @@
     function checkAudio(name) {
         const ctrl = document.getElementById('audio-ctrl');
         const status = document.getElementById('audio-status');
-        const urlMp3 = `${audioPath}${name}.mp3`;
-        const urlOgg = `${audioPath}${name}.ogg`;
-
-        ctrl.classList.add('hidden');
-        status.innerText = "Vérification de l'audio...";
-
-        const testAudio = new Audio();
-        testAudio.src = urlMp3;
+        const urlMp3 = `${audioPath}${encodeURIComponent(name)}.mp3`;
         
-        testAudio.oncanplaythrough = () => {
+        ctrl.classList.add('hidden');
+        status.innerText = "Recherche audio...";
+
+        // Test direct avec l'élément audio
+        const test = new Audio(urlMp3);
+        test.addEventListener('canplaythrough', () => {
             ctrl.src = urlMp3;
             ctrl.classList.remove('hidden');
             status.classList.add('hidden');
-        };
+        }, { once: true });
 
-        testAudio.onerror = () => {
-            const testOgg = new Audio();
-            testOgg.src = urlOgg;
-            testOgg.oncanplaythrough = () => {
-                ctrl.src = urlOgg;
-                ctrl.classList.remove('hidden');
-                status.classList.add('hidden');
-            };
-            testOgg.onerror = () => {
-                status.innerText = "(Audio à venir ...)";
-            };
-        };
+        test.addEventListener('error', () => {
+            status.innerText = "(Audio à venir ...)";
+        }, { once: true });
     }
 
     function toggleStam() {
