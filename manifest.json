@@ -1,0 +1,22 @@
+{
+  "name": "Ohavei Tsion Jerusalem",
+  "short_name": "OhaveiTsion",
+  "description": "Horaires et annonces de la synagogue Ohavei Tsion",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f34a1",
+  "theme_color": "#0f34a1",
+  "icons": [
+    {
+      "src": "https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
