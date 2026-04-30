@@ -17,28 +17,29 @@
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(26px); }
         select, .btn { padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; cursor: pointer; background: white; }
-        select option:checked { background-color: var(--accent) !important; color: white; }
         .btn.active { background: var(--primary); color: white; }
         .hebrew-text { font-size: 28px; line-height: 2; margin-top: 15px; text-align: right; font-family: "Times New Roman", serif; }
         .audio-player { background: #f9f9f9; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; direction: ltr; min-height: 60px; display: flex; align-items: center; justify-content: center; }
         audio { width: 100%; }
         .hidden { display: none; }
-        h2 { color: var(--accent); border-bottom: 2px solid #eee; padding-bottom: 5px; direction: ltr; text-align: right; }
+        .welcome-msg { text-align: center; color: #7f8c8d; padding: 40px; direction: ltr; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1 id="display-title">Chargement...</h1>
+    <h1 id="display-title">Révision Maftir</h1>
 </div>
 
 <div class="container">
     <div class="controls-row">
-        <select id="parasha-select" onchange="manualSelect()"></select>
+        <select id="parasha-select" onchange="manualSelect()">
+            <option value="">-- Sélectionner --</option>
+        </select>
         <div style="display:flex; align-items:center; gap:8px;">
             <span>H'oul</span>
             <label class="switch">
-                <input type="checkbox" id="israel-toggle" checked onchange="initWeek()">
+                <input type="checkbox" id="israel-toggle" checked onchange="buildMenu()">
                 <span class="slider"></span>
             </label>
             <span>Israël</span>
@@ -46,20 +47,25 @@
         <button id="mode-btn" class="btn" onclick="toggleStam()">Mode Torah</button>
     </div>
 
-    <div class="audio-player">
+    <div id="audio-zone" class="audio-player hidden">
         <div id="audio-status">Recherche audio...</div>
         <audio id="audio-ctrl" controls class="hidden"></audio>
     </div>
 
-    <div id="loader" style="text-align:center; padding: 20px;">Synchronisation Sefaria...</div>
+    <div id="welcome-screen" class="welcome-msg">
+        <h3>Bienvenue</h3>
+        <p>Veuillez sélectionner une Parasha dans la liste pour afficher le Maftir et la Haftara.</p>
+    </div>
+
+    <div id="loader" class="hidden" style="text-align:center; padding: 20px;">Synchronisation Sefaria...</div>
     
     <div id="content" class="hidden">
         <div id="maftir-section">
-            <h2>Maftir</h2>
+            <h2 style="direction: ltr; text-align: right; color: var(--accent);">Maftir</h2>
             <div id="maftir-text" class="hebrew-text"></div>
         </div>
         <div id="haftara-section" style="margin-top:40px;">
-            <h2>Haftara</h2>
+            <h2 style="direction: ltr; text-align: right; color: var(--accent);">Haftara</h2>
             <div id="haftara-text" class="hebrew-text"></div>
         </div>
     </div>
@@ -92,74 +98,67 @@
 
     function buildMenu() {
         const select = document.getElementById('parasha-select');
-        select.innerHTML = "";
+        select.innerHTML = '<option value="">-- Sélectionner --</option>';
         for (const [book, parashiot] of Object.entries(torahBooks)) {
             let group = document.createElement('optgroup');
             group.label = book;
             parashiot.forEach(en => {
                 let opt = document.createElement('option');
                 opt.value = en;
-                opt.text = nameMap[en];
+                opt.text = nameMap[en] || en;
                 group.appendChild(opt);
             });
             select.add(group);
         }
     }
 
-    async function initWeek() {
-        const isIsrael = document.getElementById('israel-toggle').checked;
-        buildMenu();
-        
-        try {
-            const res = await fetch(`https://www.hebcal.com/hebcal?v=1&cfg=json&israel=${isIsrael?'on':'off'}&maj=on&year=now&month=now`);
-            const data = await res.json();
-            const p = data.items.find(i => i.category === "parashat");
-            
-            if(p) {
-                let rawName = p.title.replace("Parashat ", "");
-                currentEnName = rawName.split('-')[0].trim();
-                const select = document.getElementById('parasha-select');
-                select.value = currentEnName;
-                await loadData(currentEnName);
-            } else {
-                await loadData(document.getElementById('parasha-select').value);
-            }
-        } catch (e) {
-            console.error("Hebcal error:", e);
-            await loadData(document.getElementById('parasha-select').value);
+    function manualSelect() {
+        const val = document.getElementById('parasha-select').value;
+        if(val) {
+            document.getElementById('welcome-screen').classList.add('hidden');
+            loadData(val);
+        } else {
+            resetView();
         }
     }
 
-    function manualSelect() {
-        loadData(document.getElementById('parasha-select').value);
+    function resetView() {
+        document.getElementById('welcome-screen').classList.remove('hidden');
+        document.getElementById('content').classList.add('hidden');
+        document.getElementById('audio-zone').classList.add('hidden');
+        document.getElementById('display-title').innerText = "Révision Maftir";
     }
 
     async function loadData(enName) {
-        if(!enName) return;
         currentEnName = enName;
         const frName = nameMap[enName] || enName;
         
         document.getElementById('display-title').innerText = "Parashat " + frName;
         document.getElementById('loader').classList.remove('hidden');
         document.getElementById('content').classList.add('hidden');
+        document.getElementById('audio-zone').classList.remove('hidden');
 
         try {
             const cal = await fetch(`https://www.sefaria.org/api/calendars?timezone=Asia/Jerusalem`).then(r => r.json());
-            const parashaObj = cal.calendar_items.find(i => i.title.en.includes(enName));
+            
+            const parashaObj = cal.calendar_items.find(i => 
+                i.title.en.includes(enName) || 
+                (enName === "Achrei Mot" && i.title.en.includes("Ahrei"))
+            );
             
             const maftirRef = maftirRefs[enName];
             const haftaraRef = parashaObj ? parashaObj.subs[0] : null;
 
             const [mRes, hRes] = await Promise.all([
                 fetch(`https://www.sefaria.org/api/texts/${maftirRef}?context=0`).then(r => r.json()),
-                haftaraRef ? fetch(`https://www.sefaria.org/api/texts/${haftaraRef}?context=0`).then(r => r.json()) : null
+                haftaraRef ? fetch(`https://www.sefaria.org/api/texts/${haftaraRef}?context=0`).then(r => r.json()) : Promise.resolve(null)
             ]);
 
             display(mRes.he, hRes ? hRes.he : null);
             checkAudio(frName);
         } catch (e) { 
-            console.error("Sefaria error:", e);
-            document.getElementById('loader').innerText = "Erreur de chargement des textes.";
+            console.error(e);
+            document.getElementById('loader').innerText = "Erreur de chargement.";
         }
     }
 
@@ -171,12 +170,7 @@
             return txt;
         };
         document.getElementById('maftir-text').innerHTML = clean(m);
-        if (h) {
-            document.getElementById('haftara-section').classList.remove('hidden');
-            document.getElementById('haftara-text').innerHTML = clean(h);
-        } else {
-            document.getElementById('haftara-section').classList.add('hidden');
-        }
+        document.getElementById('haftara-text').innerHTML = h ? clean(h) : "Haftara non disponible.";
         document.getElementById('loader').classList.add('hidden');
         document.getElementById('content').classList.remove('hidden');
     }
@@ -190,28 +184,24 @@
         status.classList.remove('hidden');
         status.innerText = "Recherche audio...";
 
-        fetch(urlMp3, { method: 'HEAD' })
-            .then(res => {
-                if (res.ok) {
-                    ctrl.src = urlMp3;
-                    ctrl.classList.remove('hidden');
-                    status.classList.add('hidden');
-                } else {
-                    status.innerText = "Audio a venir ...";
-                }
-            })
-            .catch(() => {
-                status.innerText = "Audio a venir ...";
-            });
+        fetch(urlMp3, { method: 'HEAD' }).then(res => {
+            if (res.ok) {
+                ctrl.src = urlMp3;
+                ctrl.classList.remove('hidden');
+                status.classList.add('hidden');
+            } else {
+                status.innerText = "Audio non disponible pour cette parasha.";
+            }
+        }).catch(() => { status.innerText = "Erreur audio."; });
     }
 
     function toggleStam() {
         isStam = !isStam;
         document.getElementById('mode-btn').classList.toggle('active');
-        loadData(currentEnName);
+        if(currentEnName) loadData(currentEnName);
     }
 
-    window.onload = initWeek;
+    window.onload = buildMenu;
 </script>
 </body>
 </html>
