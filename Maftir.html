@@ -34,7 +34,7 @@
 <div class="container">
     <div class="controls-row">
         <select id="parasha-select" onchange="manualSelect()">
-            <option value="">-- Choisir une Parasha --</option>
+            <option value="">-- Sélectionner --</option>
         </select>
         <div style="display:flex; align-items:center; gap:8px;">
             <span>H'oul</span>
@@ -55,14 +55,27 @@
     <div id="loader" style="text-align:center; padding: 20px;">Synchronisation Sefaria...</div>
     
     <div id="content" class="hidden">
-        <h2>Maftir</h2>
-        <div id="maftir-text" class="hebrew-text"></div>
-        <h2 style="margin-top:40px;">Haftara</h2>
-        <div id="haftara-text" class="hebrew-text"></div>
+        <div id="maftir-section">
+            <h2>Maftir</h2>
+            <div id="maftir-text" class="hebrew-text"></div>
+        </div>
+        <div id="haftara-section" style="margin-top:40px;">
+            <h2>Haftara</h2>
+            <div id="haftara-text" class="hebrew-text"></div>
+        </div>
     </div>
 </div>
 
 <script>
+    // Liste ordonnée selon la Torah
+    const torahOrder = [
+        "Bereshit", "Noach", "Lech-Lecha", "Vayera", "Chayei Sara", "Toldot", "Vayetzei", "Vayishlach", "Vayeshev", "Miketz", "Vayigash", "Vayechi",
+        "Shemot", "Vaera", "Bo", "Beshalach", "Yitro", "Mishpatim", "Terumah", "Tetzaveh", "Ki Tissa", "Vayakhel", "Pekudei",
+        "Vayikra", "Tzav", "Shmini", "Tazria", "Metzora", "Achrei Mot", "Kedoshim", "Emor", "Behar", "Bechukotai",
+        "Bemidbar", "Nasso", "Beha'alotcha", "Shelach", "Korach", "Chukat", "Balak", "Pinchas", "Matot", "Masei",
+        "Devarim", "Vaetchanan", "Eikev", "Re'eh", "Shoftim", "Ki Teitzei", "Ki Tavo", "Nitzavim", "Vayeilech", "Ha'Azinu", "V'Zot HaBerachah"
+    ];
+
     const nameMap = {
         "Bereshit": "Bereshit", "Noach": "Noah", "Lech-Lecha": "Leh-Leha", "Vayera": "Vayera",
         "Chayei Sara": "Hayei Sara", "Toldot": "Toldot", "Vayetzei": "Vayetzei", "Vayishlach": "Vayishlah",
@@ -83,9 +96,9 @@
     let currentEnName = "";
     const audioPath = "https://ohaveitsion.github.io/Jerusalem/Audios/";
 
-    // Init menu
+    // Menu dans l'ordre de la Torah
     const select = document.getElementById('parasha-select');
-    Object.keys(nameMap).sort().forEach(en => {
+    torahOrder.forEach(en => {
         let opt = document.createElement('option');
         opt.value = en;
         opt.text = nameMap[en];
@@ -118,36 +131,42 @@
         document.getElementById('content').classList.add('hidden');
 
         try {
-            // Étape 1 : Obtenir les références (Maftir & Haftara)
             const cal = await fetch(`https://www.sefaria.org/api/calendars?timezone=Asia/Jerusalem`).then(r => r.json());
             const parashaObj = cal.calendar_items.find(i => i.title.en.includes(enName));
             
-            // Étape 2 : Si on ne trouve pas via le calendrier, on construit la requête texte directe
-            // On récupère le texte complet de la parasha pour en extraire le Maftir
+            // Correction : On récupère l'aliyah complète (Maftir)
             const maftirRef = parashaObj ? parashaObj.extraDetails.aliyah[6] : enName;
             const haftaraRef = parashaObj ? parashaObj.subs[0] : null;
 
             const [mRes, hRes] = await Promise.all([
                 fetch(`https://www.sefaria.org/api/texts/${maftirRef}?context=0`).then(r => r.json()),
-                haftaraRef ? fetch(`https://www.sefaria.org/api/texts/${haftaraRef}?context=0`).then(r => r.json()) : {he: "Haftara non disponible via API"}
+                haftaraRef ? fetch(`https://www.sefaria.org/api/texts/${haftaraRef}?context=0`).then(r => r.json()) : null
             ]);
 
-            display(mRes.he, hRes.he);
+            display(mRes.he, hRes ? hRes.he : null);
             checkAudio(frName);
         } catch (e) { 
-            console.error(e);
-            document.getElementById('loader').innerText = "Erreur Sefaria (Vérifiez le nom de la Parasha).";
+            document.getElementById('loader').innerText = "Erreur de chargement.";
         }
     }
 
     function display(m, h) {
         const clean = (t) => {
+            if (!t) return "";
             let txt = Array.isArray(t) ? t.join(' ') : t;
-            if(isStam) txt = txt.replace(/[\u0591-\u05C7]/g, "");
+            if(isStam) txt = txt.replace(/[\u0591-\u05C7]/g, ""); 
             return txt;
         };
+
         document.getElementById('maftir-text').innerHTML = clean(m);
-        document.getElementById('haftara-text').innerHTML = clean(h);
+        
+        if (h) {
+            document.getElementById('haftara-section').classList.remove('hidden');
+            document.getElementById('haftara-text').innerHTML = clean(h);
+        } else {
+            document.getElementById('haftara-section').classList.add('hidden');
+        }
+
         document.getElementById('loader').classList.add('hidden');
         document.getElementById('content').classList.remove('hidden');
     }
@@ -160,7 +179,6 @@
         ctrl.classList.add('hidden');
         status.innerText = "Recherche audio...";
 
-        // Test direct avec l'élément audio
         const test = new Audio(urlMp3);
         test.addEventListener('canplaythrough', () => {
             ctrl.src = urlMp3;
@@ -179,7 +197,8 @@
         if(currentEnName) loadData(currentEnName);
     }
 
-    initWeek();
+    // Chargement automatique au démarrage
+    window.onload = initWeek;
 </script>
 </body>
 </html>
