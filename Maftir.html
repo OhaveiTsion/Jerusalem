@@ -66,6 +66,7 @@
 </div>
 
 <script>
+    // Configuration des références
     const maftirRefs = {
         "Bereshit": "Genesis 6:5-6:8", "Noach": "Genesis 11:29-11:32", "Lech-Lecha": "Genesis 17:24-17:27", "Vayera": "Genesis 22:20-22:24", "Chayei Sara": "Genesis 25:16-25:18", "Toldot": "Genesis 28:5-28:9", "Vayetzei": "Genesis 31:55-32:3", "Vayishlach": "Genesis 36:40-36:43", "Vayeshev": "Genesis 40:20-40:23", "Miketz": "Genesis 44:14-44:17", "Vayigash": "Genesis 47:24-47:27", "Vayechi": "Genesis 50:23-50:26",
         "Shemot": "Exodus 5:22-6:1", "Vaera": "Exodus 9:30-9:35", "Bo": "Exodus 13:14-13:16", "Beshalach": "Exodus 17:14-17:16", "Yitro": "Exodus 20:19-20:23", "Mishpatim": "Exodus 24:15-24:18", "Terumah": "Exodus 27:17-27:19", "Tetzaveh": "Exodus 30:8-30:10", "Ki Tissa": "Exodus 34:30-34:35", "Vayakhel": "Exodus 38:18-38:20", "Pekudei": "Exodus 40:34-40:38",
@@ -75,15 +76,15 @@
     };
 
     const torahBooks = {
+        "Vayikra (Lévitique)": ["Vayikra", "Tzav", "Shmini", "Tazria", "Metzora", "Achrei Mot", "Kedoshim", "Emor", "Behar", "Bechukotai"],
         "Bereshit (Genèse)": ["Bereshit", "Noach", "Lech-Lecha", "Vayera", "Chayei Sara", "Toldot", "Vayetzei", "Vayishlach", "Vayeshev", "Miketz", "Vayigash", "Vayechi"],
         "Shemot (Exode)": ["Shemot", "Vaera", "Bo", "Beshalach", "Yitro", "Mishpatim", "Terumah", "Tetzaveh", "Ki Tissa", "Vayakhel", "Pekudei"],
-        "Vayikra (Lévitique)": ["Vayikra", "Tzav", "Shmini", "Tazria", "Metzora", "Achrei Mot", "Kedoshim", "Emor", "Behar", "Bechukotai"],
         "Bemidbar (Nombres)": ["Bemidbar", "Nasso", "Beha'alotcha", "Shelach", "Korach", "Chukat", "Balak", "Pinchas", "Matot", "Masei"],
         "Devarim (Deutéronome)": ["Devarim", "Vaetchanan", "Eikev", "Re'eh", "Shoftim", "Ki Teitzei", "Ki Tavo", "Nitzavim", "Vayeilech", "Ha'Azinu", "V'Zot HaBerachah"]
     };
 
     const nameMap = {
-        "Bereshit": "Bereshit", "Noach": "Noah", "Lech-Lecha": "Leh-Leha", "Vayera": "Vayera", "Chayei Sara": "Hayei Sara", "Toldot": "Toldot", "Vayetzei": "Vayetzei", "Vayishlach": "Vayishlah", "Vayeshev": "Vayeshev", "Miketz": "Miketz", "Vayigash": "Vayigash", "Vayechi": "Vayehi", "Shemot": "Shemot", "Vaera": "Vaera", "Bo": "Bo", "Beshalach": "Beshalah", "Yitro": "Yitro", "Mishpatim": "Mishpatim", "Terumah": "Terumah", "Tetzaveh": "Tetzaveh", "Ki Tissa": "Ki Tissa", "Vayakhel": "Vayakhel", "Pekudei": "Pekudei", "Vayikra": "Vayikra", "Tzav": "Tzav", "Shmini": "Shmini", "Tazria": "Tazria", "Metzora": "Metzora", "Achrei Mot": "Ahrei Mot", "Kedoshim": "Kedoshim", "Emor": "Emor", "Behar": "Behar", "Bechukotai": "Behoukotai", "Bemidbar": "Bemidbar", "Nasso": "Nasso", "Beha'alotcha": "Behaalotha", "Shelach": "Shelah", "Korach": "Korah", "Chukat": "Houkat", "Balak": "Balak", "Pinchas": "Pinhas", "Matot": "Matot", "Masei": "Masei", "Devarim": "Devarim", "Vaetchanan": "Vaethanan", "Eikev": "Eikev", "Re'eh": "Reeh", "Shoftim": "Shoftim", "Ki Teitzei": "Ki-Teitzei", "Ki Tavo": "Ki-Tavo", "Nitzavim": "Nitzavim", "Vayeilech": "Vayeilech", "Ha'Azinu": "Haazinou", "V'Zot HaBerachah": "Vezot-Haberaha"
+        "Bereshit": "Bereshit", "Noach": "Noah", "Lech-Lecha": "Leh-Leha", "Vayera": "Vayera", "Chayei Sara": "Hayei Sara", "Toldot": "Toldot", "Vayetzei": "Vayetzei", "Vayishlach": "Vayishlah", "Vayeshev": "Vayeshev", "Miketz": "Miketz", "Vayigash": "Vayigash", "Vayechi": "Vayehi", "Shemot": "Shemot", "Vaera": "Vaera", "Bo": "Bo", "Beshalach": "Beshalah", "Yitro": "Yitro", "Mishpatim": "Mishpatim", "Terumah": "Terumah", "Tetzaveh": "Tetzaveh", "Ki Tissa": "Ki Tissa", "Vayakhel": "Vayakhel", "Pekudei": "Pekudei", "Vayikra": "Vayikra", "Tzav": "Tzav", "Shmini": "Shmini", "Tazria": "Tazria", "Metzora": "Metzora", "Ahrei Mot": "Ahrei Mot", "Achrei Mot": "Ahrei Mot", "Kedoshim": "Kedoshim", "Emor": "Emor", "Behar": "Behar", "Bechukotai": "Behoukotai", "Bemidbar": "Bemidbar", "Nasso": "Nasso", "Beha'alotcha": "Behaalotha", "Shelach": "Shelah", "Korach": "Korah", "Chukat": "Houkat", "Balak": "Balak", "Pinchas": "Pinhas", "Matot": "Matot", "Masei": "Masei", "Devarim": "Devarim", "Vaetchanan": "Vaethanan", "Eikev": "Eikev", "Re'eh": "Reeh", "Shoftim": "Shoftim", "Ki Teitzei": "Ki-Teitzei", "Ki Tavo": "Ki-Tavo", "Nitzavim": "Nitzavim", "Vayeilech": "Vayeilech", "Ha'Azinu": "Haazinou", "V'Zot HaBerachah": "Vezot-Haberaha"
     };
 
     let isStam = false;
@@ -92,7 +93,6 @@
 
     function buildMenu() {
         const select = document.getElementById('parasha-select');
-        if (!select) return;
         select.innerHTML = "";
         for (const [book, parashiot] of Object.entries(torahBooks)) {
             let group = document.createElement('optgroup');
@@ -113,24 +113,28 @@
         const isIsrael = document.getElementById('israel-toggle').checked;
         
         try {
-            const today = new Date().toISOString().split('T')[0];
+            const today = new Date();
+            // On cherche sur les 7 prochains jours pour être sûr de tomber sur le Chabbat
             const res = await fetch(`https://www.hebcal.com/hebcal?v=1&cfg=json&israel=${isIsrael?'on':'off'}&maj=on&year=now&month=now`);
             const data = await res.json();
             
-            // On cherche la prochaine parasha à partir d'aujourd'hui
-            const p = data.items.find(i => i.category === "parashat" && i.date >= today);
+            // On filtre pour trouver la parasha dont la date est aujourd'hui ou dans le futur proche
+            const p = data.items.find(i => i.category === "parashat" && new Date(i.date) >= today);
             
             if(p) {
                 let rawName = p.title.replace("Parashat ", "").split('-')[0].trim();
+                // Correction orthographe API vs notre Map
+                if(rawName === "Ahrei Mot") rawName = "Achrei Mot";
+
                 if (maftirRefs[rawName]) {
                     select.value = rawName;
                 }
             }
         } catch (e) {
-            console.error("Hebcal error:", e);
+            console.error("Erreur calendrier:", e);
         }
         
-        // On charge les données de la parasha sélectionnée (par défaut ou détectée)
+        // CHARGEMENT FINAL : seulement après avoir essayé de détecter la parasha
         loadData(select.value);
     }
 
@@ -149,8 +153,9 @@
 
         try {
             const maftirRef = maftirRefs[enName];
+            // On essaie de trouver la haftara correspondante sur Sefaria
             const cal = await fetch(`https://www.sefaria.org/api/calendars?timezone=Asia/Jerusalem`).then(r => r.json());
-            const parashaObj = cal.calendar_items.find(i => i.title.en.includes(enName));
+            const parashaObj = cal.calendar_items.find(i => i.title.en.includes(enName) || (enName === "Achrei Mot" && i.title.en.includes("Ahrei")));
             const haftaraRef = parashaObj ? parashaObj.subs[0] : null;
 
             const [mRes, hRes] = await Promise.all([
@@ -161,8 +166,7 @@
             display(mRes.he, hRes ? hRes.he : null);
             checkAudio(frName);
         } catch (e) { 
-            console.error("Sefaria error:", e);
-            document.getElementById('loader').innerText = "Erreur Sefaria.";
+            document.getElementById('loader').innerText = "Erreur de chargement.";
         }
     }
 
@@ -213,12 +217,8 @@
         loadData(currentEnName);
     }
 
-    // Lancement propre
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initWeek);
-    } else {
-        initWeek();
-    }
+    // On lance une seule fois au chargement
+    window.onload = initWeek;
 </script>
 </body>
 </html>
