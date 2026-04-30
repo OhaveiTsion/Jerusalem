@@ -23,7 +23,6 @@
         audio { width: 100%; }
         .hidden { display: none; }
         h2 { color: var(--accent); border-bottom: 2px solid #eee; padding-bottom: 5px; direction: ltr; text-align: right; }
-        optgroup { font-style: normal; font-weight: bold; color: var(--primary); }
     </style>
 </head>
 <body>
@@ -92,9 +91,6 @@
         "Nitzavim": "Nitzavim", "Vayeilech": "Vayeilech", "Ha'Azinu": "Haazinou", "V'Zot HaBerachah": "Vezot-Haberaha"
     };
 
-    // Ajustement manuel pour les Maftir trop longs sur Sefaria
-    const maftirFix = { "Emor": "Leviticus 24:21-23" };
-
     let isStam = false;
     let currentEnName = "";
     const audioPath = "https://ohaveitsion.github.io/Jerusalem/Audios/";
@@ -120,6 +116,7 @@
             const p = data.items.find(i => i.category === "parashat");
             if(p) {
                 currentEnName = p.title.replace("Parashat ", "");
+                document.getElementById('parasha-select').value = currentEnName;
                 loadData(currentEnName);
             }
         } catch (e) { console.error(e); }
@@ -141,8 +138,20 @@
             const cal = await fetch(`https://www.sefaria.org/api/calendars?timezone=Asia/Jerusalem`).then(r => r.json());
             const parashaObj = cal.calendar_items.find(i => i.title.en.includes(enName));
             
-            // Correction Maftir
-            let maftirRef = maftirFix[enName] || (parashaObj ? parashaObj.extraDetails.aliyah[6] : enName);
+            // Logique de Maftir dynamique : on prend les 3 derniers versets de la 7ème montée par défaut
+            let rawRef = parashaObj ? parashaObj.extraDetails.aliyah[6] : enName;
+            let maftirRef = rawRef;
+            
+            if (rawRef.includes("-")) {
+                const parts = rawRef.split("-");
+                const startRef = parts[0];
+                const endRef = parts[1];
+                const chapter = startRef.split(":")[0];
+                const endVerse = parseInt(endRef.includes(":") ? endRef.split(":")[1] : endRef);
+                const startVerse = Math.max(1, endVerse - 2); // Affiche 3 versets
+                maftirRef = `${chapter}:${startVerse}-${endVerse}`;
+            }
+
             const haftaraRef = parashaObj ? parashaObj.subs[0] : null;
 
             const [mRes, hRes] = await Promise.all([
@@ -182,12 +191,16 @@
         ctrl.classList.add('hidden');
         status.innerText = "Recherche audio...";
         const test = new Audio(urlMp3);
+        
         test.addEventListener('canplaythrough', () => {
             ctrl.src = urlMp3;
             ctrl.classList.remove('hidden');
             status.classList.add('hidden');
         }, { once: true });
-        test.addEventListener('error', () => { status.innerText = "(Audio à venir ...)"; }, { once: true });
+        
+        test.addEventListener('error', () => { 
+            status.innerText = "Audio a venir ..."; 
+        }, { once: true });
     }
 
     function toggleStam() {
@@ -196,7 +209,8 @@
         if(currentEnName) loadData(currentEnName);
     }
 
-    window.onload = () => { setTimeout(initWeek, 500); };
+    // Exécution immédiate
+    initWeek();
 </script>
 </body>
 </html>
