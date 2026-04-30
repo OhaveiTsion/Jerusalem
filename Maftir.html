@@ -23,6 +23,7 @@
         audio { width: 100%; }
         .hidden { display: none; }
         h2 { color: var(--accent); border-bottom: 2px solid #eee; padding-bottom: 5px; direction: ltr; text-align: right; }
+        optgroup { font-style: normal; font-weight: bold; color: var(--primary); }
     </style>
 </head>
 <body>
@@ -67,14 +68,13 @@
 </div>
 
 <script>
-    // Liste ordonnée selon la Torah
-    const torahOrder = [
-        "Bereshit", "Noach", "Lech-Lecha", "Vayera", "Chayei Sara", "Toldot", "Vayetzei", "Vayishlach", "Vayeshev", "Miketz", "Vayigash", "Vayechi",
-        "Shemot", "Vaera", "Bo", "Beshalach", "Yitro", "Mishpatim", "Terumah", "Tetzaveh", "Ki Tissa", "Vayakhel", "Pekudei",
-        "Vayikra", "Tzav", "Shmini", "Tazria", "Metzora", "Achrei Mot", "Kedoshim", "Emor", "Behar", "Bechukotai",
-        "Bemidbar", "Nasso", "Beha'alotcha", "Shelach", "Korach", "Chukat", "Balak", "Pinchas", "Matot", "Masei",
-        "Devarim", "Vaetchanan", "Eikev", "Re'eh", "Shoftim", "Ki Teitzei", "Ki Tavo", "Nitzavim", "Vayeilech", "Ha'Azinu", "V'Zot HaBerachah"
-    ];
+    const torahBooks = {
+        "Bereshit (Genèse)": ["Bereshit", "Noach", "Lech-Lecha", "Vayera", "Chayei Sara", "Toldot", "Vayetzei", "Vayishlach", "Vayeshev", "Miketz", "Vayigash", "Vayechi"],
+        "Shemot (Exode)": ["Shemot", "Vaera", "Bo", "Beshalach", "Yitro", "Mishpatim", "Terumah", "Tetzaveh", "Ki Tissa", "Vayakhel", "Pekudei"],
+        "Vayikra (Lévitique)": ["Vayikra", "Tzav", "Shmini", "Tazria", "Metzora", "Achrei Mot", "Kedoshim", "Emor", "Behar", "Bechukotai"],
+        "Bemidbar (Nombres)": ["Bemidbar", "Nasso", "Beha'alotcha", "Shelach", "Korach", "Chukat", "Balak", "Pinchas", "Matot", "Masei"],
+        "Devarim (Deutéronome)": ["Devarim", "Vaetchanan", "Eikev", "Re'eh", "Shoftim", "Ki Teitzei", "Ki Tavo", "Nitzavim", "Vayeilech", "Ha'Azinu", "V'Zot HaBerachah"]
+    };
 
     const nameMap = {
         "Bereshit": "Bereshit", "Noach": "Noah", "Lech-Lecha": "Leh-Leha", "Vayera": "Vayera",
@@ -92,18 +92,25 @@
         "Nitzavim": "Nitzavim", "Vayeilech": "Vayeilech", "Ha'Azinu": "Haazinou", "V'Zot HaBerachah": "Vezot-Haberaha"
     };
 
+    // Ajustement manuel pour les Maftir trop longs sur Sefaria
+    const maftirFix = { "Emor": "Leviticus 24:21-23" };
+
     let isStam = false;
     let currentEnName = "";
     const audioPath = "https://ohaveitsion.github.io/Jerusalem/Audios/";
 
-    // Menu dans l'ordre de la Torah
     const select = document.getElementById('parasha-select');
-    torahOrder.forEach(en => {
-        let opt = document.createElement('option');
-        opt.value = en;
-        opt.text = nameMap[en];
-        select.add(opt);
-    });
+    for (const [book, parashiot] of Object.entries(torahBooks)) {
+        let group = document.createElement('optgroup');
+        group.label = book;
+        parashiot.forEach(en => {
+            let opt = document.createElement('option');
+            opt.value = en;
+            opt.text = nameMap[en];
+            group.appendChild(opt);
+        });
+        select.add(group);
+    }
 
     async function initWeek() {
         const isIsrael = document.getElementById('israel-toggle').checked;
@@ -134,8 +141,8 @@
             const cal = await fetch(`https://www.sefaria.org/api/calendars?timezone=Asia/Jerusalem`).then(r => r.json());
             const parashaObj = cal.calendar_items.find(i => i.title.en.includes(enName));
             
-            // Correction : On récupère l'aliyah complète (Maftir)
-            const maftirRef = parashaObj ? parashaObj.extraDetails.aliyah[6] : enName;
+            // Correction Maftir
+            let maftirRef = maftirFix[enName] || (parashaObj ? parashaObj.extraDetails.aliyah[6] : enName);
             const haftaraRef = parashaObj ? parashaObj.subs[0] : null;
 
             const [mRes, hRes] = await Promise.all([
@@ -157,16 +164,13 @@
             if(isStam) txt = txt.replace(/[\u0591-\u05C7]/g, ""); 
             return txt;
         };
-
         document.getElementById('maftir-text').innerHTML = clean(m);
-        
         if (h) {
             document.getElementById('haftara-section').classList.remove('hidden');
             document.getElementById('haftara-text').innerHTML = clean(h);
         } else {
             document.getElementById('haftara-section').classList.add('hidden');
         }
-
         document.getElementById('loader').classList.add('hidden');
         document.getElementById('content').classList.remove('hidden');
     }
@@ -175,20 +179,15 @@
         const ctrl = document.getElementById('audio-ctrl');
         const status = document.getElementById('audio-status');
         const urlMp3 = `${audioPath}${encodeURIComponent(name)}.mp3`;
-        
         ctrl.classList.add('hidden');
         status.innerText = "Recherche audio...";
-
         const test = new Audio(urlMp3);
         test.addEventListener('canplaythrough', () => {
             ctrl.src = urlMp3;
             ctrl.classList.remove('hidden');
             status.classList.add('hidden');
         }, { once: true });
-
-        test.addEventListener('error', () => {
-            status.innerText = "(Audio à venir ...)";
-        }, { once: true });
+        test.addEventListener('error', () => { status.innerText = "(Audio à venir ...)"; }, { once: true });
     }
 
     function toggleStam() {
@@ -197,8 +196,7 @@
         if(currentEnName) loadData(currentEnName);
     }
 
-    // Chargement automatique au démarrage
-    window.onload = initWeek;
+    window.onload = () => { setTimeout(initWeek, 500); };
 </script>
 </body>
 </html>
