@@ -10,13 +10,13 @@
         .header { background: var(--primary); color: white; padding: 15px; text-align: center; direction: ltr; }
         .container { max-width: 900px; margin: 20px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
-        /* Contrôles */
         .controls-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 25px; margin-bottom: 30px; direction: ltr; }
-        select { padding: 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 16px; min-width: 220px; cursor: pointer; }
+        select { padding: 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 16px; min-width: 250px; cursor: pointer; background: #fff; }
+        optgroup { font-weight: bold; color: var(--primary); background: #f9f9f9; }
+        
         .btn { padding: 12px 20px; border-radius: 6px; border: 1px solid #ccc; font-size: 16px; cursor: pointer; background: white; transition: 0.3s; }
         .btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* Toggle Switch */
         .switch-container { display: flex; align-items: center; gap: 10px; font-weight: bold; color: #555; }
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -25,7 +25,6 @@
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(24px); }
 
-        /* Lecteur Audio Élargi */
         .audio-player { background: #fdfdfd; border: 2px solid #eee; padding: 25px; border-radius: 12px; text-align: center; margin-bottom: 30px; direction: ltr; }
         audio { width: 100%; height: 50px; }
         #audio-status { margin-top: 10px; font-size: 14px; font-weight: 500; color: #666; }
@@ -44,12 +43,10 @@
 
 <div class="container">
     <div class="controls-row">
-        <!-- Sélecteur Parasha -->
         <select id="parasha-select" onchange="manualSelect()">
             <option value="">-- Sélectionner une Parasha --</option>
         </select>
 
-        <!-- Toggle Israël / Houl -->
         <div class="switch-container">
             <span>H'oul</span>
             <label class="switch">
@@ -59,11 +56,9 @@
             <span>Israël</span>
         </div>
 
-        <!-- Mode Torah -->
         <button id="mode-btn" class="btn" onclick="toggleStam()">Mode Torah (Stam)</button>
     </div>
 
-    <!-- Zone Audio Élargie -->
     <div id="audio-zone" class="audio-player hidden">
         <audio id="audio-ctrl" controls controlsList="nodownload"></audio>
         <div id="audio-status"></div>
@@ -88,6 +83,14 @@
     let isStam = false;
     let currentParasha = "";
 
+    const torahBooks = {
+        "Bereshit (Genèse)": ["Bereshit", "Noach", "Lech-Lecha", "Vayera", "Chayei Sara", "Toldot", "Vayetzei", "Vayishlach", "Vayeshev", "Miketz", "Vayigash", "Vayechi"],
+        "Shemot (Exode)": ["Shemot", "Vaera", "Bo", "Beshalach", "Yitro", "Mishpatim", "Terumah", "Tetzaveh", "Ki Tissa", "Vayakhel", "Pekudei"],
+        "Vayikra (Lévitique)": ["Vayikra", "Tzav", "Shmini", "Tazria", "Metzora", "Achrei Mot", "Kedoshim", "Emor", "Behar", "Bechukotai"],
+        "Bemidbar (Nombres)": ["Bemidbar", "Nasso", "Beha'alotcha", "Shelach", "Korach", "Chukat", "Balak", "Pinchas", "Matot", "Masei"],
+        "Devarim (Deutéronome)": ["Devarim", "Vaetchanan", "Eikev", "Re'eh", "Shoftim", "Ki Teitzei", "Ki Tavo", "Nitzavim", "Vayeilech", "Ha'Azinu", "V'Zot HaBerachah"]
+    };
+
     const maftirRefs = {
         "Bereshit": "Genesis 6:5-6:8", "Noach": "Genesis 11:29-11:32", "Lech-Lecha": "Genesis 17:24-17:27", "Vayera": "Genesis 22:20-22:24", "Chayei Sara": "Genesis 25:16-25:18", "Toldot": "Genesis 28:5-28:9", "Vayetzei": "Genesis 31:55-32:3", "Vayishlach": "Genesis 36:40-36:43", "Vayeshev": "Genesis 40:20-40:23", "Miketz": "Genesis 44:14-44:17", "Vayigash": "Genesis 47:24-47:27", "Vayechi": "Genesis 50:23-50:26",
         "Shemot": "Exodus 5:22-6:1", "Vaera": "Exodus 9:30-9:35", "Bo": "Exodus 13:14-13:16", "Beshalach": "Exodus 17:14-17:16", "Yitro": "Exodus 20:19-20:23", "Mishpatim": "Exodus 24:15-24:18", "Terumah": "Exodus 27:17-27:19", "Tetzaveh": "Exodus 30:8-30:10", "Ki Tissa": "Exodus 34:30-34:35", "Vayakhel": "Exodus 38:18-38:20", "Pekudei": "Exodus 40:34-40:38",
@@ -96,16 +99,19 @@
         "Devarim": "Deuteronomy 3:18-3:22", "Vaetchanan": "Deuteronomy 7:7-7:11", "Eikev": "Deuteronomy 11:22-11:25", "Re'eh": "Deuteronomy 16:13-16:17", "Shoftim": "Deuteronomy 21:7-21:9", "Ki Teitzei": "Deuteronomy 25:17-25:19", "Ki Tavo": "Deuteronomy 29:6-29:8", "Nitzavim": "Deuteronomy 30:15-30:20", "Vayeilech": "Deuteronomy 31:28-31:30", "Ha'Azinu": "Deuteronomy 32:48-32:52", "V'Zot HaBerachah": "Deuteronomy 34:10-34:12"
     };
 
-    const parashiotList = Object.keys(maftirRefs);
-
     function init() {
         const sel = document.getElementById('parasha-select');
-        parashiotList.forEach(p => {
-            let opt = document.createElement('option');
-            opt.value = p;
-            opt.text = p;
-            sel.add(opt);
-        });
+        for (const [bookName, parashiot] of Object.entries(torahBooks)) {
+            const group = document.createElement('optgroup');
+            group.label = bookName;
+            parashiot.forEach(p => {
+                let opt = document.createElement('option');
+                opt.value = p;
+                opt.text = p;
+                group.appendChild(opt);
+            });
+            sel.appendChild(group);
+        }
     }
 
     async function loadTexts(pName) {
@@ -118,7 +124,6 @@
         content.classList.add('hidden');
 
         try {
-            // Utilisation du paramètre israel pour adapter la Haftara (ex: Chabbatot spéciaux)
             const calUrl = `https://www.sefaria.org/api/calendars?parasha=${pName}&israel=${isIsrael}`;
             const calRes = await fetch(calUrl).then(r => r.json());
             
@@ -173,7 +178,7 @@
                 ctrl.classList.remove('hidden');
                 status.innerText = "Lecture prête";
             } else {
-                status.innerText = "Aucun audio disponible pour cette section.";
+                status.innerText = "Audio à venir ...";
             }
         }).catch(() => { status.innerText = "Erreur audio."; });
     }
