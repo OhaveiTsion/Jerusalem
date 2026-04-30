@@ -155,11 +155,11 @@
     };
 
     const maftirRefs = {
-        "Bereshit": "Genesis 6:5-6:8", "Noach": "Genesis 11:29-11:32", "Lech-Lecha": "Genesis 17:24-17:27", "Vayera": "Genesis 22:20-22:24", "Chayei Sara": "Genesis 25:16-25:18", "Toldot": "Genesis 28:5-28:9", "Vayetzei": "Genesis 31:55-32:3", "Vayishlach": "Genesis 36:40-36:43", "Vayeshev": "Genesis 40:20-40:23", "Miketz": "Genesis 44:14-44:17", "Vayigash": "Genesis 47:24-47:27", "Vayechi": "Genesis 50:23-50:26",
-        "Shemot": "Exodus 5:22-6:1", "Vaera": "Exodus 9:30-9:35", "Bo": "Exodus 13:14-13:16", "Beshalach": "Exodus 17:14-17:16", "Yitro": "Exodus 20:19-20:23", "Mishpatim": "Exodus 24:15-24:18", "Terumah": "Exodus 27:17-27:19", "Tetzaveh": "Exodus 30:8-30:10", "Ki Tissa": "Exodus 34:30-34:35", "Vayakhel": "Exodus 38:18-38:20", "Pekudei": "Exodus 40:34-40:38",
-        "Vayikra": "Leviticus 5:24-5:26", "Tzav": "Leviticus 8:33-8:36", "Shmini": "Leviticus 11:44-11:47", "Tazria": "Leviticus 13:57-13:59", "Metzora": "Leviticus 15:31-15:33", "Achrei Mot": "Leviticus 18:24-18:30", "Kedoshim": "Leviticus 20:25-20:27", "Emor": "Leviticus 24:21-24:23", "Behar": "Leviticus 25:53-26:2", "Bechukotai": "Leviticus 27:32-27:34",
-        "Bemidbar": "Numbers 4:17-4:20", "Nasso": "Numbers 7:87-7:89", "Beha'alotcha": "Numbers 12:14-12:16", "Shelach": "Numbers 15:37-15:41", "Korach": "Numbers 18:30-18:32", "Chukat": "Numbers 21:34-22:1", "Balak": "Numbers 25:7-25:9", "Pinchas": "Numbers 29:35-30:1", "Matot": "Numbers 32:39-32:42", "Masei": "Numbers 36:10-36:13",
-        "Devarim": "Deuteronomy 3:18-3:22", "Vaetchanan": "Deuteronomy 7:7-7:11", "Eikev": "Deuteronomy 11:22-11:25", "Re'eh": "Deuteronomy 16:13-16:17", "Shoftim": "Deuteronomy 21:7-21:9", "Ki Teitzei": "Deuteronomy 25:17-25:19", "Ki Tavo": "Deuteronomy 29:6-29:8", "Nitzavim": "Deuteronomy 30:15-30:20", "Vayeilech": "Deuteronomy 31:28-31:30", "Ha'Azinu": "Deuteronomy 32:48-32:52", "V'Zot HaBerachah": "Deuteronomy 34:10-34:12"
+        "Bereshit": "6:5-6:8", "Noach": "11:29-11:32", "Lech-Lecha": "17:24-17:27", "Vayera": "22:20-22:24", "Chayei Sara": "25:16-25:18", "Toldot": "28:5-28:9", "Vayetzei": "31:55-32:3", "Vayishlach": "36:40-36:43", "Vayeshev": "40:20-40:23", "Miketz": "44:14-44:17", "Vayigash": "47:24-47:27", "Vayechi": "50:23-50:26",
+        "Shemot": "5:22-6:1", "Vaera": "9:30-9:35", "Bo": "13:14-13:16", "Beshalach": "17:14-17:16", "Yitro": "20:19-20:23", "Mishpatim": "24:15-24:18", "Terumah": "27:17-27:19", "Tetzaveh": "30:8-30:10", "Ki Tissa": "34:30-34:35", "Vayakhel": "38:18-38:20", "Pekudei": "40:34-40:38",
+        "Vayikra": "5:24-5:26", "Tzav": "8:33-8:36", "Shmini": "11:44-11:47", "Tazria": "13:57-13:59", "Metzora": "15:31-15:33", "Achrei Mot": "18:24-18:30", "Kedoshim": "20:25-20:27", "Emor": "24:21-24:23", "Behar": "25:53-26:2", "Bechukotai": "27:32-27:34",
+        "Bemidbar": "4:17-4:20", "Nasso": "7:87-7:89", "Beha'alotcha": "12:14-12:16", "Shelach": "15:37-15:41", "Korach": "18:30-18:32", "Chukat": "21:34-22:1", "Balak": "25:7-25:9", "Pinchas": "29:35-30:1", "Matot": "32:39-32:42", "Masei": "36:10-36:13",
+        "Devarim": "3:18-3:22", "Vaetchanan": "7:7-7:11", "Eikev": "11:22-11:25", "Re'eh": "16:13-16:17", "Shoftim": "21:7-21:9", "Ki Teitzei": "25:17-25:19", "Ki Tavo": "29:6-29:8", "Nitzavim": "30:15-30:20", "Vayeilech": "31:28-31:30", "Ha'Azinu": "32:48-32:52", "V'Zot HaBerachah": "34:10-34:12"
     };
 
     function setLanguage(lang) {
@@ -208,19 +208,38 @@
             const calUrl = `https://www.sefaria.org/api/calendars?parasha=${pName}&israel=${isIsrael}`;
             const calRes = await fetch(calUrl).then(r => r.json());
             const hItem = calRes.calendar_items.find(i => i.title.en.includes("Haftara"));
-            const hRef = hItem ? hItem.ref : "?";
-            const mRef = maftirRefs[pName] || "?";
+            
+            // Nettoyage des références pour ne garder que les chiffres (retrait des noms de livres)
+            let mRef = maftirRefs[pName] || "?";
+            let rawHaftaraRef = hItem ? hItem.ref : "?";
+            let cleanHaftaraRef = rawHaftaraRef.replace(/[A-Za-z\s]+/, '').trim();
 
             const [mRes, hRes] = await Promise.all([
-                fetch(`https://www.sefaria.org/api/texts/${mRef}?context=0`).then(r => r.json()),
-                hRef !== "?" ? fetch(`https://www.sefaria.org/api/texts/${hRef}?context=0`).then(r => r.json()) : {he: "Indisponible"}
+                // Pour l'API, on doit quand même passer le nom complet du livre pour la Maftir si besoin, 
+                // mais ici on utilise les refs pré-établies. Si maftirRefs ne contient plus le livre, 
+                // il faut s'assurer que Sefaria comprend. 
+                // Correction : Sefaria a besoin du livre pour l'API, mais on ne l'affiche pas.
+                fetch(`https://www.sefaria.org/api/texts/${getSefariaMaftirFullRef(pName)}?context=0`).then(r => r.json()),
+                rawHaftaraRef !== "?" ? fetch(`https://www.sefaria.org/api/texts/${rawHaftaraRef}?context=0`).then(r => r.json()) : {he: "Indisponible"}
             ]);
 
             document.getElementById('maftir-ref-title').innerText = `${t.maftir} (${mRef})`;
-            document.getElementById('haftara-ref-title').innerText = `${t.haftara} (${hRef})`;
+            document.getElementById('haftara-ref-title').innerText = `${t.haftara} (${cleanHaftaraRef})`;
             render(mRes.he, hRes.he);
             handleAudio(pName);
         } catch (err) { loader.innerText = t.error; }
+    }
+
+    // Helper pour envoyer le nom complet à l'API Sefaria tout en gardant l'affichage propre
+    function getSefariaMaftirFullRef(pName) {
+        const bookMap = {
+            "Bereshit": "Genesis", "Noach": "Genesis", "Lech-Lecha": "Genesis", "Vayera": "Genesis", "Chayei Sara": "Genesis", "Toldot": "Genesis", "Vayetzei": "Genesis", "Vayishlach": "Genesis", "Vayeshev": "Genesis", "Miketz": "Genesis", "Vayigash": "Genesis", "Vayechi": "Genesis",
+            "Shemot": "Exodus", "Vaera": "Exodus", "Bo": "Exodus", "Beshalach": "Exodus", "Yitro": "Exodus", "Mishpatim": "Exodus", "Terumah": "Exodus", "Tetzaveh": "Exodus", "Ki Tissa": "Exodus", "Vayakhel": "Exodus", "Pekudei": "Exodus",
+            "Vayikra": "Leviticus", "Tzav": "Leviticus", "Shmini": "Leviticus", "Tazria": "Leviticus", "Metzora": "Leviticus", "Achrei Mot": "Leviticus", "Kedoshim": "Leviticus", "Emor": "Leviticus", "Behar": "Leviticus", "Bechukotai": "Leviticus",
+            "Bemidbar": "Numbers", "Nasso": "Numbers", "Beha'alotcha": "Numbers", "Shelach": "Numbers", "Korach": "Numbers", "Chukat": "Numbers", "Balak": "Numbers", "Pinchas": "Numbers", "Matot": "Numbers", "Masei": "Numbers",
+            "Devarim": "Deuteronomy", "Vaetchanan": "Deuteronomy", "Eikev": "Deuteronomy", "Re'eh": "Deuteronomy", "Shoftim": "Deuteronomy", "Ki Teitzei": "Deuteronomy", "Ki Tavo": "Deuteronomy", "Nitzavim": "Deuteronomy", "Vayeilech": "Deuteronomy", "Ha'Azinu": "Deuteronomy", "V'Zot HaBerachah": "Deuteronomy"
+        };
+        return `${bookMap[pName]} ${maftirRefs[pName]}`;
     }
 
     function render(mHe, hHe) {
