@@ -1,39 +1,19 @@
 {
   "name": "Ohavei Tsion",
   "short_name": "Ohavei Tsion",
-  "description": "Horaires et informations de la synagogue Ohavei Tsion",
-  "start_url": "./index.html",
+  "start_url": "./index_.html",
   "display": "standalone",
   "background_color": "#0f34a1",
   "theme_color": "#0f34a1",
-  "orientation": "portrait",
-  "lang": "fr",
   "icons": [
     {
-      "src": "icons/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icons/icon-152.png",
-      "sizes": "152x152",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-167.png",
-      "sizes": "167x167",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-180.png",
-      "sizes": "180x180",
       "type": "image/png"
     }
   ]
