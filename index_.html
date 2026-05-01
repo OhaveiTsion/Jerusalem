@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ohavei Tsion</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f34a1">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="zmanim.js"></script>
     <style>
@@ -31,7 +35,6 @@
     .f-bold { font-weight: 800 !important; }
     .f-red { color: #ff4d4d !important; }
 
-    /* Style ajouté pour l'iframe afin d'avoir une belle intégration */
     .iframe-container { display: none; width: 100%; flex-grow: 1; min-height: 75vh; border-radius: 12px; background-color: white; overflow: hidden; }
     </style>
 </head>
@@ -48,11 +51,16 @@
             <div class="w-1/2 flex justify-center"><h1 class="text-xl font-black italic text-white uppercase">Ohavei Tsion</h1></div>
         </div>
 
+        <div id="install-banner" style="display: none;" class="bg-[#f1c40f]/20 border border-[#f1c40f] text-white p-2 rounded-lg mb-4 text-center text-sm font-bold cursor-pointer transition hover:bg-[#f1c40f]/40">
+            📲 Ajouter à l'écran d'accueil
+        </div>
+
         <nav class="flex justify-between gap-2 mb-4">
             <button onclick="afficher('horaires')" class="flex-1 bg-white/20 hover:bg-white/30 text-white font-bold py-2 px-1 rounded-lg transition text-sm border border-white/10 shadow-sm">🕰️ Horaires</button>
             <button onclick="afficher('maftir')" class="flex-1 bg-white/10 hover:bg-white/30 text-white font-bold py-2 px-1 rounded-lg transition text-sm border border-white/5 shadow-sm">📖 Maftir</button>
             <button onclick="afficher('tehilim')" class="flex-1 bg-white/10 hover:bg-white/30 text-white font-bold py-2 px-1 rounded-lg transition text-sm border border-white/5 shadow-sm">🙏 Tehilim</button>
         </nav>
+
         <div id="contenu-horaires" class="w-full flex-1">
             <div class="grid grid-cols-2 gap-3 mb-6">
                 <div class="zman-box">
@@ -99,6 +107,7 @@
                 </div>
             </div>
         </div>
+
         <iframe id="cadre-externe" class="iframe-container" src=""></iframe>
 
         <div class="w-full text-center mt-auto pt-6 pb-2">
@@ -176,7 +185,6 @@
         loadAll(); 
         setInterval(loadAll, 300000);
 
-        // NOUVELLE FONCTION POUR GÉRER L'AFFICHAGE DU MENU
         function afficher(choix) {
             const divHoraires = document.getElementById('contenu-horaires');
             const iframe = document.getElementById('cadre-externe');
@@ -195,6 +203,53 @@
                 iframe.src = "https://gregysite.github.io/Tehilim/";
             }
         }
+
+        /* --- LOGIQUE PWA (SERVICE WORKER ET INSTALLATION) --- */
+        
+        // 1. Enregistrement du Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').then((reg) => {
+                    console.log('Service worker enregistré.', reg);
+                });
+            });
+        }
+
+        // 2. Gestion du bouton d'installation
+        let deferredPrompt;
+        const installBanner = document.getElementById('install-banner');
+        
+        // Détection d'iOS et du mode d'affichage
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+        // Si on est sur iOS et pas encore installé
+        if (isIOS && !isStandalone) {
+            installBanner.style.display = 'block';
+            installBanner.innerHTML = "📲 Installer : 'Partager' puis 'Sur l'écran d'accueil'";
+            installBanner.onclick = () => alert("Sur votre iPhone, tapez sur l'icône de partage (le carré avec la flèche) en bas, puis choisissez 'Sur l'écran d'accueil'.");
+        }
+
+        // Si on est sur Android (Chrome intercepte l'événement)
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBanner.style.display = 'block';
+            installBanner.innerHTML = "📲 Ajouter à l'écran d'accueil";
+            
+            installBanner.addEventListener('click', async () => {
+                installBanner.style.display = 'none';
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+            });
+        });
+        
+        // On cache le bouton si l'app vient d'être installée
+        window.addEventListener('appinstalled', () => {
+            installBanner.style.display = 'none';
+            deferredPrompt = null;
+        });
     </script>
 </body>
 </html>
