@@ -1,7 +1,7 @@
 {
   "name": "Ohavei Tsion",
   "short_name": "Ohavei Tsion",
-  "start_url": "./index_.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f34a1",
   "theme_color": "#0f34a1",
