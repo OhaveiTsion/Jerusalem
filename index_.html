@@ -21,7 +21,7 @@
     @keyframes loadingBar { 0% { left: -100%; } 50% { left: 0%; } 100% { left: 100%; } }
     .loaded #splash-screen { opacity: 0; pointer-events: none; }
 
-    .main-container { border: 3px solid var(--gold-border); border-radius: 20px; min-height: calc(100vh - 20px); padding: 15px; width: 100%; max-width: 500px; background: linear-gradient(to bottom, #0f34a1, #0a2472); opacity: 0; transform: scale(0.98); transition: opacity 0.8s ease, transform 0.8s ease; display: flex; flex-direction: column; }
+    .main-container { border: 3px solid var(--gold-border); border-radius: 20px; min-height: calc(100vh - 20px); padding: 15px; width: 100%; max-width: 500px; background: linear-gradient(to bottom, #0f34a1, #0a2472); opacity: 0; transform: scale(0.98); transition: opacity 0.8s ease, transform 0.8s ease; display: flex; flex-direction: column; overflow: hidden; }
     .loaded .main-container { opacity: 1; transform: scale(1); }
 
     .zman-box { background: white; border-radius: 12px; color: #0f34a1; padding: 10px 5px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
@@ -35,7 +35,8 @@
     .f-bold { font-weight: 800 !important; }
     .f-red { color: #ff4d4d !important; }
 
-    .iframe-container { display: none; width: 100%; flex-grow: 1; min-height: 75vh; border-radius: 12px; background-color: white; overflow: hidden; }
+    /* L'iframe sort maintenant de la boîte grâce aux marges négatives */
+    .iframe-container { display: none; width: calc(100% + 30px); margin-left: -15px; margin-right: -15px; margin-bottom: -15px; height: 85vh; border-radius: 0 0 16px 16px; background-color: white; border: none; }
     </style>
 </head>
 <body>
@@ -110,7 +111,7 @@
 
         <iframe id="cadre-externe" class="iframe-container" src=""></iframe>
 
-        <div class="w-full text-center mt-auto pt-6 pb-2">
+        <div id="footer-site" class="w-full text-center mt-auto pt-6 pb-2">
             <p class="text-xs opacity-50 italic">© Greg u.</p>
         </div>
     </div>
@@ -188,18 +189,22 @@
         function afficher(choix) {
             const divHoraires = document.getElementById('contenu-horaires');
             const iframe = document.getElementById('cadre-externe');
+            const footer = document.getElementById('footer-site');
 
             if (choix === 'horaires') {
                 divHoraires.style.display = 'block';
                 iframe.style.display = 'none';
+                if(footer) footer.style.display = 'block';
                 iframe.src = ""; 
             } else if (choix === 'maftir') {
                 divHoraires.style.display = 'none';
                 iframe.style.display = 'block';
+                if(footer) footer.style.display = 'none';
                 iframe.src = "https://ohaveitsion.github.io/Jerusalem/Maftir.html";
             } else if (choix === 'tehilim') {
                 divHoraires.style.display = 'none';
                 iframe.style.display = 'block';
+                if(footer) footer.style.display = 'none';
                 iframe.src = "https://gregysite.github.io/Tehilim/";
             }
         }
