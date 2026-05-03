@@ -5,16 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232c3e50'/%3E%3Cpath d='M30 20v60M70 20v60' stroke='%23d4af37' stroke-width='8' stroke-linecap='round'/%3E%3Cpath d='M30 30h40M30 70h40' stroke='%23d4af37' stroke-width='12'/%3E%3C/svg%3E">
     <title>Maftir & Haftara</title>
-    <!-- Balises Meta pour l'aperçu WhatsApp / Réseaux Sociaux -->
     <meta property="og:title" content="Maftir & Haftara">
     <meta property="og:description" content="Étude du Maftir et de la Haftara avec texte (Torah ou Stam) et enregistrements audio.">
     <meta property="og:image" content="https://ohaveitsion.github.io/Jerusalem/preview-image.jpg">
     <meta property="og:url" content="https://ohaveitsion.github.io/Jerusalem/Maftir.html">
     <meta property="og:type" content="website">
 
-    <!-- Optionnel : Couleur de la barre d'adresse sur mobile -->
     <meta name="theme-color" content="#2c3e50">
     <style>
+        /* Déclaration de la police de la Torah */
+        @font-face {
+            font-family: 'KtavVellish';
+            src: url('Stam Sefarad CLM Medium.ttf') format('truetype'),
+                 url('TORAH.TTF') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         :root { --primary: #2c3e50; --accent: #d4af37; --light: #f8f9fa; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: #eaeff2; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; color: #333; }
         
@@ -49,7 +56,11 @@
         .audio-player { background: var(--light); border: 1px solid #e9ecef; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 30px; }
         audio { width: 100%; height: 45px; }
 
-        .hebrew-text { font-size: 34px; line-height: 2.3; margin-top: 20px; text-align: right; font-family: "SBL Hebrew", "Times New Roman", serif; white-space: pre-wrap; direction: rtl; padding: 0 10px; }
+        .hebrew-text { font-size: 34px; line-height: 2.3; margin-top: 20px; text-align: right; font-family: "SBL Hebrew", "Times New Roman", serif; white-space: pre-wrap; direction: rtl; padding: 0 10px; transition: all 0.3s ease; }
+        
+        /* Classe activée dynamiquement en mode Stam */
+        .stam-font { font-family: 'KtavVellish', sans-serif !important; font-size: 42px !important; line-height: 2 !important; }
+
         .hidden { display: none; }
         h2.section-title { text-align: right; color: var(--accent); border-bottom: 2px solid var(--light); padding-bottom: 10px; margin-top: 40px; font-size: 1.6rem; direction: ltr; }
         
@@ -113,7 +124,6 @@
             loading: "Chargement du texte...", searching: "Recherche de l'enregistrement...",
             coming: "Audio à venir...", error: "Erreur de connexion.", audioErr: "Erreur audio.",
             maftir: "Maftir", haftara: "Haftara",
-            // Modification des noms des livres ici :
             books: ["Béréchit", "Chémot", "Vaykra", "Bamidbar", "Déverïm"],
             pNames: {
                 "Bereshit": "Bereshit", "Noach": "Noach", "Lech-Lecha": "Lech-Lecha", "Vayera": "Vayera", "Chayei Sara": "Chayei Sara", "Toldot": "Toldot", "Vayetzei": "Vayetzei", "Vayishlach": "Vayishlach", "Vayeshev": "Vayeshev", "Miketz": "Miketz", "Vayigash": "Vayigash", "Vayechi": "Vayechi",
@@ -134,7 +144,7 @@
             pNames: {
                 "Bereshit": "בראשית", "Noach": "נח", "Lech-Lecha": "לך-לך", "Vayera": "וירא", "Chayei Sara": "חיי שרה", "Toldot": "תולדות", "Vayetzei": "ויצא", "Vayishlach": "וישלח", "Vayeshev": "וישב", "Miketz": "מקץ", "Vayigash": "ויגש", "Vayechi": "ויחי",
                 "Shemot": "שמות", "Vaera": "וארא", "Bo": "בא", "Beshalach": "בשלח", "Yitro": "יתרו", "Mishpatim": "משפטים", "Terumah": "תרומה", "Tetzaveh": "תצוה", "Ki Tissa": "כי תשא", "Vayakhel": "ויקהל", "Pekudei": "פקודי",
-                "Vayikra": "ויקרא", "Tzav": "צו", "Shmini": "שמיני", "Tazria": "תזריע", "Metzora": "מצורע", "Achrei Mot": "אחרי מות", "Kedoshim": "קדושים", "Emor": "אמור", "Behar": "בהר", "Bechukotai": "בחקתי",
+                "Vayikra": "ויקרא", "Tzav": "צו", "Shmini": "שמיני", "Tazria": "תזריע", "Metzora": "מצורע", "Achrei Mot": "אחרי מות", "Kedoshim": "קדושים", "Emor": "אמור", "Behar": "בהר", "בהר": "בהר", "Bechukotai": "בחקתי",
                 "Bemidbar": "במדבר", "Nasso": "נשא", "Beha'alotcha": "בהעלתך", "Shelach": "שלח לך", "Korach": "קרח", "Chukat": "חקת", "Balak": "בלק", "Pinchas": "פינחס", "Matot": "מטות", "Masei": "מסעי",
                 "Devarim": "דברים", "Vaetchanan": "ואתחנן", "Eikev": "עקב", "Re'eh": "ראה", "Shoftim": "שופטים", "Ki Teitzei": "כי תצא", "Ki Tavo": "כי תבוא", "Nitzavim": "נצבים", "Vayeilech": "וילך", "Ha'Azinu": "האזינו", "V'Zot HaBerachah": "וזאת הברכה"
             }
@@ -156,7 +166,6 @@ const maftirRefs = {
     "Bemidbar": "4:17-4:20", "Nasso": "7:87-7:89", "Beha'alotcha": "12:14-12:16", "Shelach": "15:37-15:41", "Korach": "18:30-18:32", "Chukat": "21:34-22:1", "Balak": "25:7-25:9", "Pinchas": "29:35-30:1", "Matot": "32:39-32:42", "Masei": "36:10-36:13",
     "Devarim": "3:18-3:22", "Vaetchanan": "7:7-7:11", "Eikev": "11:22-11:25", "Re'eh": "16:13-16:17", "Shoftim": "21:7-21:9", "Ki Teitzei": "25:17-25:19", "Ki Tavo": "29:6-29:8", "Nitzavim": "30:15-30:20", "Vayeilech": "31:28-31:30", "Ha'Azinu": "32:48-32:52", "V'Zot HaBerachah": "34:10-34:12"
 };
-
 
     function setLanguage(lang) {
         currentLang = lang;
@@ -236,8 +245,22 @@ const maftirRefs = {
             if (isStam) txt = txt.replace(/[\u0591-\u05C7]/g, "");
             return txt;
         };
-        document.getElementById('maftir-text').innerHTML = clean(mHe);
-        document.getElementById('haftara-text').innerHTML = clean(hHe);
+        
+        const maftirDiv = document.getElementById('maftir-text');
+        const haftaraDiv = document.getElementById('haftara-text');
+
+        maftirDiv.innerHTML = clean(mHe);
+        haftaraDiv.innerHTML = clean(hHe);
+
+        // Application de la police Stam si le mode est activé
+        if (isStam) {
+            maftirDiv.classList.add('stam-font');
+            haftaraDiv.classList.add('stam-font');
+        } else {
+            maftirDiv.classList.remove('stam-font');
+            haftaraDiv.classList.remove('stam-font');
+        }
+
         document.getElementById('loader').classList.add('hidden');
         document.getElementById('content').classList.remove('hidden');
     }
