@@ -28,7 +28,7 @@
 
     .zman-box { background: white; border-radius: 12px; color: #0f34a1; padding: 10px 5px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     
-    /* Style de l'annonce modifié pour accepter plusieurs lignes de titre */
+    /* LE NOUVEAU STYLE (Qui prend toute la hauteur nécessaire) */
     .annonce-card { background: var(--card-blue); border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; margin-bottom: 15px; display: none; text-align: center; }
     .annonce-titre-style { display: block; text-align: left; font-size: 0.75rem; font-style: italic; opacity: 0.6; line-height: 1.4; margin-bottom: 8px; }
     
@@ -125,7 +125,12 @@
 
         function format(t) { 
             if(!t) return "";
-            let clean = t.replace(/<[^>]*>/g, "").replace(/&nbsp;|\u00A0/g, " ").replace(/[ ]{2,}/g, " ").trim();
+            // Protection des balises <br> pour qu'elles ne soient pas effacées par le nettoyeur
+            let clean = t.replace(/<br\s*\/?>/gi, "[[BR]]");
+            // Nettoyage de toutes les autres balises HTML non voulues
+            clean = clean.replace(/<[^>]*>/g, "").replace(/&nbsp;|\u00A0/g, " ").replace(/[ ]{2,}/g, " ").trim();
+            // Restauration des balises <br>
+            clean = clean.replace(/\[\[BR\]\]/g, "<br>");
             return clean.replace(/\*\*(.*?)\*\*/g, '<span class="f-bold">$1</span>').replace(/\{r\}(.*?)\{\/r\}/g, '<span class="f-red">$1</span>').replace(/\n/g, "<br>");
         }
 
@@ -144,17 +149,14 @@
                 const eventP = hData.items.find(i => i.category === "parashat");
                 if (eventP) nomShabbatAuto = eventP.title.replace("Parashat ", "");
 
-                // CONSTRUCTION DU TITRE AUTOMATIQUE (Fêtes, Rosh Hodesh, etc.)
                 const daysFr = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
                 
-                // On prépare la date d'aujourd'hui pour filtrer les événements passés
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
 
                 const specialEvents = hData.items
                     .filter(i => ["holiday", "roshchodesh", "special-shabbat", "mevarchim"].includes(i.category))
                     .filter(i => {
-                        // On garde uniquement les événements à venir ou d'aujourd'hui
                         const dateParts = i.date.split('-');
                         const dEv = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
                         return dEv >= today; 
@@ -173,7 +175,7 @@
                             return i.title;
                         }
                     })
-                    .join("\n"); // Utilisation de \n pour que la fonction format() crée bien les retours à la ligne
+                    .join("<br>"); // Utilisation forcée de la balise HTML pour le saut de ligne
 
                 const sheetRes = await fetch(API_URL);
                 const sData = await sheetRes.json();
@@ -199,7 +201,6 @@
                     }
                 });
 
-                // GESTION DE L'ANNONCE
                 const aT_API = sData.annonce_titre?.valeur;
                 const aX_API = sData.annonce_texte?.valeur;
 
