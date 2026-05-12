@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ohavei Tsion</title>
+    
     <link rel="icon" type="image/png" href="icon-192.png">
+    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f34a1">
     <link rel="apple-touch-icon" href="icon-192.png">
@@ -26,9 +28,9 @@
 
     .zman-box { background: white; border-radius: 12px; color: #0f34a1; padding: 10px 5px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     
-    /* Style de l'annonce modifié pour accepter plusieurs lignes de titre */
-    .annonce-card { background: var(--card-blue); border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; margin-bottom: 15px; display: none; position: relative; text-align: center; }
-    .annonce-titre-style { text-align: left; font-size: 0.75rem; font-style: italic; opacity: 0.6; line-height: 1.4; margin-bottom: 10px; display: block; }
+    /* STYLE DES ANNONCES CORRIGÉ POUR S'ADAPTER AU MOBILE */
+    .annonce-card { background: var(--card-blue); border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; margin-bottom: 15px; display: none; text-align: center; }
+    .annonce-titre-style { display: block; text-align: left; font-size: 0.75rem; font-style: italic; opacity: 0.6; line-height: 1.4; margin-bottom: 8px; }
     
     .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: var(--card-blue); margin-bottom: 8px; }
     .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; margin-bottom: 12px; display: flex; flex-direction: column; align-items: center; }
@@ -78,7 +80,7 @@
 
             <div id="announcement-block" class="annonce-card">
                 <span id="sheet-annonce_titre" class="annonce-titre-style"></span>
-                <div id="sheet-annonce_texte" class="text-xl mt-2 font-bold"></div>
+                <div id="sheet-annonce_texte" class="text-xl font-bold"></div>
                 <div class="title-underline mx-auto mt-3"></div>
             </div>
 
@@ -144,8 +146,19 @@
 
                 // CONSTRUCTION DU TITRE AUTOMATIQUE (Fêtes, Rosh Hodesh, etc.)
                 const daysFr = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+                
+                // On prépare la date d'aujourd'hui pour filtrer les événements passés
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
                 const specialEvents = hData.items
                     .filter(i => ["holiday", "roshchodesh", "special-shabbat", "mevarchim"].includes(i.category))
+                    .filter(i => {
+                        // On garde uniquement les événements à venir ou d'aujourd'hui
+                        const dateParts = i.date.split('-');
+                        const dEv = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+                        return dEv >= today; 
+                    })
                     .map(i => {
                         const dateParts = i.date.split('-');
                         const dEv = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
@@ -160,7 +173,7 @@
                             return i.title;
                         }
                     })
-                    .join("\n");
+                    .join("\n"); // Utilisation de \n pour que la fonction format() crée bien les retours à la ligne
 
                 const sheetRes = await fetch(API_URL);
                 const sData = await sheetRes.json();
