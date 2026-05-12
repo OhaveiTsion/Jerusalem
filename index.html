@@ -147,7 +147,8 @@
 
                 const daysFr = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
                 
-                // J'AI RETIRÉ LE FILTRE DES DATES PASSÉES ICI POUR TESTER L'AFFICHAGE
+                // LE FILTRE EST DÉFINITIVEMENT SUPPRIMÉ ICI : 
+                // Hebcal renvoie déjà uniquement les événements de la semaine en cours.
                 const specialEvents = hData.items
                     .filter(i => ["holiday", "roshchodesh", "special-shabbat", "mevarchim"].includes(i.category))
                     .map(i => {
@@ -164,7 +165,7 @@
                             return i.title;
                         }
                     })
-                    .join("<br>"); // On injecte directement le HTML pour forcer le retour à la ligne
+                    .join("\n"); // Identique au comportement de ton interface ADMIN
 
                 const sheetRes = await fetch(API_URL);
                 const sData = await sheetRes.json();
@@ -199,7 +200,6 @@
                 const isShavouaTovTime = (day === 6 && hour >= 15) || day === 0 || day === 1 || day === 2;
                 const autoMessage = isShavouaTovTime ? "Shavoua Tov !" : "Shabbat Shalom !";
 
-                // Rappel : si tu as tapé quelque chose dans Google Sheets pour le titre, ça écrasera "specialEvents"
                 const final_aT = (aT_API && aT_API.trim() !== "" && aT_API !== "--") ? aT_API : specialEvents;
                 const final_aX = (aX_API && aX_API.trim() !== "" && aX_API !== "--") ? aX_API : autoMessage;
 
