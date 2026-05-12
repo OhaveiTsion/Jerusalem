@@ -160,7 +160,7 @@
                             return i.title;
                         }
                     })
-                    .join("<br>");
+                    .join("\n");
 
                 const sheetRes = await fetch(API_URL);
                 const sData = await sheetRes.json();
