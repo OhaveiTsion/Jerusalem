@@ -124,9 +124,7 @@
 
         function format(t) { 
             if(!t) return "";
-            let clean = t.replace(/<br\s*\/?>/gi, "[[BR]]");
-            clean = clean.replace(/<[^>]*>/g, "").replace(/&nbsp;|\u00A0/g, " ").replace(/[ ]{2,}/g, " ").trim();
-            clean = clean.replace(/\[\[BR\]\]/g, "<br>");
+            let clean = t.replace(/<[^>]*>/g, "").replace(/&nbsp;|\u00A0/g, " ").replace(/[ ]{2,}/g, " ").trim();
             return clean.replace(/\*\*(.*?)\*\*/g, '<span class="f-bold">$1</span>').replace(/\{r\}(.*?)\{\/r\}/g, '<span class="f-red">$1</span>').replace(/\n/g, "<br>");
         }
 
@@ -138,7 +136,8 @@
                 const nextSatKey = d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'2-digit'});
                 const backup = ZMANIM_TABLE[nextSatKey] || { allumage: "--:--", arvit: "--:--" };
 
-                const hRes = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s');
+                // ANTI-CACHE AGRESSIF POUR LE MOBILE
+                const hRes = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s&_t=' + Date.now());
                 const hData = await hRes.json();
                 
                 let nomShabbatAuto = "--";
@@ -147,8 +146,7 @@
 
                 const daysFr = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
                 
-                // LE FILTRE EST DÉFINITIVEMENT SUPPRIMÉ ICI : 
-                // Hebcal renvoie déjà uniquement les événements de la semaine en cours.
+                // INJECTION DIRECTE EN HTML (On bypass format())
                 const specialEvents = hData.items
                     .filter(i => ["holiday", "roshchodesh", "special-shabbat", "mevarchim"].includes(i.category))
                     .map(i => {
@@ -160,14 +158,15 @@
                         const prevName = (dayIdx === 6) ? "Vendredi" : daysFr[(dayIdx - 1 + 7) % 7];
 
                         if (i.category === "holiday" || i.category === "roshchodesh") {
-                            return `${prevName} soir et ${currentName} : ${i.title}`;
+                            return `${prevName} soir et ${currentName} : <span style="font-weight:bold;">${i.title}</span>`;
                         } else {
-                            return i.title;
+                            return `<span style="font-weight:bold;">${i.title}</span>`;
                         }
                     })
-                    .join("\n"); // Identique au comportement de ton interface ADMIN
+                    .join("<br>"); // Vrai saut de ligne HTML
 
-                const sheetRes = await fetch(API_URL);
+                // ANTI-CACHE POUR TON API
+                const sheetRes = await fetch(API_URL + "?_t=" + Date.now());
                 const sData = await sheetRes.json();
 
                 const pMan = sData.parasha?.valeur;
@@ -200,14 +199,16 @@
                 const isShavouaTovTime = (day === 6 && hour >= 15) || day === 0 || day === 1 || day === 2;
                 const autoMessage = isShavouaTovTime ? "Shavoua Tov !" : "Shabbat Shalom !";
 
-                const final_aT = (aT_API && aT_API.trim() !== "" && aT_API !== "--") ? aT_API : specialEvents;
-                const final_aX = (aX_API && aX_API.trim() !== "" && aX_API !== "--") ? aX_API : autoMessage;
-
                 const b = document.getElementById('announcement-block');
+                
+                // Si l'API de l'ADMIN a une info, on formate, SINON on injecte le HTML pur des événements automatiques
+                const final_aT = (aT_API && aT_API.trim() !== "" && aT_API !== "--") ? format(aT_API) : specialEvents;
+                const final_aX = (aX_API && aX_API.trim() !== "" && aX_API !== "--") ? format(aX_API) : autoMessage;
+
                 if((final_aT && final_aT.trim() !== "") || (final_aX && final_aX.trim() !== "")) {
                     b.style.display = 'block';
-                    document.getElementById('sheet-annonce_titre').innerHTML = format(final_aT);
-                    document.getElementById('sheet-annonce_texte').innerHTML = format(final_aX);
+                    document.getElementById('sheet-annonce_titre').innerHTML = final_aT; // Plus de format() ici pour ne pas casser !
+                    document.getElementById('sheet-annonce_texte').innerHTML = final_aX; // Plus de format() ici non plus
                 } else {
                     b.style.display = 'none';
                 }
