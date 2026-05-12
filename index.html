@@ -28,9 +28,8 @@
 
     .zman-box { background: white; border-radius: 12px; color: #0f34a1; padding: 10px 5px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     
-    /* LE NOUVEAU STYLE (Qui prend toute la hauteur nécessaire) */
     .annonce-card { background: var(--card-blue); border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; margin-bottom: 15px; display: none; text-align: center; }
-    .annonce-titre-style { display: block; text-align: left; font-size: 0.75rem; font-style: italic; opacity: 0.6; line-height: 1.4; margin-bottom: 8px; }
+    .annonce-titre-style { display: block; text-align: left; font-size: 0.8rem; font-style: italic; opacity: 0.8; line-height: 1.5; margin-bottom: 10px; }
     
     .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: var(--card-blue); margin-bottom: 8px; }
     .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; margin-bottom: 12px; display: flex; flex-direction: column; align-items: center; }
@@ -79,7 +78,7 @@
             </div>
 
             <div id="announcement-block" class="annonce-card">
-                <span id="sheet-annonce_titre" class="annonce-titre-style"></span>
+                <div id="sheet-annonce_titre" class="annonce-titre-style"></div>
                 <div id="sheet-annonce_texte" class="text-xl font-bold"></div>
                 <div class="title-underline mx-auto mt-3"></div>
             </div>
@@ -125,11 +124,8 @@
 
         function format(t) { 
             if(!t) return "";
-            // Protection des balises <br> pour qu'elles ne soient pas effacées par le nettoyeur
             let clean = t.replace(/<br\s*\/?>/gi, "[[BR]]");
-            // Nettoyage de toutes les autres balises HTML non voulues
             clean = clean.replace(/<[^>]*>/g, "").replace(/&nbsp;|\u00A0/g, " ").replace(/[ ]{2,}/g, " ").trim();
-            // Restauration des balises <br>
             clean = clean.replace(/\[\[BR\]\]/g, "<br>");
             return clean.replace(/\*\*(.*?)\*\*/g, '<span class="f-bold">$1</span>').replace(/\{r\}(.*?)\{\/r\}/g, '<span class="f-red">$1</span>').replace(/\n/g, "<br>");
         }
@@ -151,16 +147,9 @@
 
                 const daysFr = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
                 
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-
+                // J'AI RETIRÉ LE FILTRE DES DATES PASSÉES ICI POUR TESTER L'AFFICHAGE
                 const specialEvents = hData.items
                     .filter(i => ["holiday", "roshchodesh", "special-shabbat", "mevarchim"].includes(i.category))
-                    .filter(i => {
-                        const dateParts = i.date.split('-');
-                        const dEv = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-                        return dEv >= today; 
-                    })
                     .map(i => {
                         const dateParts = i.date.split('-');
                         const dEv = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
@@ -175,7 +164,7 @@
                             return i.title;
                         }
                     })
-                    .join("<br>"); // Utilisation forcée de la balise HTML pour le saut de ligne
+                    .join("<br>"); // On injecte directement le HTML pour forcer le retour à la ligne
 
                 const sheetRes = await fetch(API_URL);
                 const sData = await sheetRes.json();
@@ -210,6 +199,7 @@
                 const isShavouaTovTime = (day === 6 && hour >= 15) || day === 0 || day === 1 || day === 2;
                 const autoMessage = isShavouaTovTime ? "Shavoua Tov !" : "Shabbat Shalom !";
 
+                // Rappel : si tu as tapé quelque chose dans Google Sheets pour le titre, ça écrasera "specialEvents"
                 const final_aT = (aT_API && aT_API.trim() !== "" && aT_API !== "--") ? aT_API : specialEvents;
                 const final_aX = (aX_API && aX_API.trim() !== "" && aX_API !== "--") ? aX_API : autoMessage;
 
@@ -260,7 +250,6 @@
             }
         }
 
-        /* --- LOGIQUE PWA --- */
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js').then((reg) => {
