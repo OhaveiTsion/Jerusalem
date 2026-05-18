@@ -194,36 +194,59 @@
         }
 
         async function sendData() {
-    const pass = prompt("Mot de passe :"); 
-    if(!pass) return;
-    
-    const payload = {};
-    keys.forEach(k => { 
-        const vEl=document.getElementById(`${k}_val`), lEl=document.getElementById(`${k}_label`); 
-        payload[k] = { intitule: lEl ? toTags(lEl.innerHTML) : k, valeur: vEl ? toTags(vEl.innerHTML) : "" }; 
-    });
+            const pass = prompt("Mot de passe :"); 
+            if(!pass) return;
+            
+            const payload = {};
+            // 1. Récupération des champs fixes
+            keys.forEach(k => { 
+                const vEl=document.getElementById(`${k}_val`), lEl=document.getElementById(`${k}_label`); 
+                payload[k] = { intitule: lEl ? toTags(lEl.innerHTML) : k, valeur: vEl ? toTags(vEl.innerHTML) : "" }; 
+            });
 
-    try {
-        const r = await fetch(API_URL, { 
-            method: 'POST', 
-            // J'ai ajouté cette ligne qui est souvent obligatoire pour les serveurs !
-            headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify({ auth: pass, payload: payload }) 
-        });
-        
-        const texteReponse = await r.text();
-        
-        if (texteReponse.includes("Succès") || texteReponse.includes("success")) {
-            alert("🚀 Sauvegardé !");
-        } else {
-            // Ça va nous afficher le vrai message du serveur
-            alert("Erreur du serveur : " + texteReponse); 
+            // 2. NOUVEAU : Récupération des zones dynamiques (+ Ajouter Zone)
+            payload.extra_sections = [];
+            document.querySelectorAll('.extra-z').forEach(zone => {
+                const titleEl = zone.querySelector('.section-title');
+                const title = titleEl ? toTags(titleEl.innerHTML) : "ZONE";
+                
+                const rows = [];
+                zone.querySelectorAll('.extra-r').forEach(row => {
+                    const editables = row.querySelectorAll('.editable');
+                    if (editables.length >= 2) {
+                        rows.push({
+                            label: toTags(editables[0].innerHTML),
+                            val: toTags(editables[1].innerHTML)
+                        });
+                    }
+                });
+                
+                // On ajoute la zone seulement si elle a un titre
+                if (title) {
+                    payload.extra_sections.push({ title: title, rows: rows });
+                }
+            });
+
+            // 3. Envoi au serveur
+            try {
+                const r = await fetch(API_URL, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ auth: pass, payload: payload }) 
+                });
+                
+                const texteReponse = await r.text();
+                
+                if (texteReponse.includes("Succès") || texteReponse.includes("success")) {
+                    alert("🚀 Sauvegardé !");
+                } else {
+                    alert("Erreur du serveur : " + texteReponse); 
+                }
+            } catch(e) { 
+                alert("Erreur de connexion (problème réseau ou blocage) : " + e.message); 
+                console.error(e);
+            }
         }
-    } catch(e) { 
-        alert("Erreur de connexion (problème réseau ou blocage) : " + e.message); 
-        console.error(e);
-    }
-}
 
         window.onload = loadData;
     </script>
