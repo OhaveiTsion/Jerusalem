@@ -259,35 +259,41 @@
             });
         }
 
-        let deferredPrompt;
-        const installBanner = document.getElementById('install-banner');
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+let deferredPrompt;
+const installBanner = document.getElementById('install-banner');
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const isFirefoxAndroid = /Firefox/.test(navigator.userAgent) && /Android/.test(navigator.userAgent);
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
-        if (isIOS && !isStandalone) {
-            installBanner.style.display = 'block';
-            installBanner.innerHTML = "📲 Installer : 'Partager' puis 'Sur l'écran d'accueil'";
-            installBanner.onclick = () => alert("Sur votre iPhone, tapez sur l'icône de partage (le carré avec la flèche) en bas, puis choisissez 'Sur l'écran d'accueil'.");
-        }
+if (!isStandalone) {
+    if (isIOS) {
+        installBanner.style.display = 'block';
+        installBanner.innerHTML = "📲 Installer : 'Partager' puis 'Sur l'écran d'accueil'";
+        installBanner.onclick = () => alert("Sur votre iPhone, tapez sur l'icône de partage (le carré avec la flèche) en bas, puis choisissez 'Sur l'écran d'accueil'.");
+    } else if (isFirefoxAndroid) {
+        installBanner.style.display = 'block';
+        installBanner.innerHTML = "📲 Installer : menu ⋮ puis 'Installer'";
+        installBanner.onclick = () => alert("Dans Firefox, appuyez sur ⋮ (les 3 points) en haut à droite, puis 'Installer'.");
+    }
+}
 
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installBanner.style.display = 'block';
-            installBanner.innerHTML = "📲 Ajouter à l'écran d'accueil";
-            
-            installBanner.addEventListener('click', async () => {
-                installBanner.style.display = 'none';
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                deferredPrompt = null;
-            });
-        });
-        
-        window.addEventListener('appinstalled', () => {
-            installBanner.style.display = 'none';
-            deferredPrompt = null;
-        });
-    </script>
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBanner.style.display = 'block';
+    installBanner.innerHTML = "📲 Ajouter à l'écran d'accueil";
+    
+    installBanner.onclick = async () => {
+        installBanner.style.display = 'none';
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+    };
+});
+
+window.addEventListener('appinstalled', () => {
+    installBanner.style.display = 'none';
+    deferredPrompt = null;
+});    </script>
 </body>
 </html>
