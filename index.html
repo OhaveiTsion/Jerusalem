@@ -128,6 +128,71 @@
             return clean.replace(/\*\*(.*?)\*\*/g, '<span class="f-bold">$1</span>').replace(/\{r\}(.*?)\{\/r\}/g, '<span class="f-red">$1</span>').replace(/\n/g, "<br>");
         }
 
+const PARASHA_NAMES = {
+    "Bereshit": "Béréchit",
+    "Noach": "Noa'h",
+    "Lech-Lecha": "Lekh Lekha",
+    "Vayera": "Vayéra",
+    "Chayei Sara": "Hayé Sarah",
+    "Toldot": "Toldot",
+    "Vayetzei": "Vayétsé",
+    "Vayishlach": "Vayichlah",
+    "Vayeshev": "Vayéchev",
+    "Miketz": "Miketz",
+    "Vayigash": "Vayigach",
+    "Vayechi": "Vayé'hi",
+    "Shemot": "Chémot",
+    "Vaera": "Va'éra",
+    "Bo": "Bo",
+    "Beshalach": "Béchala'h",
+    "Yitro": "Yitro",
+    "Mishpatim": "Michpatim",
+    "Terumah": "Térouma",
+    "Tetzaveh": "Tétsavé",
+    "Ki Tisa": "Ki Tissa",
+    "Vayakhel": "Vayakhel",
+    "Pekudei": "Pékoudé",
+    "Vayikra": "Vayikra",
+    "Tzav": "Tsav",
+    "Shmini": "Chémini",
+    "Tazria": "Tazria",
+    "Metzora": "Métsora",
+    "Achrei Mot": "A'haré Mot",
+    "Kedoshim": "Kédochim",
+    "Emor": "Emor",
+    "Behar": "Béhar",
+    "Bechukotai": "Bé'houkotaï",
+    "Bamidbar": "Bamidbar",
+    "Nasso": "Nasso",
+    "Beha'alotcha": "Béha'alotékha",
+    "Sh'lach": "Chéla'h",
+    "Korach": "Kora'h",
+    "Chukat": "Houkat",
+    "Balak": "Balak",
+    "Pinchas": "Pin'has",
+    "Matot": "Matot",
+    "Masei": "Massé",
+    "Devarim": "Devarim",
+    "Vaetchanan": "Va'et'hanan",
+    "Eikev": "Ekev",
+    "Re'eh": "Réé",
+    "Shoftim": "Choftim",
+    "Ki Teitzei": "Ki Tétsé",
+    "Ki Tavo": "Ki Tavo",
+    "Nitzavim": "Nitsavim",
+    "Vayeilech": "Vayélekh",
+    "Ha'Azinu": "Haazinou",
+    "Vezot Haberachah": "Vézot Habérakha"
+};
+
+function translateParasha(title) {
+    if (PARASHA_NAMES[title]) return PARASHA_NAMES[title];
+    if (title.includes('-')) {
+        return title.split('-').map(p => PARASHA_NAMES[p.trim()] || p.trim()).join('-');
+    }
+    return title;
+}
+
         async function loadAll() {
             try {
                 let d = new Date();
@@ -142,7 +207,7 @@
                 
                 let nomShabbatAuto = "--";
                 const eventP = hData.items.find(i => i.category === "parashat");
-                if (eventP) nomShabbatAuto = eventP.title.replace("Parashat ", "");
+                if (eventP) nomShabbatAuto = translateParasha(eventP.title.replace("Parashat ", ""));
 
                 const daysFr = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
                 
