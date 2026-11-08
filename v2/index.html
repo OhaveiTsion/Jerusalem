@@ -94,9 +94,10 @@
     .main-container #maj-line { font-size: calc(0.7rem * var(--s)); }
     .main-container #footer-site p.italic { font-size: calc(0.6rem * var(--s)); opacity: 0.35; margin: 0; line-height: 1.2; }
     body.tight .main-container #footer-site { padding-top: calc(8px * var(--p)); padding-bottom: 0; }
-    #maj-line { font-size: 0.7rem; opacity: 0.55; text-align: left; margin: 0; }
+    #maj-line { font-size: 0.7rem; opacity: 0.55; text-align: right; margin: 0 0 0 auto; order: 2; }
     #footer-site { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; text-align: left; }
-    #footer-site p.italic { margin-left: auto !important; white-space: nowrap; }
+    #footer-site p.italic { order: 1; margin: 0 !important; white-space: nowrap; }
+    .main-container #footer-site { padding-left: calc(10px * var(--p)); padding-right: calc(10px * var(--p)); }
     #offline-note { display: none; font-size: 0.75rem; text-align: center; color: #fbbf24; margin-bottom: 8px; }
     </style>
 </head>
