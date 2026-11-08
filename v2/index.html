@@ -55,6 +55,58 @@
     .shiour-bloc .shiour-item > span:last-child { white-space: nowrap; }
     .jour-badge { display: inline-block; color: var(--gold-border); border: 1px solid rgba(241,196,15,0.6); font-weight: 700; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 999px; padding: 0 8px; line-height: 1.5; }
     .sub-title { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7; text-align: center; margin-bottom: 6px; font-weight: 700; }
+
+    /* ---- Affichage adaptatif : tout sur un seul écran quand c'est possible ----
+       Niveau 0 = visuel normal. Si ça dépasse la hauteur de l'écran : d1 (compact), puis d2 (très compact). */
+    body.measuring .main-container { min-height: 0 !important; }
+    body.d1, body.d2 { padding: 6px; }
+    body.d1 .main-container, body.d2 .main-container { padding: 10px 12px; border-radius: 16px; min-height: calc(100vh - 12px); }
+    body.d1 .main-container > div:first-of-type, body.d2 .main-container > div:first-of-type { margin-bottom: 8px; padding-bottom: 6px; }
+    body.d1 .main-container > div:first-of-type img, body.d2 .main-container > div:first-of-type img { height: 30px; }
+    body.d1 nav, body.d2 nav { margin-bottom: 8px; }
+    body.d1 .grid.grid-cols-2, body.d2 .grid.grid-cols-2 { margin-bottom: 8px; gap: 8px; }
+    body.d1 .zman-box, body.d2 .zman-box { padding: 5px 4px; }
+    body.d1 .zman-box .text-lg, body.d1 .zman-box .text-2xl { font-size: 1.15rem; }
+    body.d1 .annonce-card, body.d2 .annonce-card { padding: 7px 10px; margin-bottom: 6px; }
+    body.d1 .annonce-titre-style, body.d2 .annonce-titre-style { margin-bottom: 4px; font-size: 0.75rem; line-height: 1.3; }
+    body.d1 #sheet-annonce_texte, body.d2 #sheet-annonce_texte { font-size: 1.05rem; }
+    body.d1 .annonce-card .title-underline, body.d2 .annonce-card .title-underline { display: none; }
+    body.d1 .nl, body.d2 .nl { display: none; }
+    body.d1 .section-card, body.d2 .section-card { padding: 8px 12px; margin-bottom: 6px; border-radius: 12px; }
+    body.d1 .section-title, body.d2 .section-title { font-size: 0.95rem; margin-bottom: 4px; letter-spacing: 0.18em; }
+    body.d1 .title-underline, body.d2 .title-underline { height: 2px; margin-top: 2px; }
+    body.d1 .space-y-1 > *, body.d2 .space-y-1 > * { margin-top: 0 !important; margin-bottom: 0 !important; }
+    body.d1 .row-major, body.d2 .row-major { padding: 3px 6px; font-size: 0.95rem; }
+    body.d1 .row-major .text-xl, body.d2 .row-major .text-xl { font-size: 1.1rem; line-height: 1.3; }
+    body.d1 .bg-black\/20, body.d2 .bg-black\/20 { padding: 4px 10px !important; margin: 3px 0 !important; }
+    body.d1 .shiour-item, body.d2 .shiour-item { padding: 1px 0; font-size: 0.8rem; }
+    body.d1 .shiour-bloc, body.d2 .shiour-bloc { padding: 4px 0; }
+    body.d1 .shiour-bloc .shiour-item, body.d2 .shiour-bloc .shiour-item { padding-top: 2px; font-size: 0.82rem; }
+    body.d1 .sub-title, body.d2 .sub-title { margin-bottom: 3px; }
+    body.d1 #footer-site, body.d2 #footer-site { padding: 2px 0 0; }
+    body.d1 #footer-site p.italic, body.d2 #footer-site p.italic { display: none; }
+    body.d1 #maj-line, body.d2 #maj-line { margin: 0; }
+    body.d2 .main-container > div:first-of-type { display: none; }
+    body.d2 .row-major { padding: 1px 6px; font-size: 0.9rem; }
+    body.d2 .row-major .text-xl { font-size: 1rem; line-height: 1.2; }
+    body.d2 .shiour-item { font-size: 0.75rem; }
+    body.d2 .zman-box .text-lg, body.d2 .zman-box .text-2xl { font-size: 1rem; }
+    body.d2 .zman-box p.text-\[10px\] { margin-bottom: 0; line-height: 1.1; }
+    body.d2 .section-title { font-size: 0.85rem; margin-bottom: 2px; }
+    body.d2 .section-card { padding: 6px 10px; }
+    body.d2 .row-major { font-size: 0.85rem; }
+    body.d2 .row-major .text-xl { font-size: 0.95rem; }
+    body.d2 .title-underline { display: none; }
+    body.d2 .section-title { margin-bottom: 0; }
+    body.d2 .sub-title { margin-bottom: 0; font-size: 0.6rem; }
+    body.d2 .shiour-bloc { padding: 1px 0; }
+    body.d2 .jour-badge { margin-top: 2px; }
+    body.d2 .zman-box { padding: 3px 4px; }
+    body.d2 .zman-box .text-lg, body.d2 .zman-box .text-2xl { font-size: 0.95rem; }
+    body.d2 .annonce-card { padding: 4px 8px; margin-bottom: 4px; }
+    body.d2 #sheet-annonce_texte { font-size: 0.95rem; }
+    body.d2 nav { margin-bottom: 5px; }
+    body.d2 nav a, body.d2 nav button { padding-top: 5px; padding-bottom: 5px; }
     #maj-line { font-size: 0.7rem; opacity: 0.55; text-align: center; margin-bottom: 4px; }
     #offline-note { display: none; font-size: 0.75rem; text-align: center; color: #fbbf24; margin-bottom: 8px; }
     </style>
@@ -148,7 +200,7 @@
 
     <script>
 const API_URL = "https://api-syna.gregyman.workers.dev/";
-const format = FMT.toHtml;
+const format = t => FMT.toHtml(t).replace(/<br>/g, '<br class="nl"> ');   // en mode compact, les retours à la ligne deviennent des espaces
 const CACHE_KEY = "syna_v2_cache";
 
 // Valeur provisoire tant que l'ADMIN v2 n'a pas enregistré la liste "shiourim_semaine"
@@ -270,15 +322,29 @@ async function loadAll() {
     document.body.classList.add('loaded');
 }
 
-loadAll().catch(() => document.body.classList.add('loaded'));
-setInterval(() => loadAll().catch(() => {}), 300000);
+
+// Ajuste la densité pour que tout tienne sur un écran (sans défilement) quand c'est possible
+function fitScreen() {
+    const b = document.body;
+    if (document.getElementById('contenu-horaires').style.display === 'none') return;
+    b.classList.remove('d1', 'd2'); b.classList.add('measuring');
+    const fits = () => document.documentElement.scrollHeight <= window.innerHeight + 1;
+    if (!fits()) { b.classList.add('d1'); if (!fits()) { b.classList.remove('d1'); b.classList.add('d2'); } }
+    b.classList.remove('measuring');
+}
+window.addEventListener('resize', fitScreen);
+window.addEventListener('orientationchange', fitScreen);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitScreen);
+
+loadAll().then(fitScreen).catch(() => document.body.classList.add('loaded'));
+setInterval(() => loadAll().then(fitScreen).catch(() => {}), 300000);
 
 function afficher(choix) {
     const divHoraires = document.getElementById('contenu-horaires');
     const iframe = document.getElementById('cadre-externe');
     const footer = document.getElementById('footer-site');
     if (choix === 'horaires') {
-        divHoraires.style.display = 'block'; iframe.style.display = 'none';
+        divHoraires.style.display = 'block'; iframe.style.display = 'none'; setTimeout(fitScreen, 0);
         if (footer) footer.style.display = 'block';
         iframe.src = "";
     } else {
