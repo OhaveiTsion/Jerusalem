@@ -199,7 +199,13 @@ const API_URL = "https://api-syna.gregyman.workers.dev/";
 const NB = '\u00A0';
 // "Rav"/"Dr" ne sont jamais séparés du nom qui suit, et un nom entre parenthèses reste d'un seul bloc
 const keepNames = h => h.replace(/\(([^()<>]*)\)/g, (m, x) => '(' + x.replace(/ /g, NB) + ')').replace(/\b(Rav|Dr|Rabbi)[ ]+(?=[A-Za-zÀ-ÿ])/g, '$1' + NB);
-const format = t => keepNames(FMT.toHtml(t)).replace(/<br>/g, '<br class="nl"> ');   // en mode compact, les retours à la ligne deviennent des espaces
+// emojis en fin de libellé : collés entre eux et au dernier mot (jamais un emoji tout seul à la ligne)
+const glueEmojis = h => h.replace(/(\S)[ ]+((?:[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}][\uFE0F]?[ ]*)+)$/u, (m, w, e) => w + NB + e.trim().replace(/[ ]+/g, NB));
+const format = t => glueEmojis(keepNames(FMT.toHtml(t))).replace(/<br>/g, '<br class="nl"> ');
+// Retour à la ligne voulu avant "Kabalat Shabbat" (Minha du vendredi) : "Minha suivi de" / "Kabalat Shabbat et Arvit"
+const layoutLabel = (k, h) => k === 'minha_vendredi'
+    ? h.replace(/<br class="nl"> /g, ' ').replace(/[ ]*(<span class="f-bold">)[ ]*Kabalat/, '<br class="kb">$1Kabalat')
+    : h;   // en mode compact, les retours à la ligne deviennent des espaces
 const CACHE_KEY = "syna_v2_cache";
 
 // Valeur provisoire tant que l'ADMIN v2 n'a pas enregistré la liste "shiourim_semaine"
@@ -275,7 +281,7 @@ async function loadAll() {
     keys.forEach(k => {
         const label = document.getElementById(`label-${k}`), val = document.getElementById(`sheet-${k}`);
         if (!val || !sData[k]) return;
-        if (label && sData[k].intitule) label.innerHTML = format(sData[k].intitule);
+        if (label && sData[k].intitule) label.innerHTML = layoutLabel(k, format(sData[k].intitule));
         let finalVal = (sData[k].valeur || "").trim();
         if (finalVal === "" || finalVal === "--:--") {
             if (k === 'allumage_bougies') finalVal = backup.allumage;
