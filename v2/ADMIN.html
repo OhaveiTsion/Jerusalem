@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin v2 - Ohavei Tsion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../zmanim.js"></script>
+    <script src="fmt.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Frank+Ruhl+Libre:wght@400;700&display=swap');
+        :root { --bg-deep-blue: #0f34a1; --gold-border: #f1c40f; --card-blue: rgba(255, 255, 255, 0.08); }
+        body { font-family: 'Assistant', sans-serif; background-color: var(--bg-deep-blue); color: white; padding: 10px; display: flex; flex-direction: column; align-items: center; margin: 0; }
+        .admin-nav { position: sticky; top: 0; z-index: 2000; width: 100%; max-width: 500px; display: flex; gap: 10px; padding: 10px 0; background: var(--bg-deep-blue); }
+        .main-container { border: 3px solid var(--gold-border); border-radius: 20px; padding: 15px; width: 100%; max-width: 500px; background: linear-gradient(to bottom, #0f34a1, #0a2472); min-height: 80vh; display: flex; flex-direction: column; }
+        
+        .editable { background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); padding: 4px; border-radius: 6px; outline: none; min-height: 1.2em; display: inline-block; }
+        .editable:focus { border: 1px solid var(--gold-border); background: rgba(255,255,255,0.1); }
+        
+        /* Fixe la largeur des champs de valeurs pour éviter le rétrécissement */
+        [id$="_val"] { min-width: 85px; text-align: center; }
+        #parasha_val { min-width: 120px; }
+
+        .section-card { border: 1px solid rgba(255,255,255,0.15); border-radius: 15px; padding: 15px; background: var(--card-blue); margin-bottom: 10px; }
+        .section-title { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.2em; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .title-underline { width: 40px; height: 3px; background-color: var(--gold-border); margin-top: 4px; border-radius: 2px; }
+        .row-major { display: flex; justify-content: space-between; align-items: center; padding: 8px; }
+        
+        /* Style des suggestions Auto */
+        .hint-text { font-size: 12px; font-weight: 700; color: #fbbf24; margin-top: 2px; }
+        /* Version foncée pour le bloc blanc de l'allumage */
+        .hint-text-dark { color: #1e40af; opacity: 0.7; font-size: 11px; font-weight: 700; }
+
+        .f-btn { font-size: 10px; font-weight: bold; padding: 5px 12px; border-radius: 20px; background: #333; color: white; }
+    
+        @font-face { font-family: 'Stam Sefarad'; src: url('../Stam%20Sefarad%20CLM%20Medium.ttf'); }
+        .f-bold { font-weight: 800; } .f-red { color: #ff4d4d; }
+        body { padding-bottom: 120px; }
+        #toolbar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; background: #111; border-top: 2px solid var(--gold-border); padding: 8px; display: flex; gap: 6px; align-items: center; overflow-x: auto; white-space: nowrap; opacity: .35; pointer-events: none; transition: opacity .15s; }
+        #toolbar.on { opacity: 1; pointer-events: auto; }
+        #toolbar .tb { flex: 0 0 auto; min-width: 38px; height: 38px; padding: 0 10px; border-radius: 10px; background: #333; color: #fff; font-weight: 800; font-size: 14px; border: 1px solid #555; }
+        #toolbar .sw { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; }
+        #toolbar .sep { flex: 0 0 1px; height: 28px; background: #555; }
+        #toolbar select { flex: 0 0 auto; height: 38px; border-radius: 10px; background: #333; color: #fff; border: 1px solid #555; padding: 0 6px; }
+        .mini { font-size: 11px; opacity: .6; } .mv { opacity: .5; font-weight: 800; padding: 0 4px; }
+        .hint-empty { font-size: 10px; opacity: .6; text-align: center; margin-top: 4px; }
+        </style>
+</head>
+<body>
+    <div class="admin-nav">
+        <button onclick="location.reload()" class="flex-1 bg-blue-600 p-3 rounded-xl font-bold text-white text-xs">🔄 Actualiser</button>
+        <button onclick="sendData()" class="flex-[2] bg-green-600 p-3 rounded-xl font-black text-white text-lg">🚀 ENVOYER</button>
+    </div>
+
+        <div id="toolbar">
+        <button class="tb" data-cmd="bold"><b>G</b></button>
+        <button class="tb" data-cmd="italic"><i>I</i></button>
+        <button class="tb" data-cmd="underline"><u>S</u></button>
+        <span class="sep"></span>
+        <button class="sw" data-color="#ff4d4d" style="background:#ff4d4d" title="Rouge"></button>
+        <button class="sw" data-color="#f1c40f" style="background:#f1c40f" title="Or"></button>
+        <button class="sw" data-color="#4ade80" style="background:#4ade80" title="Vert"></button>
+        <button class="sw" data-color="#7dd3fc" style="background:#7dd3fc" title="Bleu clair"></button>
+        <button class="sw" data-color="#ffffff" style="background:#fff" title="Blanc"></button>
+        <span class="sep"></span>
+        <button class="tb" data-size="0.8" style="font-size:11px">A</button>
+        <button class="tb" data-size="1">A</button>
+        <button class="tb" data-size="1.25" style="font-size:18px">A</button>
+        <button class="tb" data-size="1.6" style="font-size:22px">A</button>
+        <span class="sep"></span>
+        <select id="tb-font"><option value="">Police</option><option value="Assistant">Normale</option><option value="Frank Ruhl Libre">Classique</option><option value="Stam Sefarad">Stam</option></select>
+        <span class="sep"></span>
+        <button class="tb" data-cmd="clear">Normal</button>
+    </div>
+
+    <div class="main-container">
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            <div class="bg-white rounded-xl p-2 text-blue-900 text-center flex flex-col justify-center items-center">
+                <p class="text-[10px] font-bold uppercase mb-1">Shabbat</p>
+                <div id="parasha_val" class="editable text-lg font-bold" contenteditable="true"></div>
+                <div id="auto-hint" class="text-[10px] mt-2 opacity-70 leading-tight"></div>
+            </div>
+            <div class="bg-white rounded-xl p-2 text-blue-900 text-center flex flex-col justify-center items-center">
+                <div id="allumage_bougies_label" class="editable text-[10px] font-bold text-red-500 uppercase mb-1" contenteditable="true">Allumage</div>
+                <div id="allumage_bougies_val" class="editable text-2xl font-bold text-red-600" contenteditable="true"></div>
+                <div id="hint-allumage" class="hint-text-dark"></div>
+            </div>
+        </div>
+
+        <div class="section-card text-center">
+            <div id="annonce_titre_val" class="editable text-xs italic opacity-60 w-full" contenteditable="true" placeholder="Titre Annonce"></div>
+            <div id="annonce_texte_val" class="editable text-lg font-bold mt-2 w-full" contenteditable="true" placeholder="Texte Annonce"></div>
+        </div>
+
+        <button onclick="addZone()" class="w-full bg-white/10 border border-dashed p-2 rounded-lg text-xs font-bold mb-4 uppercase hover:bg-white/20 transition">+ AJOUTER ZONE</button>
+        <div id="extra-sections"></div>
+
+        <div class="section-card">
+            <div class="section-title">SHABBAT<div class="title-underline"></div></div>
+            <div class="space-y-1 mt-4">
+                <div class="row-major"><div id="minha_vendredi_label" class="editable text-sm flex-1" contenteditable="true">Minha Vendredi</div><div id="minha_vendredi_val" class="editable text-xl font-bold ml-2" contenteditable="true"></div></div>
+                <div class="row-major border-t border-white/10 pt-1"><div id="chaharit_shabbat_label" class="editable text-sm flex-1" contenteditable="true">Shaharit</div><div id="chaharit_shabbat_val" class="editable text-xl font-bold ml-2" contenteditable="true"></div></div>
+                
+                <div class="bg-black/20 rounded-lg p-2 my-2 text-xs space-y-2">
+                    <div class="hint-empty" style="margin:0 0 4px">Horaire vide = le cours est caché du site. Écris --:-- pour l'afficher « à venir ».</div>
+                    <div class="flex justify-between items-center"><div id="shiour_dan_label" class="editable flex-1" contenteditable="true">Dan Chemla</div><div id="shiour_dan_val" class="editable font-bold ml-2" contenteditable="true"></div></div>
+                    <div class="flex justify-between items-center"><div id="shiour_saadia_label" class="editable flex-1" contenteditable="true">Saadia Khalfon</div><div id="shiour_saadia_val" class="editable font-bold ml-2" contenteditable="true"></div></div>
+                    <div class="flex justify-between items-center"><div id="shiour_haviv_label" class="editable flex-1" contenteditable="true">Rav Haviv</div><div id="shiour_haviv_val" class="editable font-bold ml-2" contenteditable="true"></div></div>
+                    <div class="flex justify-between items-center"><div id="shiour_guemara_label" class="editable flex-1" contenteditable="true">Guemara</div><div id="shiour_guemara_val" class="editable font-bold ml-2" contenteditable="true"></div></div>
+                </div>
+                
+                <div class="row-major border-t border-white/10 pt-1"><div id="minha_shabbat_label" class="editable text-sm flex-1" contenteditable="true">Minha / Seouda</div><div id="minha_shabbat_val" class="editable text-xl font-bold ml-2" contenteditable="true"></div></div>
+                
+                <div class="row-major border-t border-white/10 pt-1">
+                    <div id="arvit_motsach_label" class="editable text-sm flex-1" contenteditable="true">Arvit Motsae</div>
+                    <div class="flex flex-col items-end">
+                        <div id="arvit_motsach_val" class="editable text-xl font-bold ml-2" contenteditable="true"></div>
+                        <div id="hint-arvit" class="hint-text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">SEMAINE<div class="title-underline"></div></div>
+            <div class="space-y-1 mt-4">
+                <div class="row-major"><div id="chaharit_semaine_label" class="editable text-sm flex-1" contenteditable="true">Shaharit</div><div id="chaharit_semaine_val" class="editable text-xl font-bold ml-2" contenteditable="true"></div></div>
+                <div class="row-major border-t border-white/10 pt-1"><div id="minha_semaine_label" class="editable text-sm flex-1" contenteditable="true">Minha / Arvit</div><div id="minha_semaine_val" class="editable text-xl font-bold ml-2" contenteditable="true"></div></div>
+                <div class="bg-black/20 rounded-lg p-2 my-2">
+                    <div id="shiourim_title" class="editable text-xs uppercase tracking-widest opacity-80 text-center w-full" contenteditable="true">Cours de la semaine</div>
+                    <div id="shiourim-rows" class="space-y-1 mt-2"></div>
+                    <button onclick="addShiourRow()" class="w-full text-[10px] mt-2 opacity-60 bg-black/20 p-2 rounded hover:bg-black/40">+ AJOUTER UN COURS</button>
+                    <div class="hint-empty">Aucun cours dans la liste = le bloc disparaît du site</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="w-full text-center mt-auto pt-6 pb-2">
+            <p class="text-xs opacity-50 italic">© Greg u.</p>
+        </div>
+    </div>
+
+    
+    <script>
+        const API_URL = "https://api-syna.gregyman.workers.dev/";
+        const keys = ['allumage_bougies','minha_vendredi','chaharit_shabbat','shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara','minha_shabbat','arvit_motsach','chaharit_semaine','minha_semaine','annonce_titre','annonce_texte','parasha'];
+        let rawData = {};          // tout ce que l'API contenait (on le conserve, même les clés inconnues)
+        let original = {};         // valeurs au chargement, pour le résumé des changements
+        let activeEl = null;
+        const toTags = el => FMT.fromDom(el);
+        const toHtml = FMT.toHtml;
+
+        // ---------- barre de mise en forme ----------
+        const toolbar = document.getElementById('toolbar');
+        const root = el => el && el.closest ? el.closest('.editable') : null;
+        document.addEventListener('focusin', e => { const r = root(e.target); if (r) { activeEl = r; toolbar.classList.add('on'); } });
+        document.addEventListener('focusout', () => setTimeout(() => { if (!root(document.activeElement) && !toolbar.contains(document.activeElement)) { toolbar.classList.remove('on'); activeEl = null; } }, 250));
+        ['pointerdown', 'mousedown'].forEach(ev => toolbar.addEventListener(ev, e => { if (e.target.tagName !== 'SELECT') e.preventDefault(); }));
+        document.execCommand('styleWithCSS', false, false);
+
+        function applySize(ratio) {
+            if (!activeEl) return;
+            const basePx = parseFloat(getComputedStyle(activeEl).fontSize);
+            document.execCommand('fontSize', false, '7');
+            const made = [];
+            activeEl.querySelectorAll('font[size="7"]').forEach(f => {
+                const sp = document.createElement('span');
+                if (f.getAttribute('color')) sp.style.color = f.getAttribute('color');
+                if (f.getAttribute('face')) sp.style.fontFamily = f.getAttribute('face');
+                sp.style.fontSize = (basePx * ratio).toFixed(2) + 'px';
+                while (f.firstChild) sp.appendChild(f.firstChild);
+                f.replaceWith(sp); made.push(sp);
+            });
+            if (made.length) {   // on garde la sélection pour pouvoir enchaîner (couleur, gras...)
+                const r = document.createRange();
+                r.setStartBefore(made[0]); r.setEndAfter(made[made.length - 1]);
+                const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+            }
+        }
+        function clearFormat() {
+            if (!activeEl) return;
+            const sel = getSelection();
+            if (!sel.rangeCount || sel.isCollapsed) { activeEl.textContent = toTags(activeEl).replace(/\*\*|\{\/?[riucsf](?::[^}]*)?\}/g, ''); return; }
+            document.execCommand('removeFormat');
+            const r = sel.getRangeAt(0);
+            activeEl.querySelectorAll('span,b,i,u,font,strong,em').forEach(n => { if (r.intersectsNode(n)) { while (n.firstChild) n.parentNode.insertBefore(n.firstChild, n); n.remove(); } });
+        }
+        toolbar.addEventListener('click', e => {
+            const b = e.target.closest('button'); if (!b || !activeEl) return;
+            if (b.dataset.cmd === 'clear') clearFormat();
+            else if (b.dataset.cmd) document.execCommand(b.dataset.cmd);
+            else if (b.dataset.color) document.execCommand('foreColor', false, b.dataset.color);
+            else if (b.dataset.size) applySize(parseFloat(b.dataset.size));
+        });
+        document.getElementById('tb-font').addEventListener('change', e => {
+            if (!activeEl || !e.target.value) return;
+            activeEl.focus(); document.execCommand('fontName', false, e.target.value); e.target.value = '';
+        });
+
+        // collage en texte brut
+        document.addEventListener('paste', e => { if (root(e.target)) { e.preventDefault(); document.execCommand('insertText', false, e.clipboardData.getData('text/plain')); } });
+
+        // ---------- lignes dynamiques ----------
+        const rowHtml = (l, v, small) => `<div class="row-major border-t border-white/10 pt-1 dyn-r"><div class="editable text-sm flex-1 min-w-0" contenteditable="true">${toHtml(l)}</div><div class="editable ${small ? 'text-sm' : 'text-xl'} font-bold text-right ml-2" style="${small ? 'max-width:38%' : ''}" contenteditable="true">${toHtml(v)}</div><button class="mv" onclick="moveRow(this,-1)">▲</button><button class="mv" onclick="moveRow(this,1)">▼</button><button onclick="this.parentElement.remove()" class="ml-1 opacity-40 font-bold">X</button></div>`;
+        function moveRow(btn, dir) {
+            const row = btn.parentElement, sib = dir < 0 ? row.previousElementSibling : row.nextElementSibling;
+            if (!sib) return;
+            dir < 0 ? row.parentElement.insertBefore(row, sib) : row.parentElement.insertBefore(sib, row);
+        }
+        function addShiourRow(l = "📜 Cours du Rav ...", v = "") { document.getElementById('shiourim-rows').insertAdjacentHTML('beforeend', rowHtml(l, v, true)); }
+        function addZone(title = "TITRE ZONE", rows = []) {
+            const id = 'z' + Date.now() + Math.floor(Math.random() * 1000);
+            document.getElementById('extra-sections').insertAdjacentHTML('beforeend', `<div class="section-card extra-z" id="${id}"><div class="flex justify-between items-center"><div class="section-title editable flex-1 text-center" contenteditable="true" style="letter-spacing: 0.2em;">${toHtml(title)}</div><button onclick="this.closest('.extra-z').remove()" class="text-red-500 font-bold ml-2">X</button></div><div class="title-underline mx-auto mb-4"></div><div class="rows-cont space-y-1"></div><button onclick="addRow('${id}')" class="w-full text-[10px] mt-2 opacity-50 bg-black/20 p-2 rounded hover:bg-black/40">+ AJOUTER LIGNE</button></div>`);
+            if (rows.length) rows.forEach(r => addRow(id, r.label, r.val)); else addRow(id);
+        }
+        function addRow(zid, l = "Libellé", v = "") { document.querySelector(`#${zid} .rows-cont`).insertAdjacentHTML('beforeend', rowHtml(l, v)); }
+        const readRows = cont => [...cont.querySelectorAll('.dyn-r')].map(r => { const e = r.querySelectorAll('.editable'); return { label: toTags(e[0]), val: toTags(e[1]) }; });
+
+        // ---------- chargement ----------
+        async function loadData() {
+            try {
+                let d = new Date(); d.setDate(d.getDate() + (6 - d.getDay() + 7) % 7);
+                const key = d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
+                const backup = ZMANIM_TABLE[key] || { allumage: "--:--", arvit: "--:--" };
+                document.getElementById('hint-allumage').innerText = "Suggéré : " + backup.allumage;
+                document.getElementById('hint-arvit').innerText = "Suggéré : " + backup.arvit;
+
+                const data = rawData = await (await fetch(API_URL + "?_t=" + Date.now())).json();
+                keys.forEach(k => {
+                    const vEl = document.getElementById(`${k}_val`), lEl = document.getElementById(`${k}_label`);
+                    if (vEl && data[k]) { const v = (data[k].valeur || "").trim(); vEl.innerHTML = (v === "--:--" || v === "") ? "" : toHtml(v); }
+                    if (lEl && data[k]) lEl.innerHTML = toHtml(data[k].intitule);
+                });
+                // v2 : "--:--" doit rester visible pour les cours, on le remet tel quel
+                ['shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara'].forEach(k => { const v = data[k] && (data[k].valeur || "").trim(); if (v && v.startsWith("--:--")) document.getElementById(`${k}_val`).textContent = "--:--"; });
+                (data.extra_sections || []).forEach(s => addZone(s.title, s.rows));
+                const sh = data.shiourim_semaine || { intitule: "Cours de la semaine", rows: [{ label: "📜 Cours du Rav Belhassen\nMercredi soir", val: "Après Arvit" }] };
+                document.getElementById('shiourim_title').innerHTML = toHtml(sh.intitule || "Cours de la semaine");
+                (sh.rows || []).forEach(r => addShiourRow(r.label, r.val));
+                original = collect();
+
+                const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
+                const events = [], seen = new Set(), t = new Date();
+                const today = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`;
+                h.items.forEach(i => {
+                    if (i.date && i.date.substring(0, 10) < today) return;
+                    let name = i.title;
+                    if (i.category === "parashat") { name = i.title.replace("Parashat ", ""); if (!seen.has(name)) { events.push(`<b>${FMT.esc(name)}</b>`); seen.add(name); } }
+                    else if (["holiday", "roshchodesh", "mevarchim"].includes(i.category)) { if (!seen.has(name)) { events.push(FMT.esc(name)); seen.add(name); } }
+                });
+                document.getElementById('auto-hint').innerHTML = events.length ? "<b>Suggéré :</b><br>" + events.join(" <br> ") : "Aucun événement";
+            } catch (e) { console.error(e); }
+        }
+
+        function collect() {
+            const payload = {};
+            keys.forEach(k => {
+                const vEl = document.getElementById(`${k}_val`), lEl = document.getElementById(`${k}_label`);
+                const was = rawData[k] || {};
+                payload[k] = { ...was, intitule: lEl ? toTags(lEl) : (was.intitule || k), valeur: vEl ? toTags(vEl) : "" };
+            });
+            payload.extra_sections = [...document.querySelectorAll('.extra-z')].map(z => ({ title: toTags(z.querySelector('.section-title')), rows: readRows(z) })).filter(z => z.title);
+            payload.shiourim_semaine = { intitule: toTags(document.getElementById('shiourim_title')), rows: readRows(document.getElementById('shiourim-rows')) };
+            return payload;
+        }
+
+        function changesSummary(now) {
+            const out = [];
+            keys.forEach(k => {
+                const a = original[k] || {}, b = now[k];
+                if ((a.valeur || "").trim() !== (b.valeur || "").trim()) out.push(`• ${k} : « ${(a.valeur || "").split("\n")[0]} » → « ${(b.valeur || "").split("\n")[0]} »`);
+                else if ((a.intitule || "") !== (b.intitule || "")) out.push(`• ${k} (libellé modifié)`);
+            });
+            if (JSON.stringify(original.extra_sections) !== JSON.stringify(now.extra_sections)) out.push("• zones supplémentaires modifiées");
+            if (JSON.stringify(original.shiourim_semaine) !== JSON.stringify(now.shiourim_semaine)) out.push("• cours de la semaine modifiés");
+            return out;
+        }
+
+        async function sendData() {
+            const now = collect();
+            const diff = changesSummary(now);
+            if (!confirm(diff.length ? "Envoyer ces changements ?\n\n" + diff.join("\n") : "Aucun changement détecté. Envoyer quand même ?")) return;
+            let pass = null;
+            try { pass = sessionStorage.getItem('syna_pw'); } catch (e) {}
+            if (!pass) pass = prompt("Mot de passe :");
+            if (!pass) return;
+            const payload = { ...rawData, ...now, maj: new Date().toISOString() };
+            try {
+                const r = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ auth: pass, payload }) });
+                const txt = await r.text();
+                if (txt.includes("Succès") || txt.includes("success")) {
+                    try { sessionStorage.setItem('syna_pw', pass); } catch (e) {}
+                    rawData = payload; original = collect();
+                    alert("🚀 Sauvegardé !");
+                } else { try { sessionStorage.removeItem('syna_pw'); } catch (e) {} alert("Erreur du serveur : " + txt); }
+            } catch (e) { alert("Erreur de connexion : " + e.message); }
+        }
+        window.onload = loadData;
+    </script>
+</body>
+</html>
