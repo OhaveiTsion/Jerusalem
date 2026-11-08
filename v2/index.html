@@ -196,7 +196,10 @@
 
     <script>
 const API_URL = "https://api-syna.gregyman.workers.dev/";
-const format = t => FMT.toHtml(t).replace(/<br>/g, '<br class="nl"> ');   // en mode compact, les retours à la ligne deviennent des espaces
+const NB = '\u00A0';
+// "Rav"/"Dr" ne sont jamais séparés du nom qui suit, et un nom entre parenthèses reste d'un seul bloc
+const keepNames = h => h.replace(/\(([^()<>]*)\)/g, (m, x) => '(' + x.replace(/ /g, NB) + ')').replace(/\b(Rav|Dr|Rabbi)[ ]+(?=[A-Za-zÀ-ÿ])/g, '$1' + NB);
+const format = t => keepNames(FMT.toHtml(t)).replace(/<br>/g, '<br class="nl"> ');   // en mode compact, les retours à la ligne deviennent des espaces
 const CACHE_KEY = "syna_v2_cache";
 
 // Valeur provisoire tant que l'ADMIN v2 n'a pas enregistré la liste "shiourim_semaine"
@@ -331,7 +334,7 @@ function fitScreen() {
     if (document.getElementById('contenu-horaires').style.display === 'none') return;
     b.classList.add('measuring');
     const apply = s => {
-        const p = 0.85 * s;   // espacements un peu plus serrés que la base, texte jamais en dessous de la taille normale
+        const p = 0.65 * s;   // espacements un peu plus serrés que la base, texte jamais en dessous de la taille normale
         root.style.setProperty('--s', s.toFixed(3)); root.style.setProperty('--p', p.toFixed(3));
         b.classList.toggle('tight', s < 1.1);
     };
