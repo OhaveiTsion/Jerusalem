@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ohavei Tsion</title>
+    <title>Ohavei Tsion (v2 test)</title>
     
     <link rel="icon" type="image/png" href="icon-192.png">
     
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f34a1">
+        <meta name="theme-color" content="#0f34a1">
     <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="manifest" href="manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="zmanim.js"></script>
+    <script src="fmt.js"></script>
+    <script src="parasha.js"></script>
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Frank+Ruhl+Libre:wght@400;700&display=swap');
     :root { --bg-deep-blue: #0f34a1; --gold-border: #f1c40f; --card-blue: rgba(255, 255, 255, 0.08); }
     body { font-family: 'Assistant', sans-serif; background-color: var(--bg-deep-blue); color: white; padding: 10px; display: flex; justify-content: center; margin: 0; }
     
@@ -40,6 +42,71 @@
     .f-red { color: #ff4d4d !important; }
 
     .iframe-container { display: none; width: calc(100% + 30px); margin-left: -15px; margin-right: -15px; margin-bottom: -15px; height: 85vh; border-radius: 0 0 16px 16px; background-color: white; border: none; }
+    
+    @font-face { font-family: 'Stam Sefarad'; src: url('Stam%20Sefarad%20CLM%20Medium.ttf'); }
+    html { font-size: 16px; }
+    .shiour-item { gap: 12px; align-items: baseline; }
+    .shiour-item > span:last-child { text-align: right; }
+    .shiour-item:last-child { border-bottom: none; }
+    .shiour-bloc { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .shiour-bloc:last-child { border-bottom: none; padding-bottom: 0; }
+    .shiour-bloc:first-child { padding-top: 0; }
+    .shiour-bloc .shiour-item { border-bottom: none; padding: 4px 0 0; font-size: 1rem; }
+    .shiour-bloc .shiour-item { gap: 6px; align-items: baseline; font-size: 0.88rem; }
+    .shiour-bloc .shiour-item > span:last-child { white-space: nowrap; }
+    .jour-badge { display: inline-block; color: var(--gold-border); border: 1px solid rgba(241,196,15,0.6); font-weight: 700; font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 999px; padding: 0 8px; line-height: 1.5; }
+    .sub-title { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7; text-align: center; margin-bottom: 6px; font-weight: 700; }
+
+    /* ---- Taille automatique : la page s'agrandit ou se resserre pour remplir l'écran sans défilement.
+       --s = facteur d'échelle calculé par fitScreen() (1 = visuel de base). ---- */
+    :root { --s: 1; --p: 1; }
+    body.measuring .main-container { min-height: 0 !important; }
+    body { padding: calc(10px * var(--p)); }
+    .main-container { padding: calc(15px * var(--p)); border-radius: calc(20px * var(--s)); min-height: calc(100vh - 2 * 10px * var(--p)); }
+    .main-container > div:first-of-type { margin-bottom: calc(16px * var(--p)); padding-bottom: calc(12px * var(--p)); }
+    .main-container > div:first-of-type img { height: calc(40px * var(--s)); }
+    .main-container > div:first-of-type h1 { font-size: calc(1.25rem * var(--s)); }
+    body.tight .nl { display: none; }
+    .main-container nav { margin-bottom: calc(16px * var(--p)); }
+    .main-container nav button { font-size: calc(0.875rem * var(--s)); padding: calc(8px * var(--p)) 4px; }
+    .main-container .grid.grid-cols-2 { margin-bottom: calc(24px * var(--p)); gap: calc(12px * var(--p)); }
+    .main-container .zman-box { padding: calc(10px * var(--p)) 5px; }
+    .main-container .zman-box p:first-child { font-size: calc(10px * var(--s)); }
+    .main-container #shabbat-name { font-size: calc(1.125rem * var(--s)); }
+    .main-container #sheet-allumage_bougies { font-size: calc(1.5rem * var(--s)); }
+    .main-container .annonce-card { padding: calc(15px * var(--p)); margin-bottom: calc(15px * var(--p)); }
+    .main-container .annonce-titre-style { font-size: calc(0.8rem * var(--s)); margin-bottom: calc(10px * var(--p)); }
+    .main-container #sheet-annonce_texte { font-size: calc(1.25rem * var(--s)); }
+    .main-container .annonce-card .title-underline { margin-top: calc(12px * var(--p)); }
+    .main-container .section-card { padding: calc(15px * var(--p)); margin-bottom: calc(8px * var(--p)); border-radius: calc(15px * var(--s)); }
+    .main-container .section-title { font-size: calc(1.25rem * var(--s)); margin-bottom: calc(12px * var(--p)); }
+    .main-container .row-major { padding: calc(10px * var(--p)) calc(8px * var(--p)); font-size: calc(1rem * var(--s)); }
+    .main-container .row-major .text-xl { font-size: calc(1.25rem * var(--s)); }
+    .main-container .section-card .bg-black\/20 { padding: calc(12px * var(--p)) !important; margin: calc(8px * var(--p)) 0 !important; }
+    .main-container .shiour-item { padding: calc(6px * var(--p)) 0; font-size: calc(0.85rem * var(--s)); }
+    .main-container .shiour-bloc { padding: calc(8px * var(--p)) 0; }
+    .main-container .shiour-bloc:first-child { padding-top: 0; }
+    .main-container .shiour-bloc:last-child { padding-bottom: 0; }
+    .main-container .shiour-bloc .shiour-item { padding: calc(4px * var(--p)) 0 0; font-size: calc(0.88rem * var(--s)); }
+    .main-container .jour-badge { font-size: calc(0.6rem * var(--s)); }
+    .main-container .sub-title { font-size: calc(0.7rem * var(--s)); margin-bottom: calc(6px * var(--p)); }
+    .main-container #footer-site { padding-top: calc(24px * var(--p)); }
+    .main-container #maj-line { font-size: calc(0.7rem * var(--s)); }
+    .main-container #footer-site p.italic { font-size: calc(0.6rem * var(--s)); opacity: 0.35; margin: 0; line-height: 1.2; }
+    body.tight .main-container #footer-site { padding-top: calc(8px * var(--p)); padding-bottom: 0; }
+    /* Cours de la semaine : bloc lisible, à la même échelle que le reste */
+    .main-container #box-shiourim-semaine { padding: calc(14px * var(--p)) !important; margin-top: calc(12px * var(--p)) !important; }
+    .main-container .sub-title { font-size: calc(0.8rem * var(--s)); margin-bottom: calc(10px * var(--p)); color: #f1c40f; opacity: 1; }
+    .main-container .shiour-bloc { padding: calc(12px * var(--p)) 0; }
+    .main-container .shiour-bloc .shiour-item { padding: calc(6px * var(--p)) 0 0; font-size: calc(1.05rem * var(--s)); line-height: 1.3; gap: 12px; align-items: flex-start; }
+    .main-container .shiour-bloc .shiour-item > span:last-child { font-size: calc(1.15rem * var(--s)); white-space: nowrap; }
+    .main-container .jour-badge { font-size: calc(0.72rem * var(--s)); padding: 2px 10px; }
+    .nw { white-space: nowrap; }
+    #maj-line { font-size: 0.7rem; opacity: 0.55; text-align: right; margin: 0 0 0 auto; order: 2; }
+    #footer-site { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; text-align: left; }
+    #footer-site p.italic { order: 1; margin: 0 !important; white-space: nowrap; }
+    .main-container #footer-site { padding-left: calc(10px * var(--p)); padding-right: calc(10px * var(--p)); }
+    #offline-note { display: none; font-size: 0.75rem; text-align: center; color: #fbbf24; margin-bottom: 8px; }
     </style>
 </head>
 <body>
@@ -50,6 +117,7 @@
     </div>
 
     <div class="main-container shadow-2xl">
+        
         <div class="flex items-center mb-4 border-b border-white/10 pb-3">
             <div class="w-1/2 flex justify-center"><img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" class="h-10 w-auto rounded bg-white p-1"></div>
             <div class="w-1/2 flex justify-center"><h1 class="text-xl font-black italic text-white uppercase">Ohavei Tsion</h1></div>
@@ -66,6 +134,7 @@
         </nav>
 
         <div id="contenu-horaires" class="w-full flex-1">
+            <div id="offline-note">⚠️ Hors connexion : derniers horaires enregistrés</div>
             <div class="grid grid-cols-2 gap-3 mb-6">
                 <div class="zman-box">
                     <p class="text-[10px] font-bold uppercase opacity-60 mb-1">Shabbat</p>
@@ -108,6 +177,11 @@
                 <div class="space-y-1">
                     <div class="row-major"><span id="label-chaharit_semaine">Shaharit</span><span id="sheet-chaharit_semaine" class="text-xl font-bold">--:--</span></div>
                     <div class="row-major border-t border-white/10 pt-1"><span id="label-minha_semaine">Minha / Arvit</span><span id="sheet-minha_semaine" class="text-xl font-bold">--:--</span></div>
+
+                    <div id="box-shiourim-semaine" class="bg-black/20 rounded-lg p-3 my-2 border border-white/5" style="display:none">
+                        <div id="title-shiourim-semaine" class="sub-title">Cours de la semaine</div>
+                        <div id="list-shiourim-semaine"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -115,214 +189,197 @@
         <iframe id="cadre-externe" class="iframe-container" src=""></iframe>
 
         <div id="footer-site" class="w-full text-center mt-auto pt-6 pb-2">
+            <p id="maj-line"></p>
             <p class="text-xs opacity-50 italic">© Greg u.</p>
         </div>
     </div>
 
+    
+
     <script>
-        const API_URL = "https://api-syna.gregyman.workers.dev/";
+const API_URL = "https://api-syna.gregyman.workers.dev/";
+const NB = '\u00A0';
+// "Rav"/"Dr" ne sont jamais séparés du nom qui suit, et un nom entre parenthèses reste d'un seul bloc
+const keepNames = h => h.replace(/\(([^()<>]*)\)/g, (m, x) => '(' + x.replace(/ /g, NB) + ')').replace(/\b(Rav|Dr|Rabbi)[ ]+(?=[A-Za-zÀ-ÿ])/g, '$1' + NB);
+// emojis en fin de libellé : collés entre eux et au dernier mot (jamais un emoji tout seul à la ligne)
+const glueEmojis = h => h.replace(/(\S)[ ]+((?:[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}][\uFE0F]?[ ]*)+)$/u, (m, w, e) => '<span class="nw">' + w + NB + e.trim().replace(/[ ]+/g, NB) + '</span>');
+const format = t => glueEmojis(keepNames(FMT.toHtml(t))).replace(/<br>/g, '<br class="nl"> ');
+// Retour à la ligne voulu avant "Kabalat Shabbat" (Minha du vendredi) : "Minha suivi de" / "Kabalat Shabbat et Arvit"
+const layoutLabel = (k, h) => {
+    if (k === 'minha_vendredi') return h.replace(/<br class="nl"> /g, ' ').replace(/[ ]*(<span class="f-bold">)[ ]*Kabalat/, '<br class="kb">$1Kabalat');
+    if (k === 'minha_shabbat') return h.replace(/<br class="nl"> /g, ' ').replace(/\s*Suivi de/, '<br class="kb">Suivi de');   // "Minha" / "Suivi de Séouda Shlishit 🥖🌶️🐟"
+    return h;
+};   // en mode compact, les retours à la ligne deviennent des espaces
+const CACHE_KEY = "syna_v2_cache";
 
-        function format(t) { 
-            if(!t) return "";
-            let clean = t.replace(/<[^>]*>/g, "").replace(/&nbsp;|\u00A0/g, " ").replace(/[ ]{2,}/g, " ").trim();
-            return clean.replace(/\*\*(.*?)\*\*/g, '<span class="f-bold">$1</span>').replace(/\{r\}(.*?)\{\/r\}/g, '<span class="f-red">$1</span>').replace(/\n/g, "<br>");
-        }
-
-const PARASHA_NAMES = {
-    "Bereshit": "Béréchit",
-    "Noach": "Noa'h",
-    "Lech-Lecha": "Lekh Lekha",
-    "Vayera": "Vayéra",
-    "Chayei Sara": "Hayé Sarah",
-    "Toldot": "Toldot",
-    "Vayetzei": "Vayétsé",
-    "Vayishlach": "Vayichlah",
-    "Vayeshev": "Vayéchev",
-    "Miketz": "Miketz",
-    "Vayigash": "Vayigach",
-    "Vayechi": "Vayé'hi",
-    "Shemot": "Chémot",
-    "Vaera": "Va'éra",
-    "Bo": "Bo",
-    "Beshalach": "Béchala'h",
-    "Yitro": "Yitro",
-    "Mishpatim": "Michpatim",
-    "Terumah": "Térouma",
-    "Tetzaveh": "Tétsavé",
-    "Ki Tisa": "Ki Tissa",
-    "Vayakhel": "Vayakhel",
-    "Pekudei": "Pékoudé",
-    "Vayikra": "Vayikra",
-    "Tzav": "Tsav",
-    "Shmini": "Chémini",
-    "Tazria": "Tazria",
-    "Metzora": "Métsora",
-    "Achrei Mot": "A'haré Mot",
-    "Kedoshim": "Kédochim",
-    "Emor": "Emor",
-    "Behar": "Béhar",
-    "Bechukotai": "Bé'houkotaï",
-    "Bamidbar": "Bamidbar",
-    "Nasso": "Nasso",
-    "Beha'alotcha": "Béha'alotékha",
-    "Sh'lach": "Chéla'h",
-    "Korach": "Kora'h",
-    "Chukat": "Houkat",
-    "Balak": "Balak",
-    "Pinchas": "Pin'has",
-    "Matot": "Matot",
-    "Masei": "Massé",
-    "Devarim": "Devarim",
-    "Vaetchanan": "Va'et'hanan",
-    "Eikev": "Ekev",
-    "Re'eh": "Réé",
-    "Shoftim": "Choftim",
-    "Ki Teitzei": "Ki Tétsé",
-    "Ki Tavo": "Ki Tavo",
-    "Nitzavim": "Nitsavim",
-    "Vayeilech": "Vayélekh",
-    "Ha'Azinu": "Haazinou",
-    "Vezot Haberachah": "Vézot Habérakha"
+// Valeur provisoire tant que l'ADMIN v2 n'a pas enregistré la liste "shiourim_semaine"
+const DEFAULT_SHIOURIM_SEMAINE = {
+    intitule: "Cours de la semaine",
+    rows: [
+        { jour: "Dimanche → Vendredi", label: "📜 Houmash Rachi (Dr Bellaïche)", val: "8:00 – 9:00" },
+        { jour: "Dim. · Mar. · Jeu.", label: "📜 Guémara (Dr Bellaïche)", val: "Après Arvit" },
+        { jour: "Les mercredis", label: "📜 Parashat Hashavoua (Rav Belhassen)", val: "Après Arvit" },
+        { jour: "Un mardi sur deux", label: "📜 Les secrets cachés de la parasha (Dr Roger Benassouli)", val: "19:00" }
+    ]
 };
 
-function translateParasha(title) {
-    if (PARASHA_NAMES[title]) return PARASHA_NAMES[title];
-    if (title.includes('-')) {
-        return title.split('-').map(p => PARASHA_NAMES[p.trim()] || p.trim()).join('-');
-    }
-    return title;
+const store = {
+    get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+async function getJson(url) {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(url + ' ' + r.status);
+    return r.json();
 }
 
-        async function loadAll() {
-            try {
-                let d = new Date();
-                let diff = (6 - d.getDay() + 7) % 7;
-                d.setDate(d.getDate() + diff);
-                const nextSatKey = d.toLocaleDateString('fr-FR', {day:'2-digit', month:'2-digit', year:'2-digit'});
-                const backup = ZMANIM_TABLE[nextSatKey] || { allumage: "--:--", arvit: "--:--" };
+function formatMaj(iso) {
+    const d = new Date(iso);
+    if (isNaN(d)) return "";
+    return "Mis à jour : " + d.toLocaleString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+}
 
-                // ANTI-CACHE AGRESSIF POUR LE MOBILE
-                const hRes = await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s&_t=' + Date.now());
-                const hData = await hRes.json();
-                
-                let nomShabbatAuto = "--";
-                const eventP = hData.items.find(i => i.category === "parashat");
-                if (eventP) nomShabbatAuto = translateParasha(eventP.title.replace("Parashat ", ""));
+async function loadAll() {
+    let d = new Date();
+    d.setDate(d.getDate() + (6 - d.getDay() + 7) % 7);
+    const nextSatKey = d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
+    const backup = (typeof ZMANIM_TABLE !== 'undefined' && ZMANIM_TABLE[nextSatKey]) || { allumage: "--:--", arvit: "--:--" };
 
-                const daysFr = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
-                
-                // INJECTION DIRECTE EN HTML (On bypass format())
-                const specialEvents = hData.items
-                    .filter(i => ["holiday", "roshchodesh", "special-shabbat", "mevarchim"].includes(i.category))
-                    .map(i => {
-                        const dateParts = i.date.split('-');
-                        const dEv = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-                        const dayIdx = dEv.getDay();
-                        
-                        const currentName = (dayIdx === 6) ? "Chabbat" : daysFr[dayIdx];
-                        const prevName = (dayIdx === 6) ? "Vendredi" : daysFr[(dayIdx - 1 + 7) % 7];
+    const [hRes, sRes] = await Promise.allSettled([
+        getJson('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s&_t=' + Date.now()),
+        getJson(API_URL + "?_t=" + Date.now())
+    ]);
 
-                        if (i.category === "holiday" || i.category === "roshchodesh") {
-                            return `${prevName} soir et ${currentName} : <span style="font-weight:bold;">${i.title}</span>`;
-                        } else {
-                            return `<span style="font-weight:bold;">${i.title}</span>`;
-                        }
-                    })
-                    .join("<br>"); // Vrai saut de ligne HTML
+    let sData, offline = false;
+    if (sRes.status === 'fulfilled') { sData = sRes.value; store.set(CACHE_KEY, sData); }
+    else { sData = store.get(CACHE_KEY); offline = true; }
+    document.getElementById('offline-note').style.display = offline ? 'block' : 'none';
+    if (!sData) { document.body.classList.add('loaded'); return; }
 
-                // ANTI-CACHE POUR TON API
-                const sheetRes = await fetch(API_URL + "?_t=" + Date.now());
-                const sData = await sheetRes.json();
+    // Hebcal (facultatif : si indisponible, on affiche quand même tout le reste)
+    let nomShabbatAuto = "--", specialEvents = "";
+    if (hRes.status === 'fulfilled') {
+        const items = hRes.value.items || [];
+        const eventP = items.find(i => i.category === "parashat");
+        if (eventP) nomShabbatAuto = translateParasha(eventP.title.replace("Parashat ", ""));
+        const daysFr = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+        specialEvents = items
+            .filter(i => ["holiday", "roshchodesh", "special-shabbat", "mevarchim"].includes(i.category))
+            .map(i => {
+                const p = i.date.split('-');
+                const dayIdx = new Date(p[0], p[1] - 1, p[2]).getDay();
+                const cur = (dayIdx === 6) ? "Chabbat" : daysFr[dayIdx];
+                const prev = (dayIdx === 6) ? "Vendredi" : daysFr[(dayIdx + 6) % 7];
+                const title = FMT.esc(i.title);
+                return (i.category === "holiday" || i.category === "roshchodesh")
+                    ? `${prev} soir et ${cur} : <span style="font-weight:bold;">${title}</span>`
+                    : `<span style="font-weight:bold;">${title}</span>`;
+            }).join("<br>");
+    }
 
-                const pMan = sData.parasha?.valeur;
-                document.getElementById('shabbat-name').innerHTML = (pMan && pMan.trim() !== "" && pMan !== "--") ? format(pMan) : `<span class="f-bold">${nomShabbatAuto}</span>`;
+    const pMan = sData.parasha && sData.parasha.valeur;
+    document.getElementById('shabbat-name').innerHTML = (pMan && pMan.trim() !== "" && pMan !== "--") ? format(pMan) : `<span class="f-bold">${FMT.esc(nomShabbatAuto)}</span>`;
 
-                const keys = ['allumage_bougies','minha_vendredi','chaharit_shabbat','shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara','minha_shabbat','arvit_motsach','chaharit_semaine','minha_semaine'];
-                keys.forEach(k => {
-                    const label = document.getElementById(`label-${k}`), val = document.getElementById(`sheet-${k}`);
-                    if(label && sData[k]) label.innerHTML = format(sData[k].intitule);
-                    if(val && sData[k]) {
-                        let finalVal = sData[k].valeur.trim();
-                        if(finalVal === "" || finalVal === "--:--") {
-                            if(k === 'allumage_bougies') finalVal = backup.allumage;
-                            if(k === 'arvit_motsach') finalVal = backup.arvit;
-                        }
-                        val.innerHTML = format(finalVal);
-                        if (k.startsWith('shiour_')) {
-                            const box = document.getElementById(`box-${k.split('_')[1]}`);
-                            if (box) box.style.display = (finalVal === "" || finalVal === "--:--") ? 'none' : 'flex';
-                        }
-                    }
-                });
-
-                const aT_API = sData.annonce_titre?.valeur;
-                const aX_API = sData.annonce_texte?.valeur;
-
-                const now = new Date();
-                const day = now.getDay();
-                const hour = now.getHours();
-                const isShavouaTovTime = (day === 6 && hour >= 15) || day === 0 || day === 1 || day === 2;
-                const autoMessage = isShavouaTovTime ? "Shavoua Tov !" : "Shabbat Shalom !";
-
-                const b = document.getElementById('announcement-block');
-                
-                // Si l'API de l'ADMIN a une info, on formate, SINON on injecte le HTML pur des événements automatiques
-                const final_aT = (aT_API && aT_API.trim() !== "" && aT_API !== "--") ? format(aT_API) : specialEvents;
-                const final_aX = (aX_API && aX_API.trim() !== "" && aX_API !== "--") ? format(aX_API) : autoMessage;
-
-                if((final_aT && final_aT.trim() !== "") || (final_aX && final_aX.trim() !== "")) {
-                    b.style.display = 'block';
-                    document.getElementById('sheet-annonce_titre').innerHTML = final_aT; // Plus de format() ici pour ne pas casser !
-                    document.getElementById('sheet-annonce_texte').innerHTML = final_aX; // Plus de format() ici non plus
-                } else {
-                    b.style.display = 'none';
-                }
-
-                const container = document.getElementById('extra-sections-container');
-                container.innerHTML = '';
-                if(sData.extra_sections) {
-                    sData.extra_sections.forEach(sec => {
-                        const rows = sec.rows.map((r, i) => `<div class="row-major ${i>0?'border-t border-white/10 pt-1':''}"><span>${format(r.label)}</span><span class="text-xl font-bold">${format(r.val)}</span></div>`).join('');
-                        container.insertAdjacentHTML('beforeend', `<div class="section-card"><div class="section-title">${sec.title}<div class="title-underline"></div></div><div class="space-y-1">${rows}</div></div>`);
-                    });
-                }
-                document.body.classList.add('loaded');
-            } catch(e) { document.body.classList.add('loaded'); }
+    const keys = ['allumage_bougies','minha_vendredi','chaharit_shabbat','shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara','minha_shabbat','arvit_motsach','chaharit_semaine','minha_semaine'];
+    keys.forEach(k => {
+        const label = document.getElementById(`label-${k}`), val = document.getElementById(`sheet-${k}`);
+        if (!val || !sData[k]) return;
+        if (label && sData[k].intitule) label.innerHTML = layoutLabel(k, format(sData[k].intitule));
+        let finalVal = (sData[k].valeur || "").trim();
+        if (finalVal === "" || finalVal === "--:--") {
+            if (k === 'allumage_bougies') finalVal = backup.allumage;
+            if (k === 'arvit_motsach') finalVal = backup.arvit;
         }
-        
-        loadAll(); 
-        setInterval(loadAll, 300000);
-
-        function afficher(choix) {
-            const divHoraires = document.getElementById('contenu-horaires');
-            const iframe = document.getElementById('cadre-externe');
-            const footer = document.getElementById('footer-site');
-
-            if (choix === 'horaires') {
-                divHoraires.style.display = 'block';
-                iframe.style.display = 'none';
-                if(footer) footer.style.display = 'block';
-                iframe.src = ""; 
-            } else if (choix === 'maftir') {
-                divHoraires.style.display = 'none';
-                iframe.style.display = 'block';
-                if(footer) footer.style.display = 'none';
-                iframe.src = "https://ohaveitsion.github.io/Jerusalem/Maftir.html";
-            } else if (choix === 'tehilim') {
-                divHoraires.style.display = 'none';
-                iframe.style.display = 'block';
-                if(footer) footer.style.display = 'none';
-                iframe.src = "https://gregysite.github.io/Tehilim/";
-            }
+        val.innerHTML = format(finalVal);
+        if (k.startsWith('shiour_')) {
+            // v2 : un cours est caché seulement si sa valeur est vide ("--:--" reste affiché)
+            const box = document.getElementById(`box-${k.split('_')[1]}`);
+            if (box) box.style.display = finalVal === "" ? 'none' : 'flex';
         }
+    });
 
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').then((reg) => {
-                    console.log('Service worker enregistré.', reg);
-                });
-            });
-        }
+    // Annonce
+    const aT = sData.annonce_titre && sData.annonce_titre.valeur;
+    const aX = sData.annonce_texte && sData.annonce_texte.valeur;
+    const now = new Date(), day = now.getDay(), hour = now.getHours();
+    const autoMessage = ((day === 6 && hour >= 15) || day === 0 || day === 1 || day === 2) ? "Shavoua Tov !" : "Shabbat Shalom !";
+    const finalT = (aT && aT.trim() !== "" && aT !== "--") ? format(aT) : specialEvents;
+    const finalX = (aX && aX.trim() !== "" && aX !== "--") ? format(aX) : autoMessage;
+    const b = document.getElementById('announcement-block');
+    if ((finalT && finalT.trim() !== "") || (finalX && finalX.trim() !== "")) {
+        b.style.display = 'block';
+        document.getElementById('sheet-annonce_titre').innerHTML = finalT;
+        document.getElementById('sheet-annonce_texte').innerHTML = finalX;
+    } else b.style.display = 'none';
+
+    // Zones supplémentaires
+    const container = document.getElementById('extra-sections-container');
+    container.innerHTML = '';
+    (sData.extra_sections || []).forEach(sec => {
+        const rows = (sec.rows || []).map((r, i) => `<div class="row-major ${i > 0 ? 'border-t border-white/10 pt-1' : ''}"><span>${format(r.label)}</span><span class="text-xl font-bold">${format(r.val)}</span></div>`).join('');
+        container.insertAdjacentHTML('beforeend', `<div class="section-card"><div class="section-title">${format(sec.title)}<div class="title-underline"></div></div><div class="space-y-1">${rows}</div></div>`);
+    });
+
+    // Cours de la semaine (nouveau)
+    const sh = sData.shiourim_semaine || DEFAULT_SHIOURIM_SEMAINE;
+    const shRows = (sh.rows || []).filter(r => (r.label || "").trim() !== "" || (r.val || "").trim() !== "");
+    const shBox = document.getElementById('box-shiourim-semaine');
+    if (shRows.length) {
+        document.getElementById('title-shiourim-semaine').innerHTML = format(sh.intitule || "Cours de la semaine");
+        document.getElementById('list-shiourim-semaine').innerHTML = shRows.map(r =>
+            `<div class="shiour-bloc">${(r.jour || "").trim() ? `<div class="jour-badge">${format(r.jour)}</div>` : ''}<div class="shiour-item"><span>${format(r.label).replace(/^(.{1,26}?)[ ]*(\([^()<>]*\))$/, '$1<br class="kb">$2')}</span><span class="font-bold">${format(r.val)}</span></div></div>`).join('');
+        shBox.style.display = 'block';
+    } else shBox.style.display = 'none';
+
+    document.getElementById('maj-line').textContent = sData.maj ? formatMaj(sData.maj) : "";
+    document.body.classList.add('loaded');
+}
+
+
+// Choisit le plus grand facteur d'échelle pour lequel tout tient sur l'écran (sans défilement)
+const S_MIN = 1.0, S_MAX = 1.6;   // plancher de lisibilité : le texte ne descend jamais sous ~15 px
+function fitScreen() {
+    const b = document.body, root = document.documentElement;
+    if (document.getElementById('contenu-horaires').style.display === 'none') return;
+    b.classList.add('measuring');
+    const apply = s => {
+        const p = 0.65 * s;   // espacements un peu plus serrés que la base, texte jamais en dessous de la taille normale
+        root.style.setProperty('--s', s.toFixed(3)); root.style.setProperty('--p', p.toFixed(3));
+        b.classList.toggle('tight', s < 1.1);
+    };
+    const fits = s => { apply(s); return root.scrollHeight <= window.innerHeight + 1; };
+    let lo = S_MIN, hi = S_MAX, best = S_MIN;
+    if (fits(S_MAX)) best = S_MAX;
+    else { for (let i = 0; i < 9; i++) { const mid = (lo + hi) / 2; if (fits(mid)) { best = mid; lo = mid; } else hi = mid; } }
+    apply(best);
+    b.classList.remove('measuring');
+}
+window.addEventListener('resize', fitScreen);
+window.addEventListener('orientationchange', fitScreen);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitScreen);
+
+loadAll().then(fitScreen).catch(() => document.body.classList.add('loaded'));
+setInterval(() => loadAll().then(fitScreen).catch(() => {}), 300000);
+
+function afficher(choix) {
+    const divHoraires = document.getElementById('contenu-horaires');
+    const iframe = document.getElementById('cadre-externe');
+    const footer = document.getElementById('footer-site');
+    if (choix === 'horaires') {
+        divHoraires.style.display = 'block'; iframe.style.display = 'none'; setTimeout(fitScreen, 0);
+        if (footer) footer.style.display = 'block';
+        iframe.src = "";
+    } else {
+        divHoraires.style.display = 'none'; iframe.style.display = 'block';
+        if (footer) footer.style.display = 'none';
+        iframe.src = choix === 'maftir' ? "https://ohaveitsion.github.io/Jerusalem/Maftir.html" : "https://gregysite.github.io/Tehilim/";
+    }
+}
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+}
 
 let deferredPrompt;
 const installBanner = document.getElementById('install-banner');
