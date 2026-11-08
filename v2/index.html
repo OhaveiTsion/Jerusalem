@@ -47,7 +47,6 @@
     .shiour-item { gap: 12px; align-items: baseline; }
     .shiour-item > span:last-child { text-align: right; }
     .shiour-item:last-child { border-bottom: none; }
-    .shiour-bloc .ln { white-space: nowrap; }
     .shiour-bloc { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
     .shiour-bloc:last-child { border-bottom: none; padding-bottom: 0; }
     .shiour-bloc:first-child { padding-top: 0; }
@@ -328,7 +327,7 @@ async function loadAll() {
     if (shRows.length) {
         document.getElementById('title-shiourim-semaine').innerHTML = format(sh.intitule || "Cours de la semaine");
         document.getElementById('list-shiourim-semaine').innerHTML = shRows.map(r =>
-            `<div class="shiour-bloc">${(r.jour || "").trim() ? `<div class="jour-badge">${format(r.jour)}</div>` : ''}<div class="shiour-item"><span>${format(r.label).replace(/[ ]*(\([^()<>]*\))$/, '<br class="kb">$1').replace(/^(.*?)(<br class="kb">)/, '<span class="ln">$1</span>$2')}</span><span class="font-bold">${format(r.val)}</span></div></div>`).join('');
+            `<div class="shiour-bloc">${(r.jour || "").trim() ? `<div class="jour-badge">${format(r.jour)}</div>` : ''}<div class="shiour-item"><span>${format(r.label).replace(/[ ]*(\([^()<>]*\))$/, '<br class="kb">$1')}</span><span class="font-bold">${format(r.val)}</span></div></div>`).join('');
         shBox.style.display = 'block';
     } else shBox.style.display = 'none';
 
@@ -339,15 +338,6 @@ async function loadAll() {
 
 // Choisit le plus grand facteur d'échelle pour lequel tout tient sur l'écran (sans défilement)
 const S_MIN = 1.0, S_MAX = 1.6;   // plancher de lisibilité : le texte ne descend jamais sous ~15 px
-// Garde la 1re ligne d'un cours (avant le nom du Rav) sur une seule ligne : réduit légèrement la police si besoin
-function fitLines() {
-    document.querySelectorAll('.shiour-bloc .shiour-item > span:first-child').forEach(sp => {
-        const ln = sp.querySelector('.ln'); if (!ln) return;
-        ln.style.fontSize = ''; sp.style.minWidth = '0';
-        const base = parseFloat(getComputedStyle(ln).fontSize); let f = base;
-        while (ln.getBoundingClientRect().width > sp.clientWidth + 0.5 && f > base * 0.8) { f -= 0.5; ln.style.fontSize = f + 'px'; }
-    });
-}
 function fitScreen() {
     const b = document.body, root = document.documentElement;
     if (document.getElementById('contenu-horaires').style.display === 'none') return;
@@ -356,7 +346,6 @@ function fitScreen() {
         const p = 0.65 * s;   // espacements un peu plus serrés que la base, texte jamais en dessous de la taille normale
         root.style.setProperty('--s', s.toFixed(3)); root.style.setProperty('--p', p.toFixed(3));
         b.classList.toggle('tight', s < 1.1);
-        fitLines();
     };
     const fits = s => { apply(s); return root.scrollHeight <= window.innerHeight + 1; };
     let lo = S_MIN, hi = S_MAX, best = S_MIN;
