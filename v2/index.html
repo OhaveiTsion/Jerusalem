@@ -65,8 +65,8 @@
     .main-container > div:first-of-type { margin-bottom: calc(16px * var(--p)); padding-bottom: calc(12px * var(--p)); }
     .main-container > div:first-of-type img { height: calc(40px * var(--s)); }
     .main-container > div:first-of-type h1 { font-size: calc(1.25rem * var(--s)); }
-    body.tiny .main-container > div:first-of-type { display: none; }
     body.tight .nl { display: none; }
+    body.tight .sub-title { display: none; }
     .main-container nav { margin-bottom: calc(16px * var(--p)); }
     .main-container nav button { font-size: calc(0.875rem * var(--s)); padding: calc(8px * var(--p)) 4px; }
     .main-container .grid.grid-cols-2 { margin-bottom: calc(24px * var(--p)); gap: calc(12px * var(--p)); }
@@ -310,15 +310,15 @@ async function loadAll() {
 
 
 // Choisit le plus grand facteur d'échelle pour lequel tout tient sur l'écran (sans défilement)
-const S_MIN = 0.8, S_MAX = 1.6;
+const S_MIN = 0.9, S_MAX = 1.6;   // plancher de lisibilité : le texte ne descend jamais sous ~15 px
 function fitScreen() {
     const b = document.body, root = document.documentElement;
     if (document.getElementById('contenu-horaires').style.display === 'none') return;
     b.classList.add('measuring');
     const apply = s => {
-        const p = s >= 1 ? s : 0.05 + (s - S_MIN) / (1 - S_MIN) * 0.95;   // l'espacement diminue plus vite que le texte
+        const p = s >= 1 ? s : 0.3 + (s - S_MIN) / (1 - S_MIN) * 0.7;   // l'espacement diminue plus vite que le texte, mais jamais en dessous de 30 %
         root.style.setProperty('--s', s.toFixed(3)); root.style.setProperty('--p', p.toFixed(3));
-        b.classList.toggle('tight', s < 0.95); b.classList.toggle('tiny', s < 0.86);
+        b.classList.toggle('tight', s < 1.1);
     };
     const fits = s => { apply(s); return root.scrollHeight <= window.innerHeight + 1; };
     let lo = S_MIN, hi = S_MAX, best = S_MIN;
