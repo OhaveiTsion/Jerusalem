@@ -189,7 +189,6 @@
         <iframe id="cadre-externe" class="iframe-container" src=""></iframe>
 
         <div id="footer-site" class="w-full text-center mt-auto pt-6 pb-2">
-            <p id="maj-line"></p>
             <p class="text-xs opacity-50 italic">© Greg u.</p>
         </div>
     </div>
@@ -332,7 +331,6 @@ async function loadAll() {
         shBox.style.display = 'block';
     } else shBox.style.display = 'none';
 
-    document.getElementById('maj-line').textContent = sData.maj ? formatMaj(sData.maj) : "";
     document.body.classList.add('loaded');
 }
 
