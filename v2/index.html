@@ -327,7 +327,7 @@ async function loadAll() {
     if (shRows.length) {
         document.getElementById('title-shiourim-semaine').innerHTML = format(sh.intitule || "Cours de la semaine");
         document.getElementById('list-shiourim-semaine').innerHTML = shRows.map(r =>
-            `<div class="shiour-bloc">${(r.jour || "").trim() ? `<div class="jour-badge">${format(r.jour)}</div>` : ''}<div class="shiour-item"><span>${format(r.label)}</span><span class="font-bold">${format(r.val)}</span></div></div>`).join('');
+            `<div class="shiour-bloc">${(r.jour || "").trim() ? `<div class="jour-badge">${format(r.jour)}</div>` : ''}<div class="shiour-item"><span>${format(r.label).replace(/[ ]*(\([^()<>]*\))$/, '<br class="kb">$1')}</span><span class="font-bold">${format(r.val)}</span></div></div>`).join('');
         shBox.style.display = 'block';
     } else shBox.style.display = 'none';
 
