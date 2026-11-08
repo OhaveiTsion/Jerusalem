@@ -2,7 +2,7 @@
 
 Même API et mêmes données que la v1 : la v1 continue de fonctionner sans changement.
 
-- `v2/index.html` : page publique (même visuel + bloc « Cours de la semaine » + bouton A+ + dernière mise à jour + mode hors connexion)
+- `v2/index.html` : page publique (même visuel + bloc « Cours de la semaine » + dernière mise à jour + mode hors connexion)
 - `v2/ADMIN.html` : édition avec barre de mise en forme, cours de la semaine, résumé des changements avant envoi
 - `v2/fmt.js` : lecture/écriture de la mise en forme (partagé par les deux pages)
 - `v2/parasha.js` : noms des parashiot en français

@@ -203,17 +203,20 @@
         // ---------- lignes dynamiques ----------
         const rowHtml = (l, v, small) => `<div class="row-major border-t border-white/10 pt-1 dyn-r"><div class="editable text-sm flex-1 min-w-0" contenteditable="true">${toHtml(l)}</div><div class="editable ${small ? 'text-sm' : 'text-xl'} font-bold text-right ml-2" style="${small ? 'max-width:38%' : ''}" contenteditable="true">${toHtml(v)}</div><button class="mv" onclick="moveRow(this,-1)">▲</button><button class="mv" onclick="moveRow(this,1)">▼</button><button onclick="this.parentElement.remove()" class="ml-1 opacity-40 font-bold">X</button></div>`;
         function moveRow(btn, dir) {
-            const row = btn.parentElement, sib = dir < 0 ? row.previousElementSibling : row.nextElementSibling;
+            const row = btn.closest('.dyn-r, .dyn-s'), sib = dir < 0 ? row.previousElementSibling : row.nextElementSibling;
             if (!sib) return;
             dir < 0 ? row.parentElement.insertBefore(row, sib) : row.parentElement.insertBefore(sib, row);
         }
-        function addShiourRow(l = "📜 Cours du Rav ...", v = "") { document.getElementById('shiourim-rows').insertAdjacentHTML('beforeend', rowHtml(l, v, true)); }
+        function addShiourRow(l = "📜 Shiour du Rav ...", v = "", j = "Les mercredis") {
+            document.getElementById('shiourim-rows').insertAdjacentHTML('beforeend', `<div class="dyn-s border-t border-white/10 pt-2"><div class="flex items-center gap-2"><div class="editable text-xs font-extrabold uppercase" style="background:#f1c40f;color:#0a2472;border-radius:999px;padding:2px 12px" contenteditable="true">${toHtml(j)}</div><span class="flex-1"></span><button class="mv" onclick="moveRow(this,-1)">▲</button><button class="mv" onclick="moveRow(this,1)">▼</button><button onclick="this.closest('.dyn-s').remove()" class="ml-1 opacity-40 font-bold">X</button></div><div class="flex items-start gap-2 mt-1"><div class="editable text-sm flex-1 min-w-0" contenteditable="true">${toHtml(l)}</div><div class="editable text-sm font-bold text-right" style="max-width:38%" contenteditable="true">${toHtml(v)}</div></div></div>`);
+        }
         function addZone(title = "TITRE ZONE", rows = []) {
             const id = 'z' + Date.now() + Math.floor(Math.random() * 1000);
             document.getElementById('extra-sections').insertAdjacentHTML('beforeend', `<div class="section-card extra-z" id="${id}"><div class="flex justify-between items-center"><div class="section-title editable flex-1 text-center" contenteditable="true" style="letter-spacing: 0.2em;">${toHtml(title)}</div><button onclick="this.closest('.extra-z').remove()" class="text-red-500 font-bold ml-2">X</button></div><div class="title-underline mx-auto mb-4"></div><div class="rows-cont space-y-1"></div><button onclick="addRow('${id}')" class="w-full text-[10px] mt-2 opacity-50 bg-black/20 p-2 rounded hover:bg-black/40">+ AJOUTER LIGNE</button></div>`);
             if (rows.length) rows.forEach(r => addRow(id, r.label, r.val)); else addRow(id);
         }
         function addRow(zid, l = "Libellé", v = "") { document.querySelector(`#${zid} .rows-cont`).insertAdjacentHTML('beforeend', rowHtml(l, v)); }
+        const readShiourim = cont => [...cont.querySelectorAll('.dyn-s')].map(r => { const e = r.querySelectorAll('.editable'); return { jour: toTags(e[0]), label: toTags(e[1]), val: toTags(e[2]) }; });
         const readRows = cont => [...cont.querySelectorAll('.dyn-r')].map(r => { const e = r.querySelectorAll('.editable'); return { label: toTags(e[0]), val: toTags(e[1]) }; });
 
         // ---------- chargement ----------
@@ -234,9 +237,9 @@
                 // v2 : "--:--" doit rester visible pour les cours, on le remet tel quel
                 ['shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara'].forEach(k => { const v = data[k] && (data[k].valeur || "").trim(); if (v && v.startsWith("--:--")) document.getElementById(`${k}_val`).textContent = "--:--"; });
                 (data.extra_sections || []).forEach(s => addZone(s.title, s.rows));
-                const sh = data.shiourim_semaine || { intitule: "Cours de la semaine", rows: [{ label: "📜 Cours du Rav Belhassen\nMercredi soir", val: "Après Arvit" }] };
+                const sh = data.shiourim_semaine || { intitule: "Cours de la semaine", rows: [{ jour: "Les mercredis", label: "📜 Shiour du Rav Belhassen", val: "Après Arvit" }] };
                 document.getElementById('shiourim_title').innerHTML = toHtml(sh.intitule || "Cours de la semaine");
-                (sh.rows || []).forEach(r => addShiourRow(r.label, r.val));
+                (sh.rows || []).forEach(r => addShiourRow(r.label, r.val, r.jour || ""));
                 original = collect();
 
                 const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
@@ -260,7 +263,7 @@
                 payload[k] = { ...was, intitule: lEl ? toTags(lEl) : (was.intitule || k), valeur: vEl ? toTags(vEl) : "" };
             });
             payload.extra_sections = [...document.querySelectorAll('.extra-z')].map(z => ({ title: toTags(z.querySelector('.section-title')), rows: readRows(z) })).filter(z => z.title);
-            payload.shiourim_semaine = { intitule: toTags(document.getElementById('shiourim_title')), rows: readRows(document.getElementById('shiourim-rows')) };
+            payload.shiourim_semaine = { intitule: toTags(document.getElementById('shiourim_title')), rows: readShiourim(document.getElementById('shiourim-rows')) };
             return payload;
         }
 
