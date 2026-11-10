@@ -136,10 +136,10 @@
         </div>
         
         <div class="section-card">
-            <div id="halahot_title" class="section-title editable" contenteditable="true" style="display:block">2 Halahot</div>
+            <div id="halahot_title" class="section-title editable" contenteditable="true" style="display:block">2 Halahots</div>
             <div class="mt-3">
                 <div id="halahot_texte" class="editable text-sm w-full" contenteditable="true" style="min-height:140px;text-align:left;white-space:pre-wrap" placeholder="Colle ici le message du Rav (vendredi)"></div>
-                <div class="hint-empty">Texte vide = le bouton « 2 Halahot » disparaît du site</div>
+                <div class="hint-empty">Texte vide = le bouton « 2 Halahots » disparaît du site</div>
             </div>
         </div>
 
@@ -253,7 +253,7 @@
     ] };
                 document.getElementById('shiourim_title').innerHTML = toHtml(sh.intitule || "Cours de la semaine");
                 const hl = data.halahot || {};
-                document.getElementById('halahot_title').innerHTML = toHtml(hl.intitule || "2 Halahot");
+                document.getElementById('halahot_title').innerHTML = toHtml(hl.intitule || "2 Halahots");
                 document.getElementById('halahot_texte').innerHTML = toHtml(hl.texte || "");
                 (sh.rows || []).forEach(r => addShiourRow(r.label, r.val, r.jour || ""));
                 original = collect();
@@ -293,7 +293,7 @@
             });
             if (JSON.stringify(original.extra_sections) !== JSON.stringify(now.extra_sections)) out.push("• zones supplémentaires modifiées");
             if (JSON.stringify(original.shiourim_semaine) !== JSON.stringify(now.shiourim_semaine)) out.push("• cours de la semaine modifiés");
-            if (JSON.stringify(original.halahot) !== JSON.stringify(now.halahot)) out.push("• 2 Halahot modifié");
+            if (JSON.stringify(original.halahot) !== JSON.stringify(now.halahot)) out.push("• 2 Halahots modifié");
             return out;
         }
 
