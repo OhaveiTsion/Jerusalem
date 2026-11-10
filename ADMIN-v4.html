@@ -42,7 +42,11 @@
         #toolbar .sw { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; }
         #toolbar .sep { flex: 0 0 1px; height: 28px; background: #555; }
         #toolbar select { flex: 0 0 auto; height: 38px; border-radius: 10px; background: #333; color: #fff; border: 1px solid #555; padding: 0 6px; }
-        #he-items [data-he]:empty:before { content: attr(placeholder); opacity: .4; }
+
+        body.he-mode .main-container { border-color: #4ade80; }
+        body.he-mode .mv, body.he-mode .dyn-r > button, body.he-mode .dyn-s button, body.he-mode .extra-z button, body.he-mode button[onclick^="addZone"], body.he-mode button[onclick^="addShiourRow"], body.he-mode button[onclick^="addRow"] { display: none !important; }
+        .he-fr { opacity: .45; font-style: italic; }
+        .he-lock { opacity: .35; pointer-events: none; }
         .mini { font-size: 11px; opacity: .6; } .mv { opacity: .5; font-weight: 800; padding: 0 4px; }
         .hint-empty { font-size: 10px; opacity: .6; text-align: center; margin-top: 4px; }
         </style>
@@ -50,6 +54,7 @@
 <body>
     <div class="admin-nav">
         <button onclick="location.reload()" class="flex-1 bg-blue-600 p-3 rounded-xl font-bold text-white text-xs">🔄 Actualiser</button>
+        <button id="mode-btn" onclick="toggleMode()" class="flex-1 p-3 rounded-xl font-black text-xs" style="background:#f1c40f;color:#0f34a1">עברית</button>
         <button onclick="sendData()" class="flex-[2] bg-green-600 p-3 rounded-xl font-black text-white text-lg">🚀 ENVOYER</button>
     </div>
 
@@ -74,6 +79,7 @@
         <button class="tb" data-cmd="clear">Normal</button>
     </div>
 
+    <div id="he-banner" style="display:none;width:100%;max-width:500px;background:#f1c40f;color:#0f34a1;font-weight:800;text-align:center;border-radius:10px;padding:6px;font-size:12px;margin-bottom:8px">מצב עברית · Mode HÉBREU : tu écris les traductions. Les heures et nombres se modifient en français.</div>
     <div class="main-container">
         <div class="grid grid-cols-2 gap-3 mb-6">
             <div class="bg-white rounded-xl p-2 text-blue-900 text-center flex flex-col justify-center items-center">
@@ -143,13 +149,6 @@
                 <div class="hint-empty">Texte vide = le bouton « 2 Halahots » disparaît du site</div>
             </div>
         </div>
-
-        <details id="he-panel" class="section-card" ontoggle="if(this.open) buildHe()">
-            <summary class="section-title" style="cursor:pointer;display:block">🇮🇱 VERSION HÉBREU</summary>
-            <div class="hint-empty" style="margin:8px 0">Pour chaque texte : le français au-dessus, l'hébreu à écrire en dessous.<br>Hébreu laissé vide = traduction automatique si elle existe, sinon le français s'affiche.</div>
-            <button type="button" onclick="buildHe()" class="w-full text-[10px] mb-3 opacity-80 bg-black/20 p-2 rounded hover:bg-black/40">↻ Actualiser la liste (après avoir modifié le français)</button>
-            <div id="he-items" class="space-y-3"></div>
-        </details>
 
         <div class="w-full text-center mt-auto pt-6 pb-2">
             <p class="text-xs opacity-50 italic">© Greg u.</p>
@@ -264,6 +263,7 @@
                 document.getElementById('halahot_title').innerHTML = toHtml(hl.intitule || "2 Halahots");
                 document.getElementById('halahot_texte').innerHTML = toHtml(hl.texte || "");
                 (sh.rows || []).forEach(r => addShiourRow(r.label, r.val, r.jour || ""));
+                heVals = heFlatten(data.he);
                 original = collect();
 
                 const h = await (await fetch('https://www.hebcal.com/shabbat?cfg=json&city=IL-Jerusalem&lg=s')).json();
@@ -280,7 +280,7 @@
         }
 
 
-        // ---------- Hébreu ----------
+        // ---------- Mode hébreu (même écran, on écrit l'hébreu à la place du français) ----------
         const HE_DICT = {
             "allumage 🕯️🕯️": "הדלקת נרות 🕯️🕯️",
             "🤲 **Minha** suivi de** Kabalat Shabbat** et **Arvit**": "🤲 **מנחה**\nואחריה **קבלת שבת**\nו**ערבית**",
@@ -309,11 +309,9 @@
             "2 Halahots": "2 הלכות"
         };
         const normS = t => String(t || "").replace(/[\u200e\u200f]/g, "").replace(/\s+/g, " ").trim();
-        const heAuto = fr => HE_DICT[normS(fr)] || "";
-        const HE_NAMES = { allumage_bougies:'Allumage', minha_vendredi:'Minha vendredi', chaharit_shabbat:'Shaharit Shabbat', shiour_dan:'Cours 1', shiour_saadia:'Cours 2', shiour_haviv:'Cours 3', shiour_guemara:'Cours 4', minha_shabbat:'Minha Shabbat', arvit_motsach:'Arvit Motsaé', chaharit_semaine:'Shaharit semaine', minha_semaine:'Minha semaine', annonce_titre:'Annonce (titre)', annonce_texte:'Annonce (texte)', parasha:'Parasha (Shabbat)' };
         const plain = t => String(t || '').replace(/\{\/?[a-z](?::[^}]*)?\}/g, '').replace(/\*\*/g, '').replace(/\s+/g, ' ').trim();
         const hasWords = t => /[A-Za-zÀ-ÿ]{3,}/.test(plain(t));
-        let heVals = {}, heBuilt = false;
+        let heVals = {}, mode = 'fr', heEls = [];
         function heFlatten(he) {
             const m = {}, put = (id, v) => { if (typeof v === 'string' && v.trim()) m[id] = v; };
             Object.keys(he || {}).forEach(k => {
@@ -338,34 +336,53 @@
             if (he.shiourim_semaine && he.shiourim_semaine.rows) for (let j = 0; j < he.shiourim_semaine.rows.length; j++) he.shiourim_semaine.rows[j] = he.shiourim_semaine.rows[j] || {};
             return he;
         }
-        function heReadInputs() { document.querySelectorAll('#he-items [data-he]').forEach(el => { const v = toTags(el).trim(); if (v) heVals[el.dataset.he] = v; else delete heVals[el.dataset.he]; }); }
-        function buildHe() {
-            if (heBuilt) heReadInputs(); else { heVals = heFlatten(rawData.he); }
-            const now = collect(), items = [];
-            const add = (id, title, fr) => { if (plain(fr)) items.push({ id, title, fr }); };
+        // tous les éléments à traduire, avec leur identifiant (même logique que le site)
+        function heTargets() {
+            const t = [], g = id => document.getElementById(id);
             keys.forEach(k => {
-                const o = now[k] || {};
-                if (k === 'annonce_titre' || k === 'annonce_texte' || k === 'parasha') { if (hasWords(o.valeur)) add(`k:${k}:valeur`, HE_NAMES[k], o.valeur); return; }
-                add(`k:${k}:intitule`, HE_NAMES[k] || k, o.intitule);
-                if (hasWords(o.valeur)) add(`k:${k}:valeur`, (HE_NAMES[k] || k) + ' — valeur', o.valeur);
+                const l = g(`${k}_label`), v = g(`${k}_val`);
+                if (k === 'annonce_titre' || k === 'annonce_texte' || k === 'parasha') { if (v) t.push({ id: `k:${k}:valeur`, el: v }); return; }
+                if (l) t.push({ id: `k:${k}:intitule`, el: l });
+                if (v) t.push({ id: `k:${k}:valeur`, el: v });
             });
-            (now.extra_sections || []).forEach((z, i) => { add(`x:${i}:title`, `Zone ${i + 1} — titre`, z.title); (z.rows || []).forEach((r, j) => { add(`x:${i}:${j}:label`, `Zone ${i + 1} — ligne ${j + 1}`, r.label); if (hasWords(r.val)) add(`x:${i}:${j}:val`, `Zone ${i + 1} — ligne ${j + 1} (valeur)`, r.val); }); });
-            const sh = now.shiourim_semaine || {};
-            add('s:intitule', 'Cours de la semaine — titre', sh.intitule);
-            (sh.rows || []).forEach((r, j) => { add(`s:${j}:jour`, `Cours ${j + 1} — jour`, r.jour); add(`s:${j}:label`, `Cours ${j + 1} — intitulé`, r.label); if (hasWords(r.val)) add(`s:${j}:val`, `Cours ${j + 1} — horaire`, r.val); });
-            const hl = now.halahot || {};
-            add('h:intitule', '2 Halahots — bouton', hl.intitule);
-            add('h:texte', '2 Halahots — texte du Rav', hl.texte);
-            const box = document.getElementById('he-items');
-            box.innerHTML = items.map(it => `<div><div class="mini" style="opacity:.8">${FMT.esc(it.title)}</div><div class="text-xs" style="opacity:.55;white-space:pre-wrap;max-height:3.6em;overflow:hidden">${FMT.esc(plain(it.fr))}</div><div class="editable w-full text-sm" dir="rtl" data-he="${it.id}" contenteditable="true" style="display:block;text-align:right;white-space:pre-wrap;${it.id === 'h:texte' ? 'min-height:120px' : ''}" placeholder="${FMT.esc(plain(heAuto(it.fr)) ? 'auto : ' + plain(heAuto(it.fr)) : 'עברית')}"></div></div>`).join('');
-            items.forEach(it => { const el = box.querySelector(`[data-he="${it.id}"]`); if (el && heVals[it.id]) el.innerHTML = toHtml(heVals[it.id]); });
-            heBuilt = true;
+            document.querySelectorAll('.extra-z').forEach((z, i) => { t.push({ id: `x:${i}:title`, el: z.querySelector('.section-title') }); z.querySelectorAll('.dyn-r').forEach((r, j) => { const e = r.querySelectorAll('.editable'); t.push({ id: `x:${i}:${j}:label`, el: e[0] }); t.push({ id: `x:${i}:${j}:val`, el: e[1] }); }); });
+            t.push({ id: 's:intitule', el: g('shiourim_title') });
+            document.querySelectorAll('#shiourim-rows .dyn-s').forEach((r, j) => { const e = r.querySelectorAll('.editable'); t.push({ id: `s:${j}:jour`, el: e[0] }); t.push({ id: `s:${j}:label`, el: e[1] }); t.push({ id: `s:${j}:val`, el: e[2] }); });
+            t.push({ id: 'h:intitule', el: g('halahot_title') }); t.push({ id: 'h:texte', el: g('halahot_texte') });
+            return t.filter(x => x.el);
         }
-        function collectHe() {
-            if (!heBuilt) return rawData.he || {};
-            heReadInputs();
-            return heUnflatten(heVals);
+        document.addEventListener('input', e => { const r = root(e.target); if (r && r._he) r._he.dirty = true; });
+        function enterHe() {
+            heEls = heTargets();
+            document.body.classList.add('he-mode'); document.getElementById('he-banner').style.display = 'block';
+            heEls.forEach(({ id, el }) => {
+                const fr = toTags(el); el._he = { id, fr, frHtml: el.innerHTML, dirty: false };
+                if (!hasWords(fr) && !heVals[id]) { el.classList.add('he-lock'); el.contentEditable = 'false'; el.dir = 'rtl'; return; }   // heures / nombres : à modifier en français
+                const mine = heVals[id], auto = HE_DICT[normS(fr)];
+                el.dir = 'rtl';
+                if (mine) el.innerHTML = toHtml(mine);
+                else if (auto) el.innerHTML = toHtml(auto);
+                else el.classList.add('he-fr');
+                if (!mine && el.classList.contains('he-fr')) el.addEventListener('focus', function once() { if (el.classList.contains('he-fr')) { el.classList.remove('he-fr'); } el.removeEventListener('focus', once); });
+            });
         }
+        function leaveHe() {
+            heEls.forEach(({ id, el }) => {
+                const st = el._he; if (!st) return;
+                if (el.contentEditable === 'false') { el.classList.remove('he-lock'); el.contentEditable = 'true'; el.dir = ''; el.innerHTML = st.frHtml; el._he = null; return; }
+                if (st.dirty) { const v = toTags(el).trim(); if (v) heVals[id] = v; else delete heVals[id]; }
+                el.classList.remove('he-fr'); el.dir = ''; el.innerHTML = st.frHtml; el._he = null;
+            });
+            document.body.classList.remove('he-mode'); document.getElementById('he-banner').style.display = 'none';
+            heEls = [];
+        }
+        function setMode(m) {
+            if (m === mode) return;
+            if (m === 'he') enterHe(); else leaveHe();
+            mode = m;
+            const b = document.getElementById('mode-btn'); b.textContent = m === 'he' ? 'Français' : 'עברית';
+        }
+        function toggleMode() { setMode(mode === 'he' ? 'fr' : 'he'); }
 
         function collect() {
             const payload = {};
@@ -377,7 +394,7 @@
             payload.extra_sections = [...document.querySelectorAll('.extra-z')].map(z => ({ title: toTags(z.querySelector('.section-title')), rows: readRows(z) })).filter(z => z.title);
             payload.shiourim_semaine = { intitule: toTags(document.getElementById('shiourim_title')), rows: readShiourim(document.getElementById('shiourim-rows')) };
             payload.halahot = { intitule: toTags(document.getElementById('halahot_title')), texte: toTags(document.getElementById('halahot_texte')) };
-            payload.he = collectHe();
+            payload.he = heUnflatten(heVals);
             return payload;
         }
 
@@ -396,6 +413,7 @@
         }
 
         async function sendData() {
+            setMode('fr');
             const now = collect();
             const diff = changesSummary(now);
             if (!confirm(diff.length ? "Envoyer ces changements ?\n\n" + diff.join("\n") : "Aucun changement détecté. Envoyer quand même ?")) return;
