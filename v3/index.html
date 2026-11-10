@@ -353,6 +353,7 @@ function toggleLang() {
     LANG = LANG === 'he' ? 'fr' : 'he';
     store.set(LANG_KEY, LANG);
     applyLang();
+    try { const fr = document.getElementById('cadre-externe'); if (fr && fr.contentWindow && fr.style.display !== 'none') fr.contentWindow.postMessage({ type: 'syna-lang', lang: LANG }, '*'); } catch (e) {}
     applyLang();
 loadAll().then(fitScreen).catch(() => {});
 }
@@ -523,7 +524,7 @@ function afficher(choix) {
     } else {
         divHoraires.style.display = 'none'; iframe.style.display = 'block';
         if (footer) footer.style.display = 'none';
-        iframe.src = choix === 'maftir' ? "https://ohaveitsion.github.io/Jerusalem/Maftir.html" : "https://gregysite.github.io/Tehilim/";
+        iframe.src = (choix === 'maftir' ? "https://ohaveitsion.github.io/Jerusalem/Maftir.html" : "https://gregysite.github.io/Tehilim/") + "?lang=" + LANG;
     }
 }
 

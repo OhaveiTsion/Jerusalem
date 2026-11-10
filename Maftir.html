@@ -294,7 +294,13 @@ const maftirRefs = {
         if (currentParasha) loadTexts(currentParasha);
     }
 
-    window.onload = () => setLanguage('fr');
+    // Langue imposée par le site parent (?lang=he) ou changée à la volée (message « syna-lang »)
+    const _qLang = new URLSearchParams(location.search).get('lang');
+    window.onload = () => setLanguage(_qLang === 'he' ? 'he' : 'fr');
+    window.addEventListener('message', e => {
+        const d = e.data;
+        if (d && d.type === 'syna-lang' && (d.lang === 'he' || d.lang === 'fr') && d.lang !== currentLang) setLanguage(d.lang);
+    });
 </script>
 </body>
 </html>
