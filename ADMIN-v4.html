@@ -308,6 +308,21 @@
             "📜 Les secrets cachés de la parasha (Dr Roger Benassouli)": "📜 סודות נסתרים בפרשה (ד״ר רוג׳ר בן אסולי)",
             "2 Halahots": "2 הלכות"
         };
+        const HE_HALAHOT = [{ start: "Interdiction de MOUDRE", text:
+`**איסור טוחן בשבת**
+
+1- טוחן הוא אחד מל״ט אבות המלאכות האסורות בשבת. (שימש להכנת הצבעים לצביעת העורות בבניית המשכן).
+
+2- לפיכך, אסור לטחון סוכר / מלח / תבלינים... בכלי המיוחד לכך (איסור דאורייתא).
+האיסור קיים גם (איסור דרבנן) בכלי שאינו משמש בדרך כלל לטחינה (גב הסכין / כף, למשל).
+
+2- הפוסקים דימו לאיסור זה גם חיתוך דק מאוד של ירק, סלט או פרי...
+אולם הדבר מותר סמוך לסעודה. לכן מותר לחתוך ירקות דק כדי לאכלם מיד.
+
+3- איסור זה אינו קיים בדבר שמקורו עצמו בטחינה (אין טוחן אחר טוחן).
+למשל, מותר בשבת לכתוש תרופה לאבקה עבור מי שמתקשה לבלוע כדורים. שכן החומר הפעיל של התרופה היה אבקה לפני שנעשה לכדור.
+
+שבת שלום ומבורך` }];
         const normS = t => String(t || "").replace(/[\u200e\u200f]/g, "").replace(/\s+/g, " ").trim();
         const plain = t => String(t || '').replace(/\{\/?[a-z](?::[^}]*)?\}/g, '').replace(/\*\*/g, '').replace(/\s+/g, ' ').trim();
         const hasWords = t => /[A-Za-zÀ-ÿ]{3,}/.test(plain(t));
@@ -358,7 +373,9 @@
             heEls.forEach(({ id, el }) => {
                 const fr = toTags(el); el._he = { id, fr, frHtml: el.innerHTML, dirty: false };
                 if (!hasWords(fr) && !heVals[id]) { el.classList.add('he-lock'); el.contentEditable = 'false'; el.dir = 'rtl'; return; }   // heures / nombres : à modifier en français
-                const mine = heVals[id], auto = HE_DICT[normS(fr)];
+                const mine = heVals[id];
+                let auto = HE_DICT[normS(fr)];
+                if (!auto && id === 'h:texte') { const h = HE_HALAHOT.find(x => normS(fr).replace(/\*\*/g, '').startsWith(x.start)); if (h) auto = h.text; }
                 el.dir = 'rtl';
                 if (mine) el.innerHTML = toHtml(mine);
                 else if (auto) el.innerHTML = toHtml(auto);
