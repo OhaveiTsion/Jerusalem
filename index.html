@@ -21,7 +21,7 @@
         <meta name="theme-color" content="#0f34a1">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="manifest" href="manifest.json">
-    <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
     <script src="zmanim.js"></script>
     <script src="fmt.js"></script>
     <script src="parasha.js"></script>
@@ -125,6 +125,17 @@
     #halahot-body { padding: 14px 16px 18px; overflow-y: auto; font-size: 1.05rem; line-height: 1.55; text-align: left; -webkit-overflow-scrolling: touch; }
     #halahot-foot { padding: 10px 16px 14px; border-top: 1px solid rgba(255,255,255,.12); }
     #halahot-close2 { width: 100%; background: rgba(255,255,255,.18); color: #fff; font-weight: 700; border: 0; border-radius: 10px; padding: 10px; font-size: 1rem; cursor: pointer; }
+    /* FR / HE */
+    #frame-wrap { position: relative; width: 100%; max-width: 500px; }
+    #frame-wrap > .main-container { clip-path: polygon(0 0, calc(100% - 84px) 0, calc(100% - 84px) 24px, 100% 24px, 100% 100%, 0 100%); }
+    #lang-btn { position: absolute; top: 2px; right: 4px; z-index: 5; width: 74px; height: 18px; box-sizing: border-box; background: transparent; color: #fff; border: 2px solid #f1c40f; border-radius: 999px; font-weight: 800; font-size: 0.66rem; padding: 0; line-height: 14px; cursor: pointer; text-align: center; }
+        .annonce-titre-style { text-align: start !important; }
+    #halahot-body { text-align: start !important; }
+    html[dir="rtl"] #halahot-btn { right: auto; left: 2px; }
+    .shiour-item > span:last-child { text-align: end !important; }
+    #footer-site { text-align: start !important; }
+    html[lang="he"] * { letter-spacing: normal !important; }
+    html[lang="he"] .jour-badge, html[lang="he"] .sub-title, html[lang="he"] #halahot-title { text-transform: none; }
     .nw { white-space: nowrap; }
     #maj-line { font-size: 0.7rem; opacity: 0.55; text-align: right; margin: 0 0 0 auto; order: 2; }
     #footer-site { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; text-align: left; }
@@ -140,28 +151,29 @@
         <div class="loader-line"></div>
     </div>
 
+    <div id="frame-wrap"><button id="lang-btn" type="button" onclick="toggleLang()" aria-label="Langue / שפה">עברית</button>
     <div class="main-container shadow-2xl">
         
-        <div class="flex items-center mb-4 border-b border-white/10 pb-3">
+        <div dir="ltr" class="flex items-center mb-4 border-b border-white/10 pb-3 pt-1">
             <div class="w-1/2 flex justify-center"><img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" class="h-10 w-auto rounded bg-white p-1"></div>
             <div class="w-1/2 flex justify-center"><h1 class="text-xl font-black italic text-white uppercase">Ohavei Tsion</h1></div>
         </div>
 
         <div id="install-banner" style="display: none;" class="bg-[#f1c40f]/20 border border-[#f1c40f] text-white p-2 rounded-lg mb-4 text-center text-sm font-bold cursor-pointer transition hover:bg-[#f1c40f]/40">
-            📲 Ajouter à l'écran d'accueil
+            <span data-ui="install">📲 Ajouter à l'écran d'accueil</span>
         </div>
 
         <nav class="flex justify-between gap-2 mb-4">
-            <button onclick="afficher('horaires')" class="flex-1 bg-white/20 hover:bg-white/30 text-white font-bold py-2 px-1 rounded-lg transition text-sm border border-white/10 shadow-sm">🕰️ Horaires</button>
-            <button onclick="afficher('maftir')" class="flex-1 bg-white/10 hover:bg-white/30 text-white font-bold py-2 px-1 rounded-lg transition text-sm border border-white/5 shadow-sm">📖 Maftir</button>
-            <button onclick="afficher('tehilim')" class="flex-1 bg-white/10 hover:bg-white/30 text-white font-bold py-2 px-1 rounded-lg transition text-sm border border-white/5 shadow-sm">🙏 Tehilim</button>
+            <button onclick="afficher('horaires')" class="flex-1 bg-white/20 hover:bg-white/30 text-white font-bold py-2 px-1 rounded-lg transition text-sm border border-white/10 shadow-sm"><span data-ui="nav_horaires">🕰️ Horaires</span></button>
+            <button onclick="afficher('maftir')" class="flex-1 bg-white/10 hover:bg-white/30 text-white font-bold py-2 px-1 rounded-lg transition text-sm border border-white/5 shadow-sm"><span data-ui="nav_maftir">📖 Maftir</span></button>
+            <button onclick="afficher('tehilim')" class="flex-1 bg-white/10 hover:bg-white/30 text-white font-bold py-2 px-1 rounded-lg transition text-sm border border-white/5 shadow-sm"><span data-ui="nav_tehilim">🙏 Tehilim</span></button>
         </nav>
 
         <div id="contenu-horaires" class="w-full flex-1">
-            <div id="offline-note">⚠️ Hors connexion : derniers horaires enregistrés</div>
+            <div id="offline-note" data-ui="offline">⚠️ Hors connexion : derniers horaires enregistrés</div>
             <div class="grid grid-cols-2 gap-3 mb-6">
                 <div class="zman-box">
-                    <p class="text-[10px] font-bold uppercase opacity-60 mb-1">Shabbat</p>
+                    <p class="text-[10px] font-bold uppercase opacity-60 mb-1" data-ui="shabbat">Shabbat</p>
                     <p id="shabbat-name" class="text-lg font-bold leading-tight">--</p>
                 </div>
                 <div class="zman-box">
@@ -180,7 +192,7 @@
 
             <div class="section-card has-hl">
                 <button id="halahot-btn" type="button" aria-haspopup="dialog" onclick="openHalahot()">2 Halahots</button>
-                <div class="section-title">SHABBAT<div class="title-underline"></div></div>
+                <div class="section-title"><span data-ui="title_shabbat">SHABBAT</span><div class="title-underline"></div></div>
                 <div class="space-y-1">
                     <div class="row-major"><span id="label-minha_vendredi">Minha Vendredi</span><span id="sheet-minha_vendredi" class="text-xl font-bold">--:--</span></div>
                     <div class="row-major border-t border-white/10 pt-1"><span id="label-chaharit_shabbat">Shaharit</span><span id="sheet-chaharit_shabbat" class="text-xl font-bold">--:--</span></div>
@@ -198,7 +210,7 @@
             </div>
 
             <div class="section-card">
-                <div class="section-title">SEMAINE<div class="title-underline"></div></div>
+                <div class="section-title"><span data-ui="title_semaine">SEMAINE</span><div class="title-underline"></div></div>
                 <div class="space-y-1">
                     <div class="row-major"><span id="label-chaharit_semaine">Shaharit</span><span id="sheet-chaharit_semaine" class="text-xl font-bold">--:--</span></div>
                     <div class="row-major border-t border-white/10 pt-1"><span id="label-minha_semaine">Minha / Arvit</span><span id="sheet-minha_semaine" class="text-xl font-bold">--:--</span></div>
@@ -214,8 +226,9 @@
         <iframe id="cadre-externe" class="iframe-container" src=""></iframe>
 
         <div id="footer-site" class="w-full text-center mt-auto pt-6 pb-2">
-            <p class="text-xs opacity-50 italic">© Greg u.</p>
+            <p class="text-xs opacity-50 italic" dir="ltr">© Greg u.</p>
         </div>
+    </div>
     </div>
 
     
@@ -230,6 +243,7 @@ const glueEmojis = h => h.replace(/(\S)[ ]+((?:[\u{1F300}-\u{1FAFF}\u{2600}-\u{2
 const format = t => glueEmojis(keepNames(FMT.toHtml(t))).replace(/<br>/g, '<br class="nl"> ');
 // Retour à la ligne voulu avant "Kabalat Shabbat" (Minha du vendredi) : "Minha suivi de" / "Kabalat Shabbat et Arvit"
 const layoutLabel = (k, h) => {
+    if (LANG === 'he') return h;
     if (k === 'minha_vendredi') return h.replace(/<br class="nl"> /g, ' ').replace(/[ ]*(<span class="f-bold">)[ ]*Kabalat/, '<br class="kb">$1Kabalat');
     if (k === 'minha_shabbat') return h.replace(/<br class="nl"> /g, ' ').replace(/\s*Suivi de/, '<br class="kb">Suivi de');   // "Minha" / "Suivi de Séouda Shlishit 🥖🌶️🐟"
     return h;
@@ -252,6 +266,110 @@ const store = {
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 };
 
+// ================= Langue FR / HE =================
+const LANG_KEY = 'syna_lang';
+let LANG = store.get(LANG_KEY) === 'he' ? 'he' : 'fr';
+const DAYS = {
+    fr: ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
+    he: ["יום ראשון", "יום שני", "יום שלישי", "יום רביעי", "יום חמישי", "יום שישי", "שבת"]
+};
+const UI = {
+    fr: { install: "📲 Ajouter à l'écran d'accueil", nav_horaires: "🕰️ Horaires", nav_maftir: "📖 Maftir", nav_tehilim: "🙏 Tehilim",
+          offline: "⚠️ Hors connexion : derniers horaires enregistrés", shabbat: "Shabbat", title_shabbat: "SHABBAT", title_semaine: "SEMAINE",
+          close: "Fermer", sem_title: "Cours de la semaine", halahot: "2 Halahots", lang_btn: "עברית",
+          iosInstall: "📲 Installer : 'Partager' puis 'Sur l'écran d'accueil'", ffInstall: "📲 Installer : menu ⋮ puis 'Installer'",
+          shavoua: "Shavoua Tov !", shabbatshalom: "Shabbat Shalom !", chabbat: "Chabbat", evening_and: (p, c) => `${p} soir et ${c} : ` },
+    he: { install: "📲 הוספה למסך הבית", nav_horaires: "🕰️ זמנים", nav_maftir: "📖 מפטיר", nav_tehilim: "🙏 תהילים",
+          offline: "⚠️ אין חיבור: מוצגים הזמנים האחרונים שנשמרו", shabbat: "שבת", title_shabbat: "שבת", title_semaine: "ימי חול",
+          close: "סגירה", sem_title: "שיעורי השבוע", halahot: "2 הלכות", lang_btn: "Français",
+          iosInstall: "📲 להתקנה: «שיתוף» ואז «הוסף למסך הבית»", ffInstall: "📲 להתקנה: תפריט ⋮ ואז «התקנה»",
+          shavoua: "שבוע טוב!", shabbatshalom: "שבת שלום!", chabbat: "שבת", evening_and: (p, c) => `${p} בערב ו${c}: ` }
+};
+const ui = k => (UI[LANG][k] !== undefined ? UI[LANG][k] : UI.fr[k]);
+const normS = t => String(t || "").replace(/[‎‏]/g, '').replace(/\s+/g, ' ').trim();
+
+// Traductions des textes saisis dans l'ADMIN. Priorité : sData.he (saisi dans l'ADMIN) > ce dictionnaire > le français tel quel.
+const HE_DICT = {
+    "allumage 🕯️🕯️": "הדלקת נרות 🕯️🕯️",
+    "🤲 **Minha** suivi de** Kabalat Shabbat** et **Arvit**": "🤲 **מנחה**\nואחריה **קבלת שבת**\nו**ערבית**",
+    "☀️ **Shaharit **(hodou)": "☀️ **שחרית** (הודו)",
+    "☀️ **Shaharit** (hodou)": "☀️ **שחרית** (הודו)",
+    "📜 Cours du Rav Dan Chemla": "📜 שיעור הרב דן שמלה",
+    "📜 Cours du Rav Saadia Khalfon": "📜 שיעור הרב סעדיה חלפון",
+    "📜 Cours du Rav Abraham Haviv": "📜 שיעור הרב אברהם חביב",
+    "📜 Cours du Rav Bellaïche": "📜 שיעור הרב בלאיש",
+    "Après Arvit": "אחרי ערבית",
+    "🤲 **Minha** Suivi de Séouda Shlishit 🥖🌶️ 🐟": "🤲 **מנחה**\nואחריה סעודה שלישית 🥖🌶️ 🐟",
+    "🌙 **Arvit** de Motsae Shabbat": "🌙 **ערבית** של מוצאי שבת",
+    "🤲 **Minha** suivi d'**Arvit**": "🤲 **מנחה** ואחריה **ערבית**",
+    "🌙 **Roch Hodech Kislev** : mardi 10 et mercredi 11/11": "🌙 **ראש חודש כסלו** :\nיום שלישי 10 ויום רביעי 11/11",
+    "Cours de la semaine": "שיעורי השבוע",
+    "Dimanche → Vendredi": "ראשון – שישי",
+    "Dim. · Mar. · Jeu.": "ימים א׳ · ג׳ · ה׳",
+    "Les mercredis": "בימי רביעי",
+    "Un mardi sur deux": "יום שלישי אחת לשבועיים",
+    "📜 Houmash Rachi (Dr Bellaïche)": "📜 חומש ורש״י (ד״ר בלאיש)",
+    "📜 Guémara (Dr Bellaïche)": "📜 גמרא (ד״ר בלאיש)",
+    "📜 Parashat Hashavoua (Rav Belhassen)": "📜 פרשת השבוע (הרב בלחסן)",
+    "📜 Les secrets cachés de la parasha (Dr Roger Benassouli)": "📜 סודות נסתרים בפרשה (ד״ר רוג׳ר בן אסולי)",
+    "2 Halahots": "2 הלכות"
+};
+const HE_HALAHOT = [{ start: "Interdiction de MOUDRE", text:
+`**איסור טוחן בשבת**
+
+1- טוחן הוא אחד מל״ט אבות המלאכות האסורות בשבת. (שימש להכנת הצבעים לצביעת העורות בבניית המשכן).
+
+2- לפיכך, אסור לטחון סוכר / מלח / תבלינים... בכלי המיוחד לכך (איסור דאורייתא).
+האיסור קיים גם (איסור דרבנן) בכלי שאינו משמש בדרך כלל לטחינה (גב הסכין / כף, למשל).
+
+2- הפוסקים דימו לאיסור זה גם חיתוך דק מאוד של ירק, סלט או פרי...
+אולם הדבר מותר סמוך לסעודה. לכן מותר לחתוך ירקות דק כדי לאכלם מיד.
+
+3- איסור זה אינו קיים בדבר שמקורו עצמו בטחינה (אין טוחן אחר טוחן).
+למשל, מותר בשבת לכתוש תרופה לאבקה עבור מי שמתקשה לבלוע כדורים. שכן החומר הפעיל של התרופה היה אבקה לפני שנעשה לכדור.
+
+שבת שלום ומבורך` }];
+
+// tf(k, part, fr) : texte à afficher pour le champ k ('intitule' ou 'valeur') dans la langue courante
+let HE_OVERRIDE = {};
+const trText = (fr, ov) => {
+    if (LANG !== 'he') return fr;
+    if (ov !== undefined && ov !== null && String(ov).trim() !== "") return ov;
+    const n = normS(fr);
+    return HE_DICT[n] !== undefined ? HE_DICT[n] : fr;
+};
+const tf = (k, part, fr) => trText(fr, HE_OVERRIDE[k] && HE_OVERRIDE[k][part]);
+// en hébreu, une valeur purement numérique (ex. « 8:00 – 9:00 ») garde son ordre de lecture gauche→droite
+const numLtr = h => (LANG === 'he' && /^[\d:\s\u2013\u2014\-\u200e<>\/a-z"= ]+$/i.test(h.replace(/<br[^>]*>/g, ' ')) && /\d/.test(h)) ? '<bdi dir="ltr">' + h + '</bdi>' : h;
+const trHalahot = (fr, ov) => {
+    if (LANG !== 'he') return fr;
+    if (ov && String(ov).trim()) return ov;
+    const h = HE_HALAHOT.find(x => normS(fr).replace(/\*\*/g, '').startsWith(x.start));
+    return h ? h.text : fr;
+};
+
+function applyLang() {
+    const h = document.documentElement;
+    h.lang = LANG; h.dir = LANG === 'he' ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-ui]').forEach(el => { el.innerHTML = ui(el.dataset.ui); });
+    document.getElementById('lang-btn').textContent = ui('lang_btn');
+    try {
+        const ib = document.getElementById('install-banner');
+        if (ib && ib.style.display !== 'none') {
+            const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream, ff = /Firefox/.test(navigator.userAgent) && /Android/.test(navigator.userAgent);
+            ib.innerHTML = ios ? ui('iosInstall') : ff ? ui('ffInstall') : ui('install');
+        }
+    } catch (e) {}
+}
+function toggleLang() {
+    LANG = LANG === 'he' ? 'fr' : 'he';
+    store.set(LANG_KEY, LANG);
+    applyLang();
+    try { const fr = document.getElementById('cadre-externe'); if (fr && fr.contentWindow && fr.style.display !== 'none') fr.contentWindow.postMessage({ type: 'syna-lang', lang: LANG }, '*'); } catch (e) {}
+    applyLang();
+loadAll().then(fitScreen).catch(() => {});
+}
+
 async function getJson(url) {
     const r = await fetch(url);
     if (!r.ok) throw new Error(url + ' ' + r.status);
@@ -269,6 +387,7 @@ function closeHalahot() { document.getElementById('halahot-ov').classList.remove
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHalahot(); });
 
 async function loadAll() {
+    applyLang();
     let d = new Date();
     d.setDate(d.getDate() + (6 - d.getDay() + 7) % 7);
     const nextSatKey = d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
@@ -282,6 +401,7 @@ async function loadAll() {
     let sData, offline = false;
     if (sRes.status === 'fulfilled') { sData = sRes.value; store.set(CACHE_KEY, sData); }
     else { sData = store.get(CACHE_KEY); offline = true; }
+    HE_OVERRIDE = sData.he || {};
     document.getElementById('offline-note').style.display = offline ? 'block' : 'none';
     if (!sData) { document.body.classList.add('loaded'); return; }
 
@@ -290,36 +410,36 @@ async function loadAll() {
     if (hRes.status === 'fulfilled') {
         const items = hRes.value.items || [];
         const eventP = items.find(i => i.category === "parashat");
-        if (eventP) nomShabbatAuto = translateParasha(eventP.title.replace("Parashat ", ""));
-        const daysFr = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+        if (eventP) nomShabbatAuto = (LANG === 'he' && eventP.hebrew) ? eventP.hebrew.replace(/^פרשת\s+/, '') : translateParasha(eventP.title.replace("Parashat ", ""));
+        const daysFr = DAYS[LANG];
         specialEvents = items
             .filter(i => ["holiday", "roshchodesh", "special-shabbat", "mevarchim"].includes(i.category))
             .map(i => {
                 const p = i.date.split('-');
                 const dayIdx = new Date(p[0], p[1] - 1, p[2]).getDay();
-                const cur = (dayIdx === 6) ? "Chabbat" : daysFr[dayIdx];
-                const prev = (dayIdx === 6) ? "Vendredi" : daysFr[(dayIdx + 6) % 7];
-                const title = FMT.esc(i.title);
+                const cur = (dayIdx === 6) ? ui('chabbat') : daysFr[dayIdx];
+                const prev = (dayIdx === 6) ? daysFr[5] : daysFr[(dayIdx + 6) % 7];
+                const title = FMT.esc((LANG === 'he' && i.hebrew) ? i.hebrew : i.title);
                 return (i.category === "holiday" || i.category === "roshchodesh")
-                    ? `${prev} soir et ${cur} : <span style="font-weight:bold;">${title}</span>`
+                    ? `${ui('evening_and')(prev, cur)}<span style="font-weight:bold;">${title}</span>`
                     : `<span style="font-weight:bold;">${title}</span>`;
             }).join("<br>");
     }
 
     const pMan = sData.parasha && sData.parasha.valeur;
-    document.getElementById('shabbat-name').innerHTML = (pMan && pMan.trim() !== "" && pMan !== "--") ? format(pMan) : `<span class="f-bold">${FMT.esc(nomShabbatAuto)}</span>`;
+    document.getElementById('shabbat-name').innerHTML = (pMan && pMan.trim() !== "" && pMan !== "--") ? format(tf('parasha', 'valeur', pMan)) : `<span class="f-bold">${FMT.esc(nomShabbatAuto)}</span>`;
 
     const keys = ['allumage_bougies','minha_vendredi','chaharit_shabbat','shiour_dan','shiour_saadia','shiour_haviv','shiour_guemara','minha_shabbat','arvit_motsach','chaharit_semaine','minha_semaine'];
     keys.forEach(k => {
         const label = document.getElementById(`label-${k}`), val = document.getElementById(`sheet-${k}`);
         if (!val || !sData[k]) return;
-        if (label && sData[k].intitule) label.innerHTML = layoutLabel(k, format(sData[k].intitule));
+        if (label && sData[k].intitule) label.innerHTML = layoutLabel(k, format(tf(k, 'intitule', sData[k].intitule)));
         let finalVal = (sData[k].valeur || "").trim();
         if (finalVal === "" || finalVal === "--:--") {
             if (k === 'allumage_bougies') finalVal = backup.allumage;
             if (k === 'arvit_motsach') finalVal = backup.arvit;
         }
-        val.innerHTML = format(finalVal);
+        val.innerHTML = numLtr(format(tf(k, 'valeur', finalVal)));
         if (k.startsWith('shiour_')) {
             // v2 : un cours est caché seulement si sa valeur est vide ("--:--" reste affiché)
             const box = document.getElementById(`box-${k.split('_')[1]}`);
@@ -331,9 +451,9 @@ async function loadAll() {
     const aT = sData.annonce_titre && sData.annonce_titre.valeur;
     const aX = sData.annonce_texte && sData.annonce_texte.valeur;
     const now = new Date(), day = now.getDay(), hour = now.getHours();
-    const autoMessage = ((day === 6 && hour >= 15) || day === 0 || day === 1 || day === 2) ? "Shavoua Tov !" : "Shabbat Shalom !";
-    const finalT = (aT && aT.trim() !== "" && aT !== "--") ? format(aT) : specialEvents;
-    const finalX = (aX && aX.trim() !== "" && aX !== "--") ? format(aX) : autoMessage;
+    const autoMessage = ((day === 6 && hour >= 15) || day === 0 || day === 1 || day === 2) ? ui('shavoua') : ui('shabbatshalom');
+    const finalT = (aT && aT.trim() !== "" && aT !== "--") ? format(tf('annonce_titre', 'valeur', aT)) : specialEvents;
+    const finalX = (aX && aX.trim() !== "" && aX !== "--") ? format(tf('annonce_texte', 'valeur', aX)) : autoMessage;
     const b = document.getElementById('announcement-block');
     if ((finalT && finalT.trim() !== "") || (finalX && finalX.trim() !== "")) {
         b.style.display = 'block';
@@ -344,30 +464,35 @@ async function loadAll() {
     // Zones supplémentaires
     const container = document.getElementById('extra-sections-container');
     container.innerHTML = '';
-    (sData.extra_sections || []).forEach(sec => {
-        const rows = (sec.rows || []).map((r, i) => `<div class="row-major ${i > 0 ? 'border-t border-white/10 pt-1' : ''}"><span>${format(r.label)}</span><span class="text-xl font-bold">${format(r.val)}</span></div>`).join('');
-        container.insertAdjacentHTML('beforeend', `<div class="section-card"><div class="section-title">${format(sec.title)}<div class="title-underline"></div></div><div class="space-y-1">${rows}</div></div>`);
+    const heExtra = HE_OVERRIDE.extra_sections || [];
+    (sData.extra_sections || []).forEach((sec, si) => {
+        const hs = heExtra[si] || {};
+        const rows = (sec.rows || []).map((r, i) => { const hr = (hs.rows || [])[i] || {}; return `<div class="row-major ${i > 0 ? 'border-t border-white/10 pt-1' : ''}"><span>${format(trText(r.label, hr.label))}</span><span class="text-xl font-bold">${numLtr(format(trText(r.val, hr.val)))}</span></div>`; }).join('');
+        container.insertAdjacentHTML('beforeend', `<div class="section-card"><div class="section-title">${format(trText(sec.title, hs.title))}<div class="title-underline"></div></div><div class="space-y-1">${rows}</div></div>`);
     });
 
     // 2 Halahots (message du Rav) : le bouton n'apparaît que s'il y a un texte
     const hl = sData.halahot, hlTxt = hl && (hl.texte || "").trim();
     const hb = document.getElementById('halahot-btn');
     if (hlTxt) {
-        const t = (hl.intitule || "").trim() || "2 Halahots";
+        const hh = HE_OVERRIDE.halahot || {};
+        const t = trText((hl.intitule || "").trim() || "2 Halahots", hh.intitule);
         hb.innerHTML = FMT.toHtml(t);
         document.getElementById('halahot-title').innerHTML = FMT.toHtml(t);
-        document.getElementById('halahot-body').innerHTML = FMT.toHtml(hl.texte).replace(/\([^()<>]*[\u0590-\u05FF][^()<>]*\)/g, m => '<bdi dir="rtl" style="white-space:nowrap">' + m.replace(/\(\s+/, '(').replace(/\s+\)/, ')') + '</bdi>');
+        const bodyTxt = trHalahot(hl.texte, hh.texte);
+        document.getElementById('halahot-body').innerHTML = (LANG === 'he' ? FMT.toHtml(bodyTxt) : FMT.toHtml(bodyTxt).replace(/\([^()<>]*[\u0590-\u05FF][^()<>]*\)/g, m => '<bdi dir="rtl" style="white-space:nowrap">' + m.replace(/\(\s+/, '(').replace(/\s+\)/, ')') + '</bdi>'));
         hb.style.display = 'block';
     } else { hb.style.display = 'none'; closeHalahot(); }
 
     // Cours de la semaine (nouveau)
     const sh = sData.shiourim_semaine || DEFAULT_SHIOURIM_SEMAINE;
-    const shRows = (sh.rows || []).filter(r => (r.label || "").trim() !== "" || (r.val || "").trim() !== "");
+    const heSh = HE_OVERRIDE.shiourim_semaine || {};
+    const shRows = (sh.rows || []).map((r, i) => { const hr = (heSh.rows || [])[i] || {}; return { jour: trText(r.jour, hr.jour), label: trText(r.label, hr.label), val: trText(r.val, hr.val), _fr: r }; }).filter(r => (r._fr.label || "").trim() !== "" || (r._fr.val || "").trim() !== "");
     const shBox = document.getElementById('box-shiourim-semaine');
     if (shRows.length) {
-        document.getElementById('title-shiourim-semaine').innerHTML = format(sh.intitule || "Cours de la semaine");
+        document.getElementById('title-shiourim-semaine').innerHTML = format(trText(sh.intitule || "Cours de la semaine", heSh.intitule));
         document.getElementById('list-shiourim-semaine').innerHTML = shRows.map(r =>
-            `<div class="shiour-bloc">${(r.jour || "").trim() ? `<div class="jour-badge">${format(r.jour)}</div>` : ''}<div class="shiour-item"><span>${format(r.label).replace(/^(.{1,26}?)[ ]*(\([^()<>]*\))$/, '$1<br class="kb">$2')}</span><span class="font-bold">${format(r.val)}</span></div></div>`).join('');
+            `<div class="shiour-bloc">${(r.jour || "").trim() ? `<div class="jour-badge">${format(r.jour)}</div>` : ''}<div class="shiour-item"><span>${format(r.label).replace(/^(.{1,26}?)[ ]*(\([^()<>]*\))$/, '$1<br class="kb">$2')}</span><span class="font-bold">${numLtr(format(r.val))}</span></div></div>`).join('');
         shBox.style.display = 'block';
     } else shBox.style.display = 'none';
 
@@ -411,9 +536,10 @@ function afficher(choix) {
     } else {
         divHoraires.style.display = 'none'; iframe.style.display = 'block';
         if (footer) footer.style.display = 'none';
-        iframe.src = choix === 'maftir' ? "https://ohaveitsion.github.io/Jerusalem/Maftir.html" : "https://gregysite.github.io/Tehilim/";
+        iframe.src = (choix === 'maftir' ? "https://ohaveitsion.github.io/Jerusalem/Maftir.html" : "https://gregysite.github.io/Tehilim/") + "?lang=" + LANG;
     }
 }
+
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
@@ -428,11 +554,11 @@ const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
 if (!isStandalone) {
     if (isIOS) {
         installBanner.style.display = 'block';
-        installBanner.innerHTML = "📲 Installer : 'Partager' puis 'Sur l'écran d'accueil'";
+        installBanner.innerHTML = ui('iosInstall');
         installBanner.onclick = () => alert("Sur votre iPhone, tapez sur l'icône de partage (le carré avec la flèche) en bas, puis choisissez 'Sur l'écran d'accueil'.");
     } else if (isFirefoxAndroid) {
         installBanner.style.display = 'block';
-        installBanner.innerHTML = "📲 Installer : menu ⋮ puis 'Installer'";
+        installBanner.innerHTML = ui('ffInstall');
         installBanner.onclick = () => alert("Dans Firefox, appuyez sur ⋮ (les 3 points) en haut à droite, puis 'Installer'.");
     }
 }
@@ -441,7 +567,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
     installBanner.style.display = 'block';
-    installBanner.innerHTML = "📲 Ajouter à l'écran d'accueil";
+    installBanner.innerHTML = ui('install');
     
     installBanner.onclick = async () => {
         installBanner.style.display = 'none';
@@ -459,7 +585,7 @@ window.addEventListener('appinstalled', () => {
     <div id="halahot-panel">
         <div id="halahot-head"><div id="halahot-title">2 Halahots</div><button id="halahot-x" type="button" aria-label="Fermer" onclick="closeHalahot()">✕</button></div>
         <div id="halahot-body"></div>
-        <div id="halahot-foot"><button id="halahot-close2" type="button" onclick="closeHalahot()">Fermer</button></div>
+        <div id="halahot-foot"><button id="halahot-close2" type="button" onclick="closeHalahot()" data-ui="close">Fermer</button></div>
     </div>
 </div>
 </body>
