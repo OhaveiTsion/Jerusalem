@@ -1,7 +1,9 @@
 {
   "name": "Ohavei Tsion",
   "short_name": "Ohavei Tsion",
-  "start_url": "./index.html",
+  "id": "/Jerusalem/",
+  "start_url": "/Jerusalem/",
+  "scope": "/Jerusalem/",
   "display": "standalone",
   "background_color": "#0f34a1",
   "theme_color": "#0f34a1",
