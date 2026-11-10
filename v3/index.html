@@ -114,9 +114,10 @@
     #halahot-foot { padding: 10px 16px 14px; border-top: 1px solid rgba(255,255,255,.12); }
     #halahot-close2 { width: 100%; background: rgba(255,255,255,.18); color: #fff; font-weight: 700; border: 0; border-radius: 10px; padding: 10px; font-size: 1rem; cursor: pointer; }
     /* FR / HE */
-    #lang-btn { position: absolute; top: -3px; right: -3px; z-index: 5; background: #0f34a1; color: #fff; border: 3px solid #f1c40f; border-radius: 0 20px 0 12px; font-weight: 800; font-size: 0.7rem; padding: 0 12px 1px 14px; line-height: 1.25; cursor: pointer; }
-    .main-container { position: relative; }
-    .annonce-titre-style { text-align: start !important; }
+    #frame-wrap { position: relative; width: 100%; max-width: 500px; }
+    #frame-wrap > .main-container { clip-path: polygon(0 0, calc(100% - 84px) 0, calc(100% - 84px) 24px, 100% 24px, 100% 100%, 0 100%); }
+    #lang-btn { position: absolute; top: 2px; right: 4px; z-index: 5; width: 74px; height: 18px; box-sizing: border-box; background: transparent; color: #fff; border: 2px solid #f1c40f; border-radius: 999px; font-weight: 800; font-size: 0.66rem; padding: 0; line-height: 14px; cursor: pointer; text-align: center; }
+        .annonce-titre-style { text-align: start !important; }
     #halahot-body { text-align: start !important; }
     html[dir="rtl"] #halahot-btn { right: auto; left: 2px; }
     .shiour-item > span:last-child { text-align: end !important; }
@@ -138,10 +139,10 @@
         <div class="loader-line"></div>
     </div>
 
+    <div id="frame-wrap"><button id="lang-btn" type="button" onclick="toggleLang()" aria-label="Langue / שפה">עברית</button>
     <div class="main-container shadow-2xl">
         
-        <button id="lang-btn" type="button" onclick="toggleLang()" aria-label="Langue / שפה">עברית</button>
-        <div dir="ltr" class="flex items-center mb-4 border-b border-white/10 pb-3">
+        <div dir="ltr" class="flex items-center mb-4 border-b border-white/10 pb-3 pt-1">
             <div class="w-1/2 flex justify-center"><img src="https://ohavei-tsion.org/wp-content/uploads/2019/04/cropped-ohavei-logo-1.png" class="h-10 w-auto rounded bg-white p-1"></div>
             <div class="w-1/2 flex justify-center"><h1 class="text-xl font-black italic text-white uppercase">Ohavei Tsion</h1></div>
         </div>
@@ -215,6 +216,7 @@
         <div id="footer-site" class="w-full text-center mt-auto pt-6 pb-2">
             <p class="text-xs opacity-50 italic" dir="ltr">© Greg u.</p>
         </div>
+    </div>
     </div>
 
     
