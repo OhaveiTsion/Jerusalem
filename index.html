@@ -384,7 +384,7 @@ function formatMaj(iso) {
     return "Mis à jour : " + d.toLocaleString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
 }
 
-function openHalahot() { document.getElementById('halahot-ov').classList.add('open'); document.body.style.overflow = 'hidden'; document.getElementById('halahot-body').scrollTop = 0; }
+function openHalahot() { document.querySelectorAll('#halahot-ov [data-ui]').forEach(el => { el.innerHTML = ui(el.dataset.ui); }); document.getElementById('halahot-ov').classList.add('open'); document.body.style.overflow = 'hidden'; document.getElementById('halahot-body').scrollTop = 0; }
 function closeHalahot() { document.getElementById('halahot-ov').classList.remove('open'); document.body.style.overflow = ''; }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHalahot(); });
 
