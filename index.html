@@ -19,8 +19,12 @@
     <link rel="icon" type="image/png" href="icon-192.png">
     
         <meta name="theme-color" content="#0f34a1">
-    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Ohavei Tsion">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <script src="https://cdn.tailwindcss.com"></script>
     <script src="zmanim.js"></script>
     <script src="fmt.js"></script>
@@ -278,11 +282,25 @@ const UI = {
           offline: "⚠️ Hors connexion : derniers horaires enregistrés", shabbat: "Shabbat", title_shabbat: "SHABBAT", title_semaine: "SEMAINE",
           close: "Fermer", sem_title: "Cours de la semaine", halahot: "2 Halahots", lang_btn: "עברית",
           iosInstall: "📲 Installer : 'Partager' puis 'Sur l'écran d'accueil'", ffInstall: "📲 Installer : menu ⋮ puis 'Installer'",
+          ih_title: "Installer l'appli", ih_ok: "J'ai compris",
+          ih_inapp: "Vous avez ouvert le lien depuis une application (WhatsApp, Facebook…), qui ne permet pas d'installer.<br><br>1. Appuyez sur <b>⋮</b> ou <b>…</b> en haut à droite<br>2. Choisissez <b>« Ouvrir dans le navigateur »</b> (Chrome ou Safari)<br>3. Appuyez à nouveau sur le bouton jaune <b>📲</b>",
+          ih_ios: "1. Ouvrez ce site dans <b>Safari</b><br>2. Appuyez sur <b>Partager</b> (le carré avec la flèche ⬆️)<br>3. Choisissez <b>« Sur l'écran d'accueil »</b><br>4. Appuyez sur <b>Ajouter</b>",
+          ih_chrome: "1. Appuyez sur <b>⋮</b> (les 3 points) en haut à droite<br>2. Choisissez <b>« Installer l'application »</b> ou <b>« Ajouter à l'écran d'accueil »</b><br>3. Confirmez avec <b>Installer</b>",
+          ih_samsung: "1. Appuyez sur <b>☰</b> (menu) en bas à droite<br>2. Choisissez <b>« Ajouter la page à »</b> puis <b>« Écran d'accueil »</b>",
+          ih_firefox: "1. Appuyez sur <b>⋮</b> (les 3 points)<br>2. Choisissez <b>« Installer »</b> ou <b>« Ajouter à l'écran d'accueil »</b>",
+          ih_other: "Ouvrez le menu de votre navigateur (<b>⋮</b> ou <b>☰</b>) et choisissez <b>« Ajouter à l'écran d'accueil »</b> ou <b>« Installer »</b>.<br><br>Si l'option n'existe pas, ouvrez ce site dans <b>Chrome</b>.",
           shavoua: "Shavoua Tov !", shabbatshalom: "Shabbat Shalom !", chabbat: "Chabbat", evening_and: (p, c) => `${p} soir et ${c} : ` },
     he: { install: "📲 הוספה למסך הבית", nav_horaires: "🕰️ זמנים", nav_maftir: "📖 מפטיר", nav_tehilim: "🙏 תהילים",
           offline: "⚠️ אין חיבור: מוצגים הזמנים האחרונים שנשמרו", shabbat: "שבת", title_shabbat: "שבת", title_semaine: "ימי חול",
           close: "סגירה", sem_title: "שיעורי השבוע", halahot: "2 הלכות", lang_btn: "Français",
           iosInstall: "📲 להתקנה: «שיתוף» ואז «הוסף למסך הבית»", ffInstall: "📲 להתקנה: תפריט ⋮ ואז «התקנה»",
+          ih_title: "התקנת האפליקציה", ih_ok: "הבנתי",
+          ih_inapp: "פתחתם את הקישור מתוך אפליקציה (וואטסאפ, פייסבוק…) שאינה מאפשרת התקנה.<br><br>1. לחצו על <b>⋮</b> או <b>…</b> למעלה<br>2. בחרו <b>«פתיחה בדפדפן»</b> (כרום או ספארי)<br>3. לחצו שוב על הכפתור הצהוב <b>📲</b>",
+          ih_ios: "1. פתחו את האתר ב-<b>ספארי</b><br>2. לחצו על <b>שיתוף</b> (הריבוע עם החץ ⬆️)<br>3. בחרו <b>«הוסף למסך הבית»</b><br>4. לחצו על <b>הוסף</b>",
+          ih_chrome: "1. לחצו על <b>⋮</b> (שלוש הנקודות) למעלה<br>2. בחרו <b>«התקנת האפליקציה»</b> או <b>«הוספה למסך הבית»</b><br>3. אשרו עם <b>התקנה</b>",
+          ih_samsung: "1. לחצו על <b>☰</b> (תפריט) למטה<br>2. בחרו <b>«הוספת דף אל»</b> ואז <b>«מסך הבית»</b>",
+          ih_firefox: "1. לחצו על <b>⋮</b> (שלוש הנקודות)<br>2. בחרו <b>«התקנה»</b> או <b>«הוספה למסך הבית»</b>",
+          ih_other: "פתחו את תפריט הדפדפן (<b>⋮</b> או <b>☰</b>) ובחרו <b>«הוספה למסך הבית»</b> או <b>«התקנה»</b>.<br><br>אם האפשרות לא קיימת, פתחו את האתר ב-<b>כרום</b>.",
           shavoua: "שבוע טוב!", shabbatshalom: "שבת שלום!", chabbat: "שבת", evening_and: (p, c) => `${p} בערב ו${c}: ` }
 };
 const ui = k => (UI[LANG][k] !== undefined ? UI[LANG][k] : UI.fr[k]);
@@ -358,8 +376,7 @@ function applyLang() {
     try {
         const ib = document.getElementById('install-banner');
         if (ib && ib.style.display !== 'none') {
-            const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream, ff = /Firefox/.test(navigator.userAgent) && /Android/.test(navigator.userAgent);
-            ib.innerHTML = ios ? ui('iosInstall') : ff ? ui('ffInstall') : ui('install');
+            ib.innerHTML = ui('install');
         }
     } catch (e) {}
 }
@@ -547,36 +564,76 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
 }
 
-let deferredPrompt;
+let deferredPrompt = null;
 const installBanner = document.getElementById('install-banner');
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-const isFirefoxAndroid = /Firefox/.test(navigator.userAgent) && /Android/.test(navigator.userAgent);
-const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+const UA = navigator.userAgent || '';
+const isIOS = /iPad|iPhone|iPod/.test(UA) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isAndroid = /Android/i.test(UA);
+const isInApp = /FBAN|FBAV|FB_IAB|Instagram|WhatsApp|Line\/|Snapchat|TikTok|; wv\)/i.test(UA);
+const isSamsung = /SamsungBrowser/i.test(UA);
+const isFirefox = /Firefox|FxiOS/i.test(UA);
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-if (!isStandalone) {
-    if (isIOS) {
-        installBanner.style.display = 'block';
-        installBanner.innerHTML = ui('iosInstall');
-        installBanner.onclick = () => alert("Sur votre iPhone, tapez sur l'icône de partage (le carré avec la flèche) en bas, puis choisissez 'Sur l'écran d'accueil'.");
-    } else if (isFirefoxAndroid) {
-        installBanner.style.display = 'block';
-        installBanner.innerHTML = ui('ffInstall');
-        installBanner.onclick = () => alert("Dans Firefox, appuyez sur ⋮ (les 3 points) en haut à droite, puis 'Installer'.");
+function installHelpKey() {
+    if (isInApp) return 'ih_inapp';
+    if (isIOS) return 'ih_ios';
+    if (isSamsung) return 'ih_samsung';
+    if (isFirefox) return 'ih_firefox';
+    if (isAndroid && /Chrome\//.test(UA)) return 'ih_chrome';
+    return 'ih_other';
+}
+function showInstallHelp() {
+    let ov = document.getElementById('inst-ov');
+    if (!ov) {
+        ov = document.createElement('div');
+        ov.id = 'inst-ov';
+        ov.setAttribute('role', 'dialog');
+        ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px';
+        ov.onclick = e => { if (e.target === ov) ov.remove(); };
+        document.body.appendChild(ov);
     }
+    ov.innerHTML = `<div style="background:#12338f;border:2px solid #f1c40f;border-radius:16px;max-width:360px;width:100%;padding:18px;color:#fff;font-size:15px;line-height:1.55;box-shadow:0 10px 30px rgba(0,0,0,.5)">
+        <div style="font-weight:800;font-size:17px;margin-bottom:10px">📲 ${ui('ih_title')}</div>
+        <div>${ui(installHelpKey())}</div>
+        <button type="button" id="inst-ok" style="margin-top:16px;width:100%;background:#f1c40f;color:#0f34a1;font-weight:800;border:0;border-radius:10px;padding:10px">${ui('ih_ok')}</button></div>`;
+    document.getElementById('inst-ok').onclick = () => ov.remove();
+}
+function showInstallBanner() {
+    if (isStandalone || !installBanner) return;
+    installBanner.style.display = 'block';
+    installBanner.innerHTML = ui('install');
+}
+let bipWaiters = [];
+const waitForPrompt = ms => new Promise(res => { if (deferredPrompt) return res(deferredPrompt); bipWaiters.push(res); setTimeout(() => res(deferredPrompt), ms); });
+installBanner.onclick = async () => {
+    // Chrome peut donner l'autorisation d'installer avec un peu de retard : on l'attend un instant
+    const dp = deferredPrompt || (canAutoPrompt ? await waitForPrompt(2000) : null);
+    if (!dp) { showInstallHelp(); return; }
+    deferredPrompt = null;   // une autorisation ne sert qu'une fois ; un 2e appui affichera l'aide
+    try {
+        await dp.prompt();
+        const r = await dp.userChoice;
+        if (r && r.outcome === 'accepted') installBanner.style.display = 'none';
+    } catch (e) { showInstallHelp(); }
+};
+// Navigateurs capables d'installer directement (Chrome, Edge, Samsung…) : on attend l'autorisation du navigateur.
+// Sinon (iPhone, WhatsApp/Facebook, Firefox) : bouton tout de suite, avec les instructions.
+const canAutoPrompt = !isIOS && !isInApp && !isFirefox && 'onbeforeinstallprompt' in window;
+// Appli déjà installée sur ce téléphone (Chrome Android sait le dire) : pas de bouton
+const alreadyInstalled = (async () => {
+    try { if (navigator.getInstalledRelatedApps) return (await navigator.getInstalledRelatedApps()).length > 0; } catch (e) {}
+    return false;
+})();
+if (isIOS || isAndroid) {
+    if (canAutoPrompt) setTimeout(async () => { if (!deferredPrompt && !(await alreadyInstalled)) showInstallBanner(); }, 3500);   // pas d'autorisation : bouton en mode aide
+    else alreadyInstalled.then(inst => { if (!inst) showInstallBanner(); });
 }
 
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    installBanner.style.display = 'block';
-    installBanner.innerHTML = ui('install');
-    
-    installBanner.onclick = async () => {
-        installBanner.style.display = 'none';
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        deferredPrompt = null;
-    };
+    showInstallBanner();
+    bipWaiters.splice(0).forEach(f => f(e));
 });
 
 window.addEventListener('appinstalled', () => {
