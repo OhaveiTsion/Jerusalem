@@ -619,9 +619,14 @@ installBanner.onclick = async () => {
 // Navigateurs capables d'installer directement (Chrome, Edge, Samsung…) : on attend l'autorisation du navigateur.
 // Sinon (iPhone, WhatsApp/Facebook, Firefox) : bouton tout de suite, avec les instructions.
 const canAutoPrompt = !isIOS && !isInApp && !isFirefox && 'onbeforeinstallprompt' in window;
+// Appli déjà installée sur ce téléphone (Chrome Android sait le dire) : pas de bouton
+const alreadyInstalled = (async () => {
+    try { if (navigator.getInstalledRelatedApps) return (await navigator.getInstalledRelatedApps()).length > 0; } catch (e) {}
+    return false;
+})();
 if (isIOS || isAndroid) {
-    if (canAutoPrompt) setTimeout(() => { if (!deferredPrompt) showInstallBanner(); }, 3500);   // pas d'autorisation : bouton en mode aide
-    else showInstallBanner();
+    if (canAutoPrompt) setTimeout(async () => { if (!deferredPrompt && !(await alreadyInstalled)) showInstallBanner(); }, 3500);   // pas d'autorisation : bouton en mode aide
+    else alreadyInstalled.then(inst => { if (!inst) showInstallBanner(); });
 }
 
 window.addEventListener('beforeinstallprompt', (e) => {

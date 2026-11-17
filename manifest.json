@@ -33,5 +33,11 @@
       "purpose": "maskable"
     }
   ],
-  "description": "Horaires de la synagogue Ohavei Tsion – Jérusalem"
+  "description": "Horaires de la synagogue Ohavei Tsion – Jérusalem",
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://ohaveitsion.github.io/Jerusalem/manifest.json"
+    }
+  ]
 }
