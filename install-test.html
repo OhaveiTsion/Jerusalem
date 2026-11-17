@@ -603,24 +603,32 @@ function showInstallBanner() {
     installBanner.style.display = 'block';
     installBanner.innerHTML = ui('install');
 }
+let bipWaiters = [];
+const waitForPrompt = ms => new Promise(res => { if (deferredPrompt) return res(deferredPrompt); bipWaiters.push(res); setTimeout(() => res(deferredPrompt), ms); });
 installBanner.onclick = async () => {
-    const dp = deferredPrompt;
+    // Chrome peut donner l'autorisation d'installer avec un peu de retard : on l'attend un instant
+    const dp = deferredPrompt || (canAutoPrompt ? await waitForPrompt(2000) : null);
     if (!dp) { showInstallHelp(); return; }
-    deferredPrompt = null;   // une demande ne sert qu'une fois
+    deferredPrompt = null;   // une autorisation ne sert qu'une fois ; un 2e appui affichera l'aide
     try {
-        dp.prompt();
-        const r = await Promise.race([dp.userChoice, new Promise(res => setTimeout(() => res('timeout'), 5000))]);
-        if (r && r.outcome === 'accepted') { installBanner.style.display = 'none'; return; }
-        if (r === 'timeout' && !document.hidden) showInstallHelp();   // le navigateur n'a rien affiché
+        await dp.prompt();
+        const r = await dp.userChoice;
+        if (r && r.outcome === 'accepted') installBanner.style.display = 'none';
     } catch (e) { showInstallHelp(); }
 };
-// Sur téléphone, le bouton est toujours proposé tant que l'appli n'est pas installée
-if (isIOS || isAndroid) showInstallBanner();
+// Navigateurs capables d'installer directement (Chrome, Edge, Samsung…) : on attend l'autorisation du navigateur.
+// Sinon (iPhone, WhatsApp/Facebook, Firefox) : bouton tout de suite, avec les instructions.
+const canAutoPrompt = !isIOS && !isInApp && !isFirefox && 'onbeforeinstallprompt' in window;
+if (isIOS || isAndroid) {
+    if (canAutoPrompt) setTimeout(() => { if (!deferredPrompt) showInstallBanner(); }, 3500);   // pas d'autorisation : bouton en mode aide
+    else showInstallBanner();
+}
 
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
     showInstallBanner();
+    bipWaiters.splice(0).forEach(f => f(e));
 });
 
 window.addEventListener('appinstalled', () => {
